@@ -1,0 +1,64 @@
+# Configuração única do projeto. Nenhum caminho e nenhuma constante
+# ficam escritos dentro de notebook ou de script.
+
+seed: 42            # semente fixa, exigência da seção 5.5 do enunciado
+
+caminhos:
+  # As bases vivem fora do repo, em HD externo.
+  # Cada um do grupo aponta para onde a base está na máquina dele.
+
+  # LUNA16, a base principal do Grupo 5 pela seção 7.2 do enunciado.
+  # O zip do Kaggle extrai com a pasta repetida: subset0/subset0, seg-lungs-LUNA16/seg-lungs-LUNA16.
+  luna16: "/media/kauan/HD Samuel/Luna16/archive"
+  luna16_anotacoes: "/media/kauan/HD Samuel/Luna16/archive/annotations.csv"
+  luna16_candidatos: "/media/kauan/HD Samuel/Luna16/archive/candidates.csv"
+  luna16_candidatos_v2: "/media/kauan/HD Samuel/Luna16/archive/candidates_V2/candidates_V2.csv"
+  luna16_mascaras: "/media/kauan/HD Samuel/Luna16/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
+  luna16_avaliacao: "/media/kauan/HD Samuel/Luna16/archive/evaluationScript/evaluationScript"
+
+  # LIDC-IDRI, para a anotação individual dos quatro radiologistas.
+  lidc_idri: "/media/kauan/HD Samuel/LIDC-IDRI/Imagens LIDC-IDRI"
+  lidc_manifesto: "/media/kauan/HD Samuel/LIDC-IDRI/Imagens LIDC-IDRI/metadata/metadata.csv"
+  lidc_anotacoes_xml: "/media/kauan/HD Samuel/LIDC-IDRI/Anotações e segmentações do radiologista"
+  lidc_contagem: "/media/kauan/HD Samuel/LIDC-IDRI/Contagem de nódulos"
+  lidc_diagnosticos: "/media/kauan/HD Samuel/LIDC-IDRI/Diagnósticos do paciente"
+
+  # Dentro do repo, fora do git.
+  intermediario: "dados/intermediario"
+  processado: "dados/processado"
+
+selecao:
+  # Só os subsets baixados. Atualizar quando os outros chegarem.
+  subsets: [0, 1, 2, 3, 4]
+
+pre_processamento:
+  # Janela de HU. O ar do pulmão fica perto de -1000, o osso passa de 400.
+  hu_min: -1000
+  hu_max: 400
+  # Reamostragem para voxel isotrópico, em mm.
+  # O espaçamento em z varia de 0,625 a 2,5 mm entre exames do próprio LUNA16.
+  espacamento_alvo: [1.0, 1.0, 1.0]
+  # As máscaras de pulmão vêm prontas em luna16_mascaras. Não segmentar de novo.
+  usar_mascara_do_desafio: true
+
+candidatos:
+  # Cubo ao redor de cada candidato, em voxels. Valor sugerido na seção 7.4 do enunciado.
+  patch: [32, 32, 32]
+
+divisao:
+  # Por paciente, nunca por imagem. Seção 3.1 do enunciado.
+  # No LUNA16 cada seriesuid é um paciente, e os subsets já são as dobras oficiais.
+  chave: seriesuid
+  usar_subsets_como_dobras: true
+
+avaliacao:
+  # Pontos fixos de FP por exame que compõem o CPM do LUNA16.
+  pontos_fp_por_exame: [0.125, 0.25, 0.5, 1, 2, 4, 8]
+  pontos_de_operacao: [1, 4]
+  bootstrap_reamostras: 1000
+  intervalo_confianca: 0.95
+
+metas:
+  # Alvo declarado no enunciado, seção 7.6. É alvo, não resultado.
+  sensibilidade_baseline_a_4fp: 0.70
+  sensibilidade_cnn_a_4fp: 0.80

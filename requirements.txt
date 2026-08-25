@@ -1,0 +1,34 @@
+# Dependências do PI3 Grupo 5.
+# Sem pin de versão até o primeiro ambiente rodar de ponta a ponta.
+# Depois disso: pip freeze > requirements.lock.txt e o lock passa a ser o que vale
+# para reprodução, conforme a seção 3.3 e a 5.5 do enunciado.
+
+# Imagem médica
+pydicom
+SimpleITK
+pylidc
+scikit-image
+
+# Numérico e dados
+numpy
+pandas
+scipy
+
+# ML
+scikit-learn
+
+# Deep learning. Instalar a variante de CUDA certa para a máquina antes de treinar.
+torch
+torchvision
+
+# Visualização
+matplotlib
+seaborn
+
+# Utilidades
+pyyaml
+tqdm
+jupyterlab
+
+# Testes
+pytest

@@ -1,0 +1,69 @@
+# Tudo que não é o projeto em si fica fora do git.
+_local/
+CLAUDE.md
+AGENTS.md
+.claude/
+.cursor/
+.cursorrules
+.aider*
+.github/copilot-instructions.md
+specs/
+prd/
+PROMPT*.md
+*.prompt.md
+*.spec.md
+separar-material-local.sh
+limpar-estrutura-em-ingles.sh
+
+# Dados. Nada de imagem médica ou anotação bruta no git.
+dados/bruto/*
+dados/intermediario/*
+dados/processado/*
+dados/externo/*
+!dados/**/.gitkeep
+
+# Artefatos de modelo pesados.
+modelos/*
+!modelos/.gitkeep
+*.pth
+*.pt
+*.joblib
+*.pkl
+*.h5
+*.onnx
+
+# Formatos de imagem médica, caso alguém copie para dentro do repo por engano
+*.dcm
+*.mhd
+*.raw
+*.nii
+*.nii.gz
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.python-version
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/*-scratch.ipynb
+
+# Ferramentas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
