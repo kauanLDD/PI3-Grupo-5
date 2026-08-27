@@ -11,8 +11,12 @@ CAMINHO = RAIZ / "configuracao" / "config.yaml"
 
 
 def carregar(caminho=None):
+    """Devolve os `caminhos` como Path absoluto: relativo no yaml é relativo à raiz do repo."""
     with open(caminho or CAMINHO, encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        cfg = yaml.safe_load(f)
+
+    cfg["caminhos"] = {chave: RAIZ / valor for chave, valor in cfg["caminhos"].items()}
+    return cfg
 
 
 def fixar_semente(semente=None):

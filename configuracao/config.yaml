@@ -16,16 +16,12 @@ caminhos:
   luna16_mascaras: "/media/kauan/HD Samuel/Luna16/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
   luna16_avaliacao: "/media/kauan/HD Samuel/Luna16/archive/evaluationScript/evaluationScript"
 
-  # LIDC-IDRI, para a anotação individual dos quatro radiologistas.
-  lidc_idri: "/media/kauan/HD Samuel/LIDC-IDRI/Imagens LIDC-IDRI"
-  lidc_manifesto: "/media/kauan/HD Samuel/LIDC-IDRI/Imagens LIDC-IDRI/metadata/metadata.csv"
-  lidc_anotacoes_xml: "/media/kauan/HD Samuel/LIDC-IDRI/Anotações e segmentações do radiologista"
-  lidc_contagem: "/media/kauan/HD Samuel/LIDC-IDRI/Contagem de nódulos"
-  lidc_diagnosticos: "/media/kauan/HD Samuel/LIDC-IDRI/Diagnósticos do paciente"
-
   # Dentro do repo, fora do git.
   intermediario: "dados/intermediario"
   processado: "dados/processado"
+
+  # Versionado: a mesma figura vai para o Sprint Review e depois para o paper.
+  figuras: "relatorios/figuras"
 
 selecao:
   # Só os subsets baixados. Atualizar quando os outros chegarem.

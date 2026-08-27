@@ -4,9 +4,7 @@
 # para reprodução, conforme a seção 3.3 e a 5.5 do enunciado.
 
 # Imagem médica
-pydicom
 SimpleITK
-pylidc
 scikit-image
 
 # Numérico e dados

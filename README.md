@@ -7,14 +7,21 @@ O câncer de pulmão mata mais que qualquer outro câncer, e o problema não é 
 
 ## Dataset
 
-**LIDC-IDRI** (Lung Image Database Consortium and Image Database Resource Initiative), a
-base pública de referência para nódulo pulmonar em TC, hospedada no TCIA.
+**LUNA16** (Lung Nodule Analysis 2016), derivado do LIDC-IDRI e já filtrado, com o
+critério de inclusão e as dobras de validação definidos pelo próprio desafio.
 
 | | |
 |---|---|
-| Pacientes | 1.010 |
-| Estudos / séries | 1.308 |
-| Imagens | 244.527 |
-| Tamanho | 133,16 GB de imagem, 8,62 MB de anotação |
-| Formato | DICOM (`.dcm`), uma pasta por paciente; anotação em XML |
-| Licença | CC BY 3.0 |
+| Exames no desafio | 888 |
+| Exames em disco | 445, os subsets 0 a 4 |
+| Nódulos anotados | 1.186 em 601 exames, dos quais 615 estão nos exames que temos |
+| Candidatos | 551.065 com 1.351 positivos, ou 0,2452% |
+| Formato | MetaImage (`.mhd` mais `.raw`), um par por exame |
+| Espaçamento entre fatias | de 0,5 a 2,5 mm |
+| Máscaras de pulmão | prontas, em `seg-lungs-LUNA16` |
+| Avaliação | curva FROC, com o script oficial do desafio |
+
+Os subsets 5 a 9 não foram baixados, e todo resultado nosso declara isso.
+
+Números medidos em 26/08/2026 com `scripts/02_inventario_volumes.py` e leitura direta dos
+CSVs do desafio.
