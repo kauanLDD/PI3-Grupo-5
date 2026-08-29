@@ -1,4 +1,4 @@
-"""As seis figuras da análise exploratória.
+"""As cinco figuras da análise exploratória.
 
 Cada uma responde uma pergunta que muda uma decisão de pré-processamento. Ficam aqui e
 não no notebook porque a mesma figura vai para o Sprint Review e depois para o paper.
