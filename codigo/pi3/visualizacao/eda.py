@@ -1,8 +1,4 @@
-"""As cinco figuras da análise exploratória.
-
-Cada uma responde uma pergunta que muda uma decisão de pré-processamento. Ficam aqui e
-não no notebook porque a mesma figura vai para o Sprint Review e depois para o paper.
-"""
+"""As cinco figuras da análise exploratória."""
 
 from pathlib import Path
 
@@ -24,7 +20,7 @@ def _salvar(figura, saida: Path):
 
 
 def espacamento_em_z(inventario, saida: Path, alvo_mm: float):
-    # Arredondado porque o float32 do .mhd conta 0,625 como três valores distintos.
+    # Arredonda o float32 do .mhd antes de contar valores distintos.
     contagem = inventario.espacamento_z.round(4).value_counts().sort_index()
 
     figura, eixo = plt.subplots(figsize=(7, 4))

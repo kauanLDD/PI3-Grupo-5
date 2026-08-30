@@ -35,10 +35,10 @@ def relatar(df, erros, ausentes):
     for aviso in erros + ausentes:
         print(f"  {aviso}")
 
-    # Sem arredondar, o float32 do .mhd conta 0,625 como três valores distintos.
+    # Arredonda o float32 do .mhd antes de contar.
     espacamento_z = df.espacamento_z.round(4)
     contagem = "  ".join(f"{v:g}:{q}" for v, q in espacamento_z.value_counts().sort_index().items())
-    # Acima de 2,5 mm é o critério de exclusão do próprio desafio.
+    # 2,5 mm é o critério de exclusão do desafio.
     print(f"espaçamento em z, mm  {contagem}  (acima de 2,5: {int((espacamento_z > 2.5).sum())})")
 
     matriz = ", ".join(sorted({f"{x} por {y}" for x, y in zip(df.dim_x, df.dim_y)}))

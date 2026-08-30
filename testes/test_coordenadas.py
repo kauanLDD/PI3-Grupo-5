@@ -1,8 +1,4 @@
-"""Conversão entre milímetro e índice de voxel.
-
-Os testes de geometria fixa rodam sempre. Os que abrem volume pulam se o HD não estiver
-montado ou se o inventário da Fase 1 ainda não tiver sido gerado.
-"""
+"""Conversão entre milímetro e índice de voxel."""
 
 import sys
 from pathlib import Path
@@ -22,7 +18,7 @@ ESPACAMENTO = [0.5, 0.5, 2.0]
 
 
 def ingenua(mundo, origem, espacamento):
-    """A fórmula sem direção, que é o erro que este arquivo existe para pegar."""
+    """A fórmula sem direção."""
     return (np.asarray(mundo, float) - np.asarray(origem, float)) / np.asarray(espacamento, float)
 
 
@@ -49,7 +45,7 @@ def test_dentro_do_volume():
 
 
 def volumes_de_teste():
-    """Os dois extremos de espaçamento em z e um volume de direção invertida."""
+    """Extremos de espaçamento em z, mais um volume de direção invertida."""
     cfg = config.carregar()
     inventario = cfg["caminhos"]["intermediario"] / "inventario_volumes.csv"
     if not inventario.exists():
@@ -87,7 +83,7 @@ def test_ida_e_volta(linha, caminho):
 
 
 def geometria_do_arquivo(caminho):
-    """Uma imagem 1x1x1 com a geometria do .mhd: o transform do SimpleITK só usa isso."""
+    """Imagem 1x1x1 com a geometria do .mhd."""
     leitor = sitk.ImageFileReader()
     leitor.SetFileName(str(caminho))
     leitor.ReadImageInformation()

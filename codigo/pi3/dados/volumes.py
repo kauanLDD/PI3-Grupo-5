@@ -6,7 +6,7 @@ import SimpleITK as sitk
 
 IDENTIDADE = (1, 0, 0, 0, 1, 0, 0, 0, 1)
 
-# O .mhd guarda esses campos em float32, então 1 vira 0.99999999999999989.
+# Tolerância para o float32 do .mhd.
 TOLERANCIA = 1e-6
 
 
@@ -44,7 +44,7 @@ def proximos(lido, escrito: str) -> bool:
 
 
 def confere(do_leitor: dict, texto: dict, arquivo: str):
-    """Estoura se o SimpleITK e o cabeçalho de texto discordarem em algum campo."""
+    """Estoura se o SimpleITK e o cabeçalho de texto discordarem."""
     for campo, lido in do_leitor.items():
         if not proximos(lido, texto[campo]):
             raise ValueError(f"{arquivo}: {campo} é {texto[campo]!r} no arquivo e {lido} no SimpleITK")
@@ -65,7 +65,6 @@ def ler_cabecalho(caminho: Path) -> dict:
     direcao = leitor.GetDirection()
     texto = campos_do_texto(caminho)
 
-    # Se os dois discordarem, a tabela descreve um volume e o pipeline enxerga outro.
     confere(
         {
             "Offset": origem,
@@ -93,7 +92,7 @@ def ler_cabecalho(caminho: Path) -> dict:
 
 
 def inventariar(pasta: Path, subset: int) -> tuple[list[dict], list[str]]:
-    """Devolve as linhas lidas e os erros, para o chamador declarar os dois."""
+    """Devolve as linhas lidas e os erros."""
     linhas, erros = [], []
     for mhd in sorted(pasta.glob("*.mhd")):
         try:

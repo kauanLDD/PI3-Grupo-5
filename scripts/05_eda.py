@@ -25,7 +25,7 @@ inventario = pd.read_csv(cfg["caminhos"]["intermediario"] / "inventario_volumes.
 
 
 def amostrar_hu():
-    """Volumes sorteados, com o HU tomado só de dentro da máscara de pulmão do desafio."""
+    """HU de volumes sorteados, tomado dentro da máscara de pulmão."""
     import SimpleITK as sitk
 
     amostra = inventario.sample(VOLUMES_PARA_HU, random_state=cfg["seed"])

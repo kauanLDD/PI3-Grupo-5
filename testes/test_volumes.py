@@ -31,12 +31,12 @@ def test_campos_do_texto(tmp_path):
 
 
 def test_identidade_aceita_ruido_de_float32():
-    # É o que o .mhd traz no lugar de 1 em parte dos volumes do desafio.
+    # Valor que o .mhd traz no lugar de 1.
     assert volumes.e_identidade((1, 0, 0, 0, 1, 0, 0, 0, 0.99999999999999989))
 
 
 def test_identidade_recusa_direcao_invertida():
-    # Os 11 volumes LPI do LUNA16 trazem esta matriz, e nela x e y saem espelhados.
+    # Matriz dos 11 volumes LPI.
     assert not volumes.e_identidade((-1, 0, 0, 0, -1, 0, 0, 0, 1))
 
 

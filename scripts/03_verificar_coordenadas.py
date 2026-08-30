@@ -36,7 +36,7 @@ def indice_do_nodulo(linha):
 
 
 def indice_ingenuo(linha):
-    """A fórmula sem direção, para medir o estrago que ela causaria."""
+    """A fórmula sem direção, para comparação."""
     origem, espacamento, _ = coordenadas.geometria(linha)
     mundo = np.array([linha["coordX"], linha["coordY"], linha["coordZ"]])
     return (mundo - np.array(origem)) / np.array(espacamento)
@@ -57,7 +57,7 @@ def carregar(seriesuid):
 
 
 def hu_no_nodulo(volume, indice, diametro_mm, espacamento):
-    """Mediana dentro do nódulo. O raio é por eixo: em z o voxel chega a 2,5 mm."""
+    """Mediana de HU dentro do nódulo, com raio por eixo."""
     x, y, z = (int(round(v)) for v in indice)
     rx, ry, rz = (max(1, int(round((diametro_mm / 2) / e * 0.6))) for e in espacamento)
     caixa = volume[max(0, z - rz):z + rz + 1, max(0, y - ry):y + ry + 1, max(0, x - rx):x + rx + 1]
@@ -65,7 +65,7 @@ def hu_no_nodulo(volume, indice, diametro_mm, espacamento):
 
 
 def comparar_com_espelhado(amostra):
-    """Nódulo é tecido dentro de ar. No índice espelhado cai parênquima, que é ar."""
+    """Compara o HU no índice convertido com o do índice espelhado."""
     certo, espelhado = [], []
     for linha in amostra.itertuples():
         volume = carregar(linha.seriesuid)
@@ -79,7 +79,7 @@ def comparar_com_espelhado(amostra):
 
 
 def escolher(quais):
-    """Entre os maiores, o mais sólido: nódulo denso é o que deixa julgar a figura no olho."""
+    """O mais sólido entre os maiores."""
     maiores = quais.nlargest(CANDIDATOS_POR_FIGURA, "diameter_mm")
     densidade = []
     for linha in maiores.itertuples():

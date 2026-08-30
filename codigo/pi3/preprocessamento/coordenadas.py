@@ -1,8 +1,4 @@
-"""Conversão entre coordenada de mundo em milímetro e índice de voxel.
-
-Origem, espaçamento e direção mudam de exame para exame. Ignorar a direção espelha x e y
-nos volumes LPI do desafio, sem levantar erro nenhum.
-"""
+"""Conversão entre coordenada de mundo em milímetro e índice de voxel."""
 
 import numpy as np
 
@@ -17,7 +13,7 @@ def geometria(linha):
 
 
 def mundo_para_indice(mundo, origem, espacamento, direcao) -> np.ndarray:
-    """Índice contínuo. Quem precisa de voxel inteiro arredonda depois."""
+    """Índice contínuo, sem arredondar."""
     matriz = np.asarray(direcao, float).reshape(3, 3)
     deslocamento = np.asarray(mundo, float) - np.asarray(origem, float)
     # A direção é ortonormal, então a transposta é a inversa.

@@ -7,14 +7,11 @@ import matplotlib
 # Sem display: os scripts rodam no terminal.
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import SimpleITK as sitk
 
 
 def fatia_com_nodulo(volume, indice, raio_px: float, hu, titulo: str, saida: Path, zoom: float = 5.0):
-    """O volume vem em (z, y, x) e o índice em (x, y, z), que é a troca que engana.
-
-    Dois painéis: a fatia inteira situa o achado, e o aproximado é o que deixa julgar se
-    o círculo caiu no nódulo. Num corte de 512 sem zoom, nódulo nenhum é visível.
-    """
+    """Fatia inteira e zoom, com o nódulo circulado. Volume em (z, y, x) e índice em (x, y, z)."""
     x, y, z = (int(round(v)) for v in indice)
     fatia = volume[z]
     margem = max(20, raio_px * zoom)
@@ -30,6 +27,31 @@ def fatia_com_nodulo(volume, indice, raio_px: float, hu, titulo: str, saida: Pat
     perto.set_title(f"aproximado em ({x}, {y})", fontsize=9)
     perto.set_xlim(x - margem, x + margem)
     perto.set_ylim(y + margem, y - margem)
+
+    figura.suptitle(f"{titulo}    janela HU {hu[0]} a {hu[1]}", fontsize=10)
+    saida.parent.mkdir(parents=True, exist_ok=True)
+    figura.savefig(saida, dpi=150, bbox_inches="tight")
+    plt.close(figura)
+
+
+def antes_e_depois(antes, depois, ponto_mundo, raio_mm: float, hu, titulo: str, saida: Path):
+    """A mesma posição física nos dois volumes. A fatia é escolhida pelo ponto no mundo."""
+    figura, eixos = plt.subplots(1, 2, figsize=(9.5, 5.2))
+    for eixo, imagem, nome in zip(eixos, (antes, depois), ("antes", "depois")):
+        x, y, z = imagem.TransformPhysicalPointToIndex(ponto_mundo)
+        arr = sitk.GetArrayFromImage(imagem)
+        espacamento = imagem.GetSpacing()
+
+        eixo.imshow(arr[z], cmap="gray", vmin=hu[0], vmax=hu[1])
+        eixo.add_patch(plt.Circle((x, y), raio_mm / espacamento[0], fill=False, color="red", linewidth=1.2))
+        eixo.set_xticks([])
+        eixo.set_yticks([])
+        eixo.set_title(
+            f"{nome}, fatia {z}\n"
+            f"{' x '.join(str(d) for d in imagem.GetSize())} voxels de "
+            f"{' x '.join(f'{e:.3g}' for e in espacamento)} mm",
+            fontsize=9,
+        )
 
     figura.suptitle(f"{titulo}    janela HU {hu[0]} a {hu[1]}", fontsize=10)
     saida.parent.mkdir(parents=True, exist_ok=True)
