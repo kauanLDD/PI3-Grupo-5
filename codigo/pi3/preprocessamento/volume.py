@@ -28,7 +28,7 @@ def reamostrar(imagem, alvo, interpolador=sitk.sitkLinear, fundo: float = 0.0):
 
 
 def binarizar(mascara):
-    # Decisão 0002: `> 0` em vez de `== 3 ou == 4`.
+    # Decisão 0002: `> 0` em vez de `== 3 ou == 4`, que recupera três nódulos.
     return sitk.Cast(mascara > 0, sitk.sitkUInt8)
 
 

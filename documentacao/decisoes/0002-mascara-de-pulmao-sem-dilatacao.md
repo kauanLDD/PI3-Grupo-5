@@ -1,75 +1,75 @@
-# 0002: como aplicamos a máscara de pulmão do desafio
+# 0002: como aplicamos a máscara de pulmão
 
 **Estado:** decidido e verificado
-**Data:** 29/08/2026
+**Data:** 29/08/2026, remedido sobre os 888 exames em 30/08/2026
 
 ## Contexto
 
-O enunciado põe a máscara de pulmão na etapa de Pré-processamento do KDD, com a finalidade
-de "restringir a região de busca". Fonte: `PIEX3_projeto-grupo5_2026-08-03.pdf`, seção 2.
+O enunciado põe a máscara de pulmão na etapa de Pré-processamento do KDD, com a finalidade de
+"restringir a região de busca". Fonte: `PIEX3_projeto-grupo5_2026-08-03.pdf`, seção 2.
 
-Ao gerar a figura de antes e depois do pré-processamento, notamos um nódulo encostado na
-borda da máscara, aparentemente cortado. Medimos, e 29 dos 615 nódulos anotados dos subsets
-0 a 4 têm o centro fora da máscara. Isso levantou a suspeita de que a máscara removeria
-nódulo justapleural, aqueles colados na parede do pulmão.
+Ao conferir o resultado do pré-processamento, notamos um nódulo encostado na borda da máscara,
+aparentemente cortado. Medimos, e 51 dos 1.186 nódulos anotados têm o centro fora da máscara.
+Isso levantou a suspeita de que a máscara removeria nódulo justapleural, aqueles colados na
+parede do pulmão.
 
-A literatura reforça a suspeita. Li et al. (2023) e Shen et al. registram que de 5% a 17%
-dos nódulos se perdem na etapa de segmentação do pulmão, os dois citando Armato e Sensakovic
-(2004). O TiCNet (Ma et al., 2024) lista "nódulos fora do parênquima fornecido oficialmente"
-entre as causas dos seus falsos negativos.
+A literatura reforçava a suspeita. Li et al. (2023) e Shen et al. registram que de 5% a 17% dos
+nódulos se perdem na etapa de segmentação do pulmão, os dois citando Armato e Sensakovic (2004).
+O TiCNet (Ma et al., 2024) lista "nódulos fora do parênquima fornecido oficialmente" entre as
+causas dos seus falsos negativos.
 
 ## O que medimos
 
-O critério de acerto do desafio não exige que o candidato caia no centro do nódulo. A página
-de avaliação do LUNA16 define acerto como candidato a menos de R do centro, com R igual ao
-diâmetro dividido por dois. Um nódulo com o centro fora da máscara continua detectável desde
-que sobre qualquer parte dele dentro.
+Centro fora da máscara é o critério errado. A página de avaliação do LUNA16 define acerto como
+candidato a menos de R do centro do nódulo, com R igual ao diâmetro dividido por dois. Um nódulo
+com o centro fora continua detectável desde que sobre qualquer parte dele dentro da máscara.
 
-Refizemos a contagem com esse critério, nos 615 nódulos anotados dos subsets 0 a 4, em
-29/08/2026:
+Refizemos a contagem com esse critério, sobre os 1.186 nódulos dos 888 exames, em 30/08/2026:
 
-| Como binarizamos a máscara | Nódulos alcançáveis | Perda |
-|---|---|---|
-| `mascara > 0` | 615 de 615 | 0,00% |
-| `mascara == 3 ou == 4` | 613 de 615 | 0,33%, IC95% [0,00%, 0,81%] |
+| Como binarizamos a máscara | Alcançáveis | Perda | IC 95% |
+|---|---|---|---|
+| `mascara > 0` | 1.185 de 1.186 | 0,08% | 0,00% a 0,25% |
+| `mascara == 3 ou == 4` | 1.182 de 1.186 | 0,34% | 0,08% a 0,68% |
 
-Os rótulos presentes nas máscaras são 0, 3, 4 e 5, contados com `numpy.unique` sobre as 445
-máscaras dos subsets que temos.
+Os rótulos presentes nas máscaras são 0, 3, 4 e 5, contados com `numpy.unique` sobre as 888.
 
-Os dois nódulos que se perdem com `3` e `4` medem 14,2 mm e 13,9 mm e estão no mesmo exame.
+**Um nódulo, de 5,0 mm, é inalcançável pelos dois critérios.** A máscara do desafio o remove
+por inteiro, e nenhuma escolha de rótulo o recupera.
+
+Os outros três que a leitura da literatura perderia, de 14,2 mm, 13,9 mm e 6,7 mm, sobrevivem
+com `> 0` porque estão cobertos pelo rótulo 5.
 
 ## Decisão
 
 Aplicamos a máscara como o desafio entrega, sem dilatar, binarizando com `mascara > 0`.
 
-Usar `> 0` em vez de `== 3 ou == 4` é escolha nossa e recupera dois nódulos. Toda a linhagem
-de código pública do LUNA16, grt123, DeepLung, NoduleNet e DeepSEED, usa `3` e `4` e perde
-esses dois.
+Usar `> 0` em vez de `== 3 ou == 4` é escolha nossa e recupera três nódulos. Toda a linhagem de
+código pública do LUNA16, grt123, DeepLung, NoduleNet e DeepSEED, usa `3` e `4` e perde os três.
 
 ## Alternativas consideradas e descartadas
 
-**Dilatar a máscara antes de aplicar.** Descartamos porque não há o que recuperar: a perda
-já é zero. Além disso, os quatro raios que a literatura publica não vêm com métrica ao lado.
-São 10 mm em Setio et al. (2017), aplicados a filtrar uma lista de candidatos já pronta e
-não a definir onde buscar; 10 mm em Fotin et al. (2019), em 706 exames privados que não são
-o LUNA16; esfera de raio 6 em Zheng et al. (2022); e 10 iterações de voxel em Liao et al.
-(2017), cujo próprio artigo declara que o sistema de avaliação do LUNA16 não serve para
-medir o método deles. Nenhum dos quatro reporta sensibilidade ou CPM em função do raio.
+**Dilatar a máscara antes de aplicar.** Descartamos. A perda é de um nódulo em 1.186, e os
+quatro raios que a literatura publica não vêm com métrica que os justifique: 10 mm em Setio et
+al. (2017), aplicados a filtrar uma lista de candidatos já pronta e não a definir onde buscar;
+10 mm em Fotin et al. (2019), em 706 exames privados que não são o LUNA16; esfera de raio 6 em
+Zheng et al. (2022); e 10 iterações de voxel em Liao et al. (2017), cujo próprio artigo declara
+que o sistema de avaliação do LUNA16 não serve para medir o método deles. Nenhum dos quatro
+reporta sensibilidade ou CPM em função do raio, e dilatar aumenta a região de busca e portanto
+o falso positivo, que é o eixo da curva FROC.
 
-**Não usar máscara nenhuma.** O nnDetection e o tutorial de detecção do MONAI treinam sobre
-o volume inteiro. Descartamos porque o enunciado pede a máscara na etapa de
-Pré-processamento, e porque ela reduz a região de busca sem nos custar nódulo.
+**Não usar máscara nenhuma.** O nnDetection e o tutorial de detecção do MONAI treinam sobre o
+volume inteiro. Descartamos porque o enunciado pede a máscara na etapa de Pré-processamento, e
+porque ela reduz a região de busca custando um nódulo em mil e cento e oitenta e seis.
 
 ## Uma armadilha que evitamos
 
-O `prepare.py` do grt123, que é a receita mais copiada do campo, dilata **antes** de
-reamostrar, com `generate_binary_structure(3, 1)`. Como o espaçamento em z do LUNA16 vai de
-0,5 a 2,5 mm, o mesmo número de iterações vale distâncias físicas diferentes em cada exame,
-e a conectividade 6 produz uma bola de norma L1 e não uma esfera.
+O `prepare.py` do grt123, que é a receita mais copiada do campo, dilata **antes** de reamostrar,
+com `generate_binary_structure(3, 1)`. Como o espaçamento em z do LUNA16 vai de 0,45 a 2,5 mm, o
+mesmo número de iterações vale distâncias físicas diferentes em cada exame, e a conectividade 6
+produz uma bola de norma L1 e não uma esfera.
 
-Nosso `preprocessar()` reamostra para 1 mm isotrópico antes de aplicar a máscara, então
-qualquer operação morfológica futura acontece em grade uniforme e o raio é o mesmo em todos
-os exames.
+Nosso `preprocessar()` reamostra para 1 mm isotrópico antes de aplicar a máscara, então qualquer
+operação morfológica futura acontece em grade uniforme e o raio é o mesmo em todos os exames.
 
 ## Como verificar
 
@@ -78,18 +78,24 @@ os exames.
 ```
 
 O teste `test_rotulo_zero_recupera_dois_nodulos_que_o_padrao_perde` carrega o exame dos dois
-nódulos e falha se alguém trocar a binarização para o padrão da literatura.
+maiores nódulos que a leitura da literatura perde e falha se alguém trocar a binarização.
 
 ## Consequências
 
-O `preprocessar()` de `codigo/pi3/preprocessamento/volume.py` não tem passo de dilatação, e
-a máscara não impõe teto de sensibilidade nenhum sobre os nossos 615 nódulos.
+O `preprocessar()` de `codigo/pi3/preprocessamento/volume.py` não tem passo de dilatação.
 
-Quando os subsets 5 a 9 chegarem, a medição precisa ser refeita sobre os 1.186 nódulos, e o
-número desta página passa a valer só para os subsets 0 a 4.
+A máscara impõe um teto de sensibilidade de 1.185 sobre 1.186, ou 99,92%. É um teto real e
+precisa ser declarado ao reportar qualquer resultado, ainda que fique muito acima da meta de
+0,70 do enunciado.
+
+## Histórico
+
+A primeira medição, em 29/08/2026, rodou sobre os 615 nódulos dos subsets 0 a 4 e deu perda
+zero. Com o desafio completo a perda passou a ser de um nódulo. A decisão de não dilatar não
+mudou; a afirmação de que a máscara não custa nada, sim.
 
 ## Em aberto
 
-Preenchemos o lado de fora do pulmão com -1000 HU, que é ar. A linhagem grt123 preenche com
-um valor de cinza médio. Não encontramos medição que compare as duas escolhas, e não trocamos
-por imitação. Vira experimento quando houver modelo para medir a diferença.
+Preenchemos o lado de fora do pulmão com -1000 HU, que é ar. A linhagem grt123 preenche com um
+valor de cinza médio. Não encontramos medição que compare as duas escolhas, e não trocamos por
+imitação. Vira experimento quando houver modelo para medir a diferença.

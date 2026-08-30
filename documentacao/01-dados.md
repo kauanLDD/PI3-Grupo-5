@@ -15,25 +15,22 @@ mundo mede a mesma coisa sobre os mesmos exames.
 
 ## O que temos
 
-Baixamos os subsets 0 a 4, que dão **445 exames** dos 888. Os subsets 5 a 9 não foram
-baixados, e isso é declarado em todo resultado.
+Os **888 exames**, nos dez subsets. Confirmamos que a lista em disco fecha exatamente com o
+`seriesuids.csv` oficial, sem exame a mais nem a menos, e que os três CSV são byte a byte
+idênticos aos que o desafio publica.
 
 Os dez subsets não são divisão nossa: são as dobras oficiais de validação cruzada do desafio.
 Usar as dobras dele é o que mantém a comparação com o ranking público válida.
 
 ## Os arquivos do desafio
 
-Os dois CSV descrevem os **888 exames**, não só os nossos 445. Ou seja, os rótulos dos exames
-que ainda não baixamos já estão em disco.
-
 **`annotations.csv`** traz os nódulos que passaram no critério de inclusão. São 1.186 linhas
 em 601 exames, com `seriesuid`, as três coordenadas em milímetro e o diâmetro. O diâmetro vai
-de 3,25 a 32,27 mm, com mediana de 6,43. Destes, 615 caem nos nossos 445 exames.
+de 3,25 a 32,27 mm, com mediana de 6,43.
 
 **`candidates.csv`** traz os pontos suspeitos que servem de entrada para o baseline. São
 551.065 linhas em 888 exames, com as mesmas coordenadas mais a coluna `class`, que é 1 para
-nódulo verdadeiro e 0 para falso positivo. Só 1.351 são positivos, ou 0,2452%. Nos nossos
-subsets são 275.358 candidatos com 721 positivos.
+nódulo verdadeiro e 0 para falso positivo. Só 1.351 são positivos, ou 0,2452%.
 
 **`annotations_excluded.csv`** traz 35.192 achados que o desafio tira da conta. Candidato que
 casa com um deles não é acerto nem alarme falso. Ignorar isso infla o número de falso positivo
@@ -48,7 +45,7 @@ curva FROC. Não escrevemos FROC própria pelo mesmo motivo.
 ## Os volumes
 
 Cada exame é um par de arquivos MetaImage, o `.mhd` com o cabeçalho em texto e o `.raw` com os
-voxels. O inventário dos 445 está em `dados/intermediario/inventario_volumes.csv`, gerado por
+voxels. O inventário dos 888 está em `dados/intermediario/inventario_volumes.csv`, gerado por
 `scripts/02_inventario_volumes.py` lendo só o cabeçalho, sem abrir o `.raw`.
 
 | Campo | Unidade | O que é |
@@ -59,13 +56,13 @@ voxels. O inventário dos 445 está em `dados/intermediario/inventario_volumes.c
 | `dim_x`, `dim_y`, `dim_z` | voxels | as dimensões, em (x, y, z) |
 | `direcao` | adimensional | a matriz de orientação dos eixos, nove valores |
 | `matriz_identidade` | booleano | se a direção é identidade dentro de 1e-6 |
-| `orientacao` | texto | RAI em 434 exames e LPI em 11 |
+| `orientacao` | texto | RAI em 874 exames e LPI em 14 |
 | `extensao_z_mm` | mm | a altura física do volume |
 | `tamanho_raw_mb` | MB | tamanho do `.raw` em disco |
 
-**Os exames não são todos iguais.** O espaçamento entre fatias varia de 0,5 a 2,5 mm, um fator
-de 5, e o número de fatias vai de 95 a 538. É isso que obriga a reamostragem antes de comparar
-qualquer coisa entre exames.
+**Os exames não são todos iguais.** O espaçamento entre fatias assume dez valores distintos e
+vai de 0,45 a 2,5 mm, e o número de fatias vai de 95 a 764, com mediana de 238. É isso que
+obriga a reamostragem antes de comparar qualquer coisa entre exames.
 
 ## A armadilha das coordenadas
 
@@ -75,10 +72,10 @@ As coordenadas dos CSV estão em **milímetro no espaço do mundo**. O array da 
 **índice de voxel**. A ponte entre os dois usa a origem, o espaçamento **e a direção**, e os
 três mudam de exame para exame.
 
-Dos nossos 445 volumes, 434 têm direção identidade e orientação RAI, e **11 têm orientação
-LPI**, com a matriz `-1 0 0 0 -1 0 0 0 1`, que espelha x e y. Nesses 11, a fórmula simples,
-sem a direção, joga os 19 nódulos anotados para fora do volume. Medido com
-`scripts/03_verificar_coordenadas.py`.
+Dos 888 volumes, 874 têm direção identidade e orientação RAI, e **14 têm orientação LPI**,
+com a matriz `-1 0 0 0 -1 0 0 0 1`, que espelha x e y. Esses 14 carregam 24 nódulos anotados,
+e a fórmula simples, sem a direção, joga **os 24 para fora do volume**. Com a conversão
+correta, nenhum dos 1.186 cai fora. Medido com `scripts/03_verificar_coordenadas.py`.
 
 A conversão correta é:
 
@@ -103,7 +100,7 @@ o modelo treina ruído com uma curva de perda que parece saudável.
 Teste automatizado e figura. Um sem o outro não basta.
 
 O teste roda a ida e a volta em volumes de espaçamento diferente, incluindo os dois extremos
-de 0,5 e 2,5 mm e um dos volumes invertidos, e confere contra a conversão do próprio leitor de
+de 0,45 e 2,5 mm e um dos volumes invertidos, e confere contra a conversão do próprio leitor de
 imagem.
 
 A figura pega um nódulo anotado, converte a coordenada, e desenha um círculo do diâmetro

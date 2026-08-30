@@ -9,12 +9,12 @@ caminhos:
 
   # LUNA16, a base principal do Grupo 5 pela seção 7.2 do enunciado.
   # O zip do Kaggle extrai com a pasta repetida: subset0/subset0, seg-lungs-LUNA16/seg-lungs-LUNA16.
-  luna16: "/media/kauan/HD Samuel/Luna16/archive"
-  luna16_anotacoes: "/media/kauan/HD Samuel/Luna16/archive/annotations.csv"
-  luna16_candidatos: "/media/kauan/HD Samuel/Luna16/archive/candidates.csv"
-  luna16_candidatos_v2: "/media/kauan/HD Samuel/Luna16/archive/candidates_V2/candidates_V2.csv"
-  luna16_mascaras: "/media/kauan/HD Samuel/Luna16/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
-  luna16_avaliacao: "/media/kauan/HD Samuel/Luna16/archive/evaluationScript/evaluationScript"
+  luna16: "/media/kauan/HD Samuel/luna/archive"
+  luna16_anotacoes: "/media/kauan/HD Samuel/luna/archive/annotations.csv"
+  luna16_candidatos: "/media/kauan/HD Samuel/luna/archive/candidates.csv"
+  luna16_candidatos_v2: "/media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv"
+  luna16_mascaras: "/media/kauan/HD Samuel/luna/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
+  luna16_avaliacao: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript"
 
   # Dentro do repo, fora do git.
   intermediario: "dados/intermediario"
@@ -24,8 +24,8 @@ caminhos:
   figuras: "relatorios/figuras"
 
 selecao:
-  # Só os subsets baixados. Atualizar quando os outros chegarem.
-  subsets: [0, 1, 2, 3, 4]
+  # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
+  subsets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 pre_processamento:
   # Janela de HU. O ar do pulmão fica perto de -1000, o osso passa de 400.

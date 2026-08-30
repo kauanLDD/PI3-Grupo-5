@@ -20,12 +20,11 @@ inclusão e as dobras de validação definidos pelo próprio desafio.
 
 | | |
 |---|---|
-| Exames no desafio | 888 |
-| Exames em disco | 445, os subsets 0 a 4 |
-| Nódulos anotados | 1.186 em 601 exames, dos quais 615 estão nos exames que temos |
+| Exames | 888, os dez subsets completos |
+| Nódulos anotados | 1.186 em 601 exames |
 | Candidatos | 551.065 com 1.351 positivos, ou 0,2452% |
 | Formato | MetaImage (`.mhd` mais `.raw`), um par por exame |
-| Espaçamento entre fatias | de 0,5 a 2,5 mm |
+| Espaçamento entre fatias | de 0,45 a 2,5 mm, em dez valores distintos |
 | Máscaras de pulmão | prontas, em `seg-lungs-LUNA16` |
 | Avaliação | curva FROC, com o script oficial do desafio |
 
@@ -34,17 +33,16 @@ Os dados não estão neste repositório. Eles vêm do
 
 ## Limitações declaradas
 
-**Temos metade do desafio.** Os subsets 5 a 9 não foram baixados, então trabalhamos com 445
-dos 888 exames. Todo resultado nosso diz isso. Como a avaliação oficial conta os 1.186 nódulos
-dos 888 exames, a sensibilidade máxima alcançável com metade da base é 615 sobre 1.186.
+**Acurácia não serve como métrica aqui.** Os positivos são 0,2452% dos candidatos, então
+responder sempre "não é nódulo" acerta 99,75% sem servir para nada. Usamos a curva FROC.
 
-**Acurácia não serve como métrica aqui.** Os positivos são 0,2618% dos candidatos nos nossos
-subsets, então responder sempre "não é nódulo" acerta 99,74% sem servir para nada. Usamos a
-curva FROC.
+**A máscara de pulmão do desafio custa um nódulo.** Dos 1.186 anotados, um de 5 mm fica
+inalcançável depois de aplicá-la, ou 0,08% com intervalo de 95% entre 0,00% e 0,25%. O
+registro em `documentacao/decisoes/` traz a medição e o motivo de mesmo assim não dilatarmos.
 
 ## O que já funciona
 
-Leitura do cabeçalho dos volumes e inventário dos 445 exames. Conversão entre coordenada de
+Leitura do cabeçalho dos volumes e inventário dos 888 exames. Conversão entre coordenada de
 mundo em milímetro e índice de voxel, com teste e figura de verificação. Análise exploratória
 com cinco figuras. Pré-processamento de um volume: janela de HU, reamostragem para voxel
 isotrópico e aplicação da máscara de pulmão.
@@ -70,6 +68,8 @@ Abra `configuracao/config.yaml` e ajuste `caminhos.luna16` para onde o LUNA16 es
 máquina. Todos os outros caminhos derivam dele. Nenhum caminho fica escrito dentro do código.
 
 O zip do desafio extrai com a pasta repetida, `subset0/subset0/`, e o código conta com isso.
+Os dez subsets são as dobras oficiais de validação cruzada, e é por isso que não inventamos
+divisão nossa.
 
 **3. Rodar, nesta ordem**
 
@@ -96,7 +96,7 @@ O `02` precisa rodar primeiro: os outros três leem o inventário que ele grava.
 ```
 
 São 30 testes. Os que precisam abrir volume são pulados automaticamente se o disco com o
-LUNA16 não estiver acessível.
+LUNA16 não estiver acessível, e escolhem sozinhos os extremos de espaçamento do inventário.
 
 ## Estrutura
 

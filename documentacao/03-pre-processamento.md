@@ -45,13 +45,17 @@ mesmo com o código errado.
 Usamos a máscara que o desafio entrega, sem dilatar. A justificativa e a medição que a
 sustentam estão em `documentacao/decisoes/0002-mascara-de-pulmao-sem-dilatacao.md`.
 
-Em resumo: 29 dos 615 nódulos têm o centro fora da máscara, o que à primeira vista parece
-perda. Mas o critério de acerto do desafio não exige acertar o centro, e sim chegar a menos de
-um raio dele. Medido com esse critério, **os 615 continuam alcançáveis** e a máscara não custa
-nódulo nenhum.
+Em resumo: 51 dos 1.186 nódulos têm o centro fora da máscara, o que à primeira vista parece
+perda grande. Mas o critério de acerto do desafio não exige acertar o centro, e sim chegar a
+menos de um raio dele. Medido com esse critério, **1.185 dos 1.186 continuam alcançáveis**: a
+máscara custa exatamente um nódulo, de 5 mm, ou 0,08%.
+
+A forma como lemos a máscara importa. Usando os rótulos 3 e 4, como faz toda a linhagem de
+código pública do LUNA16, a perda sobe para quatro nódulos. Usamos `> 0`, que inclui o rótulo
+5, e isso recupera três deles.
 
 ## O que ainda não existe
 
-A reamostragem roda hoje em um exame por vez, para verificação. Processar os 445 e gravar em
+A reamostragem roda hoje em um exame por vez, para verificação. Processar os 888 e gravar em
 disco é passo seguinte, assim como o recorte dos cubos ao redor de cada candidato, o baseline
 e a avaliação FROC.
