@@ -125,4 +125,3 @@ ficam registradas em `documentacao/decisoes/`, uma por arquivo, com o número me
 Kauan Felipe Nascimento da Silva, Náthaly Alessandra Batistella, Arthur Nicolas Oliveira,
 Samuel Gonçalves Malta, Gabriel Schraider da Silveira, Lucas Gabriel Teixeira da Silva.
 
-Projeto Integrador de Extensão III, Ciência de Dados, 2026/2.
