@@ -7,10 +7,10 @@ import numpy as np
 import pytest
 import SimpleITK as sitk
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "codigo"))
-from pi3 import config
-from pi3.dados import volumes
-from pi3.preprocessamento import volume as pre
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import config
+from dataset import volumes
+from preprocessing import volume as pre
 
 HU = (-1000, 400)
 ALVO = [1.0, 1.0, 1.0]
@@ -211,7 +211,7 @@ def o_exame_da_discordancia():
 @pytest.mark.parametrize("linha,nodulos,caminho", o_exame_da_discordancia())
 def test_rotulo_zero_recupera_dois_nodulos_que_o_padrao_perde(linha, nodulos, caminho):
     """`> 0` alcança os dois nódulos deste exame e `== 3 ou == 4` não alcança nenhum."""
-    from pi3.preprocessamento import coordenadas
+    from preprocessing import coordenadas
 
     imagem = sitk.ReadImage(str(caminho))
     bruta = sitk.GetArrayFromImage(imagem)

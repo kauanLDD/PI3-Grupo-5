@@ -3,7 +3,7 @@
 Deixar um exame comparável com qualquer outro, antes de procurar nódulo em qualquer um deles.
 São três operações, e a ordem entre elas importa.
 
-O código está em `codigo/pi3/preprocessamento/volume.py` e roda por
+O código está em `src/preprocessing/volume.py` e roda por
 `scripts/04_preprocessar.py`.
 
 ## A ordem
@@ -43,7 +43,7 @@ mesmo com o código errado.
 ## A máscara de pulmão
 
 Usamos a máscara que o desafio entrega, sem dilatar. A justificativa e a medição que a
-sustentam estão em `documentacao/decisoes/0002-mascara-de-pulmao-sem-dilatacao.md`.
+sustentam estão em `docs/decisoes/0002-mascara-de-pulmao-sem-dilatacao.md`.
 
 Em resumo: 51 dos 1.186 nódulos têm o centro fora da máscara, o que à primeira vista parece
 perda grande. Mas o critério de acerto do desafio não exige acertar o centro, e sim chegar a

@@ -7,11 +7,11 @@ import numpy as np
 import pandas as pd
 import SimpleITK as sitk
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "codigo"))
-from pi3 import config
-from pi3.dados import volumes
-from pi3.preprocessamento import coordenadas
-from pi3.visualizacao import fatias
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import config
+from dataset import volumes
+from preprocessing import coordenadas
+from visualization import fatias
 
 AMOSTRA_HU = 12
 CANDIDATOS_POR_FIGURA = 10

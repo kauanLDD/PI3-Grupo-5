@@ -7,10 +7,10 @@ import numpy as np
 import pytest
 import SimpleITK as sitk
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "codigo"))
-from pi3 import config
-from pi3.dados import volumes
-from pi3.preprocessamento import coordenadas
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import config
+from dataset import volumes
+from preprocessing import coordenadas
 
 RAI = [1, 0, 0, 0, 1, 0, 0, 0, 1]
 LPI = [-1, 0, 0, 0, -1, 0, 0, 0, 1]

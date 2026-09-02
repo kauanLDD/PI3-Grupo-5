@@ -82,7 +82,7 @@ maiores nódulos que a leitura da literatura perde e falha se alguém trocar a b
 
 ## Consequências
 
-O `preprocessar()` de `codigo/pi3/preprocessamento/volume.py` não tem passo de dilatação.
+O `preprocessar()` de `src/preprocessing/volume.py` não tem passo de dilatação.
 
 A máscara impõe um teto de sensibilidade de 1.185 sobre 1.186, ou 99,92%. É um teto real e
 precisa ser declarado ao reportar qualquer resultado, ainda que fique muito acima da meta de

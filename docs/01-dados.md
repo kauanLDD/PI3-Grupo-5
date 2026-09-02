@@ -84,7 +84,7 @@ A conversão correta é:
 mundo  = D · (índice · espaçamento) + origem
 ```
 
-Está em `codigo/pi3/preprocessamento/coordenadas.py`, com teste em
+Está em `src/preprocessing/coordenadas.py`, com teste em
 `testes/test_coordenadas.py`.
 
 **Há ainda uma segunda troca que engana.** O cabeçalho declara origem, espaçamento e dimensão

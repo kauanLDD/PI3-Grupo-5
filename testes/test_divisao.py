@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "codigo"))
-from pi3 import config
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import config
 
 # Medido em 30/08/2026: este é o único paciente com mais de uma série.
 EXCECAO_CONHECIDA = "LIDC-IDRI-0332"

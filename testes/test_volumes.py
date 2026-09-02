@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "codigo"))
-from pi3.dados import volumes
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from dataset import volumes
 
 CABECALHO = """ObjectType = Image
 NDims = 3

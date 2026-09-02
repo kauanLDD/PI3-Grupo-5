@@ -44,7 +44,7 @@ candidatos:
 divisao:
   # Por paciente, nunca por imagem. Seção 3.1 do enunciado.
   # Atenção: 887 dos 888 exames são um paciente cada, e um deles tem duas séries,
-  # nos subsets 2 e 6. Ver documentacao/decisoes/0003-um-paciente-em-duas-dobras.md.
+  # nos subsets 2 e 6. Ver docs/decisoes/0003-um-paciente-em-duas-dobras.md.
   chave: seriesuid
   usar_subsets_como_dobras: true
 

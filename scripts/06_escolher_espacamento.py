@@ -10,11 +10,11 @@ import numpy as np
 import pandas as pd
 import SimpleITK as sitk
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "codigo"))
-from pi3 import config
-from pi3.dados import volumes
-from pi3.preprocessamento import volume as pre
-from pi3.visualizacao import eda
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import config
+from dataset import volumes
+from preprocessing import volume as pre
+from visualization import eda
 
 ALVOS = [0.5, 0.625, 0.7, 0.8, 1.0, 1.25, 1.5, 2.0]
 NODULOS = 40

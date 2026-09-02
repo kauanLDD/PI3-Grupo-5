@@ -38,7 +38,7 @@ responder sempre "não é nódulo" acerta 99,75% sem servir para nada. Usamos a 
 
 **A máscara de pulmão do desafio custa um nódulo.** Dos 1.186 anotados, um de 5 mm fica
 inalcançável depois de aplicá-la, ou 0,08% com intervalo de 95% entre 0,00% e 0,25%. O
-registro em `documentacao/decisoes/` traz a medição e o motivo de mesmo assim não dilatarmos.
+registro em `docs/decisoes/` traz a medição e o motivo de mesmo assim não dilatarmos.
 
 ## O que já funciona
 
@@ -101,27 +101,33 @@ LUNA16 não estiver acessível, e escolhem sozinhos os extremos de espaçamento 
 ## Estrutura
 
 ```
-codigo/pi3/          lógica reutilizável, importada pelos scripts e pelo notebook
+src/
+  preprocessing/     janela de HU, reamostragem, máscara de pulmão, coordenadas
+  detection/         geração de candidatos, ainda vazia
+  dataset/           leitura dos volumes do desafio
+  visualization/     as figuras
+  config.py          lê o config.yaml e fixa a semente
 configuracao/        config.yaml, único lugar com caminhos e parâmetros
 dados/               fora do git, é onde o pipeline escreve
-documentacao/        o que o grupo estabeleceu, incluindo os registros de decisão
+docs/                o que o grupo estabeleceu, incluindo os registros de decisão
 notebooks/           análise exploratória
 relatorios/figuras/  as figuras que vão para a apresentação e para o artigo
 scripts/             executáveis, numerados na ordem de execução
 testes/              pytest
 ```
 
-A semente fica em `configuracao/config.yaml` e é fixada por `pi3.config.fixar_semente()` no
+A semente fica em `configuracao/config.yaml` e é fixada por `config.fixar_semente()` no
 início de todo script.
 
 ## Metodologia
 
 Adotamos o KDD (Fayyad, Piatetsky-Shapiro e Smyth, 1996), com as cinco etapas de seleção,
 pré-processamento, transformação, mineração e interpretação. As decisões que fecham porta
-ficam registradas em `documentacao/decisoes/`, uma por arquivo, com o número medido ao lado.
+ficam registradas em `docs/decisoes/`, uma por arquivo, com o número medido ao lado.
 
 ## O grupo
 
 Kauan Felipe Nascimento da Silva, Náthaly Alessandra Batistella, Arthur Nicolas Oliveira,
 Samuel Gonçalves Malta, Gabriel Schraider da Silveira, Lucas Gabriel Teixeira da Silva.
 
+Projeto Integrador de Extensão III, Inteligência Artificial, Biopark, 2026/2.

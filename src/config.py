@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-RAIZ = Path(__file__).resolve().parents[2]
+RAIZ = Path(__file__).resolve().parents[1]
 CAMINHO = RAIZ / "configuracao" / "config.yaml"
 
 
