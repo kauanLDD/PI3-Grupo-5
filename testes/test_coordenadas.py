@@ -107,3 +107,32 @@ def test_concorda_com_simpleitk(linha, caminho):
         [float(v) for v in centro]
     )
     assert np.allclose(nosso, deles)
+
+
+# Rotação de 90 graus em torno de z. Não é simétrica, ao contrário das duas do LUNA16.
+GIRADA = [0, -1, 0, 1, 0, 0, 0, 0, 1]
+
+
+def test_a_direcao_entra_transposta():
+    """As duas matrizes do LUNA16 são simétricas, então nelas D e D transposta dão o mesmo.
+
+    Este teste usa uma matriz que não é simétrica para prender a convenção, senão trocar
+    `matriz.T` por `matriz` passaria despercebido em todo o dataset.
+    """
+    origem, espacamento = [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]
+    mundo = [10.0, 0.0, 0.0]
+
+    indice = coordenadas.mundo_para_indice(mundo, origem, espacamento, GIRADA)
+    assert np.allclose(indice, [0, -10, 0]), f"a convenção mudou: deu {indice}"
+
+    sem_transposta = np.asarray(GIRADA, float).reshape(3, 3) @ np.asarray(mundo, float)
+    assert not np.allclose(indice, sem_transposta)
+
+
+def test_ida_e_volta_em_matriz_nao_simetrica():
+    origem, espacamento = [-30.0, 12.0, -5.0], [0.7, 0.7, 2.5]
+    mundo = [4.0, -8.0, 17.0]
+
+    indice = coordenadas.mundo_para_indice(mundo, origem, espacamento, GIRADA)
+    volta = coordenadas.indice_para_mundo(indice, origem, espacamento, GIRADA)
+    assert np.allclose(volta, mundo)

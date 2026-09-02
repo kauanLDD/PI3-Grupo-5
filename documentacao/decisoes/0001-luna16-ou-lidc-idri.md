@@ -83,3 +83,13 @@ radiologista e a figura de concordância que a análise exploratória teria.
 O que continua valendo é o resto: usamos o LUNA16 como base, pelo motivo escrito acima, e o
 `annotations.csv` dele é a nossa verdade de campo, com o nódulo já consolidado e sem dizer
 quem marcou o quê.
+
+## Atualização de 30/08/2026
+
+Os dez subsets estão em disco. São os 888 exames do desafio, e conferimos que a lista em disco
+fecha exatamente com o `seriesuids.csv` oficial, sem exame a mais nem a menos, e que os três
+CSV têm md5 idêntico ao que o desafio publica.
+
+Com isso, a frase acima de que os subsets 5 a 9 não foram baixados **não vale mais**, e o
+caminho vigente é `luna/archive` e não `Luna16/archive`. O que continua valendo é o resto: a
+base é o LUNA16, pelo motivo escrito no começo.

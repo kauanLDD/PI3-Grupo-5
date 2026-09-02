@@ -123,3 +123,27 @@ def desbalanceamento_dos_candidatos(candidatos, saida: Path):
     )
     eixo.spines[["top", "right"]].set_visible(False)
     return _salvar(figura, saida)
+
+
+def escolha_do_espacamento(tabela, saida: Path):
+    """Contraste do nódulo e nódulos perdidos pelo recorte, contra o espaçamento alvo."""
+    figura, contraste = plt.subplots(figsize=(7.5, 4.4))
+    perdidos = contraste.twinx()
+
+    contraste.errorbar(tabela.alvo, tabela.contraste,
+                       yerr=[tabela.contraste - tabela.lo, tabela.hi - tabela.contraste],
+                       marker="o", color=COR, capsize=3, linewidth=1.5, label="contraste do nódulo")
+    perdidos.plot(tabela.alvo, tabela.fora, marker="s", color=DESTAQUE,
+                  linewidth=1.5, label="nódulos que não cabem")
+
+    contraste.set_xlabel("espaçamento alvo, mm")
+    contraste.set_ylabel("contraste do nódulo, HU", color=COR)
+    perdidos.set_ylabel("nódulos fora do recorte de 32", color=DESTAQUE)
+    contraste.tick_params(axis="y", labelcolor=COR)
+    perdidos.tick_params(axis="y", labelcolor=DESTAQUE)
+    contraste.axvline(1.0, color="black", linewidth=0.8, linestyle=":")
+    contraste.set_title("O contraste se mantém até 1 mm, e abaixo dele o recorte começa a cortar nódulo",
+                        fontsize=10)
+    contraste.spines["top"].set_visible(False)
+    perdidos.spines["top"].set_visible(False)
+    return _salvar(figura, saida)

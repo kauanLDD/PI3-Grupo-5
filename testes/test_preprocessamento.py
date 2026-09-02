@@ -18,10 +18,12 @@ ESPACAMENTO = (0.7, 0.7, 2.5)
 ORIGEM = (-100.0, -50.0, -200.0)
 
 
-def sintetico(valor_fundo=-1000, valor_cubo=100):
-    """Volume com um cubo denso no meio, em espaçamento anisotrópico."""
+def sintetico(valor_fundo=-1000, valor_cubo=100, parede=200):
+    """Volume com um cubo denso no meio e uma parede de tecido fora da máscara."""
     arr = np.full((20, 64, 64), valor_fundo, dtype=np.int16)
     arr[8:12, 28:36, 28:36] = valor_cubo
+    # Fora da máscara de pulmão: se aplicar_mascara não rodar, isto sobrevive e o teste pega.
+    arr[:, 0:8, :] = parede
     imagem = sitk.GetImageFromArray(arr)
     imagem.SetSpacing(ESPACAMENTO)
     imagem.SetOrigin(ORIGEM)
@@ -97,10 +99,34 @@ def test_mascara_continua_binaria_depois_de_reamostrar():
 
 
 def test_fora_do_pulmao_vira_ar_e_nao_agua():
+    """Pega três erros: não mascarar, mascarar antes de reamostrar, e preencher com zero."""
     processado, mascara = pre.preprocessar(sintetico(), mascara_sintetica(), HU, ALVO)
     arr = sitk.GetArrayFromImage(processado)
     fora = sitk.GetArrayFromImage(mascara) == 0
-    assert (arr[fora] == HU[0]).all()
+
+    assert fora.any(), "a máscara sintética não deixou nada de fora"
+    assert (arr[fora] == HU[0]).all(), (
+        "sobrou tecido fora do pulmão: ou a máscara não foi aplicada, ou foi aplicada "
+        "antes da reamostragem e a borda vazou na interpolação"
+    )
+
+
+def test_a_mascara_nao_encolhe_na_reamostragem():
+    """Vizinho mais próximo preserva o volume do pulmão; interpolação linear encolhe.
+
+    Medido em 30/08/2026 nesta fixture: vizinho mais próximo desvia 2,4%, que é discretização
+    da grade, e linear desvia 7,8%. Num exame real a separação é maior, 0,03% contra 3,6%.
+    """
+    original = pre.binarizar(mascara_sintetica())
+    iso = pre.reamostrar(original, ALVO, sitk.sitkNearestNeighbor)
+
+    def volume_mm3(imagem):
+        return float(sitk.GetArrayFromImage(imagem).sum()) * float(np.prod(imagem.GetSpacing()))
+
+    antes, depois = volume_mm3(original), volume_mm3(iso)
+    assert abs(depois - antes) / antes < 0.05, (
+        f"o pulmão mudou de {antes:.0f} para {depois:.0f} mm3 na reamostragem"
+    )
 
 
 def test_preprocessar_devolve_volume_e_mascara_na_mesma_grade():
@@ -113,13 +139,14 @@ def test_preprocessar_devolve_volume_e_mascara_na_mesma_grade():
 def um_exame_de_verdade():
     cfg = config.carregar()
     inventario = cfg["caminhos"]["intermediario"] / "inventario_volumes.csv"
-    if not inventario.exists():
+    anotacoes = cfg["caminhos"]["luna16_anotacoes"]
+    if not inventario.exists() or not anotacoes.exists():
         return []
 
     import pandas as pd
 
     d = pd.read_csv(inventario)
-    anotados = pd.read_csv(cfg["caminhos"]["luna16_anotacoes"]).merge(d, on="seriesuid")
+    anotados = pd.read_csv(anotacoes).merge(d, on="seriesuid")
     linha = anotados[anotados.matriz_identidade].nlargest(1, "diameter_mm").iloc[0]
     caminho = volumes.caminho_do_volume(cfg["caminhos"]["luna16"], linha.seriesuid, cfg["selecao"]["subsets"])
     mascara = cfg["caminhos"]["luna16_mascaras"] / f"{linha.seriesuid}.mhd"
@@ -208,3 +235,63 @@ def test_a_mascara_do_desafio_tem_o_rotulo_5(linha, nodulos, caminho):
     # Rótulos medidos nas nossas máscaras: 0, 3, 4 e 5.
     presentes = set(np.unique(sitk.GetArrayFromImage(sitk.ReadImage(str(caminho)))).tolist())
     assert 5 in presentes, f"o rótulo 5 sumiu, os rótulos agora são {sorted(presentes)}"
+
+
+def um_volume_com_mascara():
+    cfg = config.carregar()
+    inventario = cfg["caminhos"]["intermediario"] / "inventario_volumes.csv"
+    if not inventario.exists():
+        return []
+
+    import pandas as pd
+
+    d = pd.read_csv(inventario)
+    for linha in d.itertuples():
+        caminho = volumes.caminho_do_volume(
+            cfg["caminhos"]["luna16"], linha.seriesuid, cfg["selecao"]["subsets"]
+        )
+        mascara = cfg["caminhos"]["luna16_mascaras"] / f"{linha.seriesuid}.mhd"
+        if caminho and mascara.exists():
+            return [pytest.param(caminho, mascara, id=linha.seriesuid[-8:])]
+    return []
+
+
+@pytest.mark.parametrize("caminho,caminho_mascara", um_volume_com_mascara())
+def test_a_janela_vem_antes_da_reamostragem(caminho, caminho_mascara):
+    """Cortar depois de interpolar empilha voxels no piso da janela.
+
+    Medido em 30/08/2026: na ordem certa 509 voxels do pulmão ficam exatamente em -1000, e
+    invertendo a ordem sobem para 12.768, vinte e cinco vezes mais.
+    """
+    volume = sitk.ReadImage(str(caminho))
+    processado, mascara = pre.preprocessar(volume, sitk.ReadImage(str(caminho_mascara)), HU, ALVO)
+
+    arr = sitk.GetArrayFromImage(processado)
+    pulmao = sitk.GetArrayFromImage(mascara) > 0
+    no_piso = (arr[pulmao] == HU[0]).mean()
+
+    assert no_piso < 0.001, (
+        f"{no_piso:.2%} do pulmão está exatamente no piso da janela. "
+        "A janela provavelmente está sendo aplicada depois da reamostragem."
+    )
+
+
+@pytest.mark.parametrize("caminho,caminho_mascara", um_volume_com_mascara())
+def test_a_mascara_atravessa_o_preprocessamento_sem_encolher(caminho, caminho_mascara):
+    """Interpolar a máscara com linear em vez de vizinho mais próximo come a borda do pulmão.
+
+    Medido em 30/08/2026 neste exame: com vizinho mais próximo o pulmão fica em 6.769 cm3,
+    igual ao original, e com linear cai para 6.521 cm3.
+    """
+    bruta = sitk.ReadImage(str(caminho_mascara))
+    _, iso = pre.preprocessar(sitk.ReadImage(str(caminho)), bruta, HU, ALVO)
+
+    def volume_cm3(imagem, binaria):
+        arr = sitk.GetArrayFromImage(imagem)
+        contagem = arr.sum() if binaria else (arr > 0).sum()
+        return float(contagem) * float(np.prod(imagem.GetSpacing())) / 1000
+
+    antes, depois = volume_cm3(bruta, False), volume_cm3(iso, True)
+    assert abs(depois - antes) / antes < 0.01, (
+        f"o pulmão mudou de {antes:.0f} para {depois:.0f} cm3 no pré-processamento"
+    )
