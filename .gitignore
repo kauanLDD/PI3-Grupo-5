@@ -14,17 +14,17 @@ PROMPT*.md
 *.spec.md
 separar-material-local.sh
 limpar-estrutura-em-ingles.sh
+copiar-material-do-professor.sh
 
 # Dados. Nada de imagem médica ou anotação bruta no git.
 dados/bruto/*
 dados/intermediario/*
 dados/processado/*
-dados/externo/*
-!dados/**/.gitkeep
+!dados/**/README.md
 
 # Artefatos de modelo pesados.
 modelos/*
-!modelos/.gitkeep
+!modelos/README.md
 *.pth
 *.pt
 *.joblib
