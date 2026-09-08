@@ -34,7 +34,8 @@ pre_processamento:
   hu_min: -1000
   hu_max: 400
   # Reamostragem para voxel isotrópico, em mm.
-  # O espaçamento em z varia de 0,5 a 2,5 mm entre os 445 volumes, um fator de 5.
+  # O espaçamento em z varia de 0,45 a 2,5 mm entre os 888 volumes, um fator de 5.
+  # Medido em docs/decisoes/0004: abaixo de 1 mm o contraste não melhora e o custo octuplica.
   espacamento_alvo: [1.0, 1.0, 1.0]
   # As máscaras de pulmão vêm prontas em luna16_mascaras. Não segmentar de novo.
   usar_mascara_do_desafio: true
