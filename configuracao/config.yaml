@@ -11,8 +11,10 @@ caminhos:
   # O zip do Kaggle extrai com a pasta repetida: subset0/subset0, seg-lungs-LUNA16/seg-lungs-LUNA16.
   luna16: "/media/kauan/HD Samuel/luna/archive"
   luna16_anotacoes: "/media/kauan/HD Samuel/luna/archive/annotations.csv"
-  luna16_candidatos: "/media/kauan/HD Samuel/luna/archive/candidates.csv"
-  luna16_candidatos_v2: "/media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv"
+  # Usamos o V2: alcança 1.166 dos 1.186 nódulos contra 1.120 do primeiro.
+  # Ver docs/criterios_inclusao_luna16.md.
+  luna16_candidatos: "/media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv"
+  luna16_candidatos_original: "/media/kauan/HD Samuel/luna/archive/candidates.csv"
   luna16_mascaras: "/media/kauan/HD Samuel/luna/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
   luna16_avaliacao: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript"
 

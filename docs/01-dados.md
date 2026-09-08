@@ -28,9 +28,12 @@ Usar as dobras dele é o que mantém a comparação com o ranking público váli
 em 601 exames, com `seriesuid`, as três coordenadas em milímetro e o diâmetro. O diâmetro vai
 de 3,25 a 32,27 mm, com mediana de 6,43.
 
-**`candidates.csv`** traz os pontos suspeitos que servem de entrada para o baseline. São
-551.065 linhas em 888 exames, com as mesmas coordenadas mais a coluna `class`, que é 1 para
-nódulo verdadeiro e 0 para falso positivo. Só 1.351 são positivos, ou 0,2452%.
+**`candidates_V2.csv`** traz os pontos suspeitos que servem de entrada para o baseline. São
+754.975 linhas em 888 exames, com as mesmas coordenadas mais a coluna `class`, que é 1 para
+nódulo verdadeiro e 0 para falso positivo. Só 1.557 são positivos, ou 0,2062%.
+
+O desafio também entrega um `candidates.csv` menor, com 551.065 linhas. Adotamos o V2 porque ele
+alcança 1.166 dos 1.186 nódulos contra 1.120 do primeiro. Ver `criterios_inclusao_luna16.md`.
 
 **`annotations_excluded.csv`** traz 35.192 achados que o desafio tira da conta. Candidato que
 casa com um deles não é acerto nem alarme falso. Ignorar isso infla o número de falso positivo

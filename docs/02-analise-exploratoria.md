@@ -67,10 +67,10 @@ hora de normalizar.
 
 `eda_desbalanceamento.png`
 
-A pergunta é o que a proporção de positivos faz com a escolha de métrica. São 551.065
-candidatos, dos quais **1.351 são nódulo, ou 0,2452%**.
+A pergunta é o que a proporção de positivos faz com a escolha de métrica. São 754.975
+candidatos, dos quais **1.557 são nódulo, ou 0,2062%**.
 
-Um classificador que responde sempre "não é nódulo" acerta **99,75%** e não serve para nada.
+Um classificador que responde sempre "não é nódulo" acerta **99,79%** e não serve para nada.
 
 **Por isso a métrica é a curva FROC e não acurácia**, e por isso o treino vai precisar
 reamostrar as classes em vez de usar a proporção natural do arquivo.

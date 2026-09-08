@@ -22,7 +22,7 @@ inclusão e as dobras de validação definidos pelo próprio desafio.
 |---|---|
 | Exames | 888, os dez subsets completos |
 | Nódulos anotados | 1.186 em 601 exames |
-| Candidatos | 551.065 com 1.351 positivos, ou 0,2452% |
+| Candidatos | 754.975 com 1.557 positivos, ou 0,2062%, do `candidates_V2` |
 | Formato | MetaImage (`.mhd` mais `.raw`), um par por exame |
 | Espaçamento entre fatias | de 0,45 a 2,5 mm, em dez valores distintos |
 | Máscaras de pulmão | prontas, em `seg-lungs-LUNA16` |
@@ -31,10 +31,13 @@ inclusão e as dobras de validação definidos pelo próprio desafio.
 Os dados não estão neste repositório. Eles vêm do
 [Zenodo](https://zenodo.org/records/3723295), em dois registros, e ficam fora do git.
 
+O critério de inclusão é o do desafio e adotamos ele inteiro. O que ele deixa entrar, o que ele
+corta e os quatro casos de fronteira que conferimos estão em `docs/criterios_inclusao_luna16.md`.
+
 ## Limitações declaradas
 
-**Acurácia não serve como métrica aqui.** Os positivos são 0,2452% dos candidatos, então
-responder sempre "não é nódulo" acerta 99,75% sem servir para nada. Usamos a curva FROC.
+**Acurácia não serve como métrica aqui.** Os positivos são 0,2062% dos candidatos, então
+responder sempre "não é nódulo" acerta 99,79% sem servir para nada. Usamos a curva FROC.
 
 **A máscara de pulmão do desafio custa um nódulo.** Dos 1.186 anotados, um de 5 mm fica
 inalcançável depois de aplicá-la, ou 0,08% com intervalo de 95% entre 0,00% e 0,25%. O

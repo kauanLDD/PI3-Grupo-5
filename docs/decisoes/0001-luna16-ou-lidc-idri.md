@@ -1,6 +1,6 @@
 # 0001: qual base o Grupo 5 usa, LUNA16 ou LIDC-IDRI
 
-**Estado:** decidido, com atualização em 26/08/2026
+**Estado:** decidido, com atualizações em 26/08, 30/08 e 07/09/2026
 **Data:** 25/08/2026
 
 ## Contexto
@@ -93,3 +93,15 @@ CSV têm md5 idêntico ao que o desafio publica.
 Com isso, a frase acima de que os subsets 5 a 9 não foram baixados **não vale mais**, e o
 caminho vigente é `luna/archive` e não `Luna16/archive`. O que continua valendo é o resto: a
 base é o LUNA16, pelo motivo escrito no começo.
+
+## Atualização de 07/09/2026
+
+Passamos a usar o `candidates_V2.csv` no lugar do `candidates.csv`. A medição acima, de 551.065
+candidatos com 1.351 positivos, continua correta para o arquivo que ela mediu, mas não é mais a
+lista que alimenta o nosso baseline: o V2 tem 754.975 candidatos com 1.557 positivos e alcança
+1.166 dos 1.186 nódulos, contra 1.120 do primeiro. O critério inteiro está em
+`criterios_inclusao_luna16.md`.
+
+Na mesma conferência respondemos o que ficou aberto em "Ainda não verificado": os 287 exames que
+aparecem na lista de candidatos e não aparecem no `annotations.csv` são exames sem nódulo elegível
+pelo critério do desafio, e isso agora é contagem feita nos arquivos, não dedução.
