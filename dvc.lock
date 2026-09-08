@@ -58,8 +58,8 @@ stages:
       size: 1140
     - path: src/visualization/fatias.py
       hash: md5
-      md5: dbd484520b639bc4678e392919941474
-      size: 2420
+      md5: 0cd3be4bf61170a44111091e1ef3f20e
+      size: 2609
     params:
       configuracao/config.yaml:
         pre_processamento.hu_max: 400
@@ -82,8 +82,8 @@ stages:
       size: 170759
     - path: scripts/04_preprocessar.py
       hash: md5
-      md5: 0aed06b8a1c2c542bb56dd2e9ee2feae
-      size: 2975
+      md5: 4640c005bfeec1704daebebc61e6ee89
+      size: 3090
     - path: src/config.py
       hash: md5
       md5: 04e253456f6f5536dc493aa6d79b7717
@@ -94,12 +94,12 @@ stages:
       size: 3279
     - path: src/preprocessing/volume.py
       hash: md5
-      md5: 081195192be3308e4d613e75ea855042
-      size: 1526
+      md5: e47fb75dee9b5be9200b3d40d3388a21
+      size: 1898
     - path: src/visualization/fatias.py
       hash: md5
-      md5: dbd484520b639bc4678e392919941474
-      size: 2420
+      md5: 0cd3be4bf61170a44111091e1ef3f20e
+      size: 2609
     params:
       configuracao/config.yaml:
         pre_processamento.espacamento_alvo:
@@ -113,12 +113,12 @@ stages:
     - path: 
         dados/processado/1.3.6.1.4.1.14519.5.2.1.6279.6001.287966244644280690737019247886.mha
       hash: md5
-      md5: 8f36aef46b867ee3ca443badf52b6d4f
-      size: 7096997
+      md5: 476dd0768810c9c43c75105c9f7c5a39
+      size: 9683212
     - path: relatorios/figuras/preprocessamento.png
       hash: md5
-      md5: 1dd760477c5053966cf53cf3853c0779
-      size: 240396
+      md5: 3fed3d49c117425540a6b2f6962166f2
+      size: 243214
   eda:
     cmd: python scripts/05_eda.py
     deps:
@@ -208,8 +208,8 @@ stages:
       size: 3279
     - path: src/preprocessing/volume.py
       hash: md5
-      md5: 081195192be3308e4d613e75ea855042
-      size: 1526
+      md5: e47fb75dee9b5be9200b3d40d3388a21
+      size: 1898
     - path: src/visualization/eda.py
       hash: md5
       md5: 647c00d5f82ab021e4cad15229bda3f7

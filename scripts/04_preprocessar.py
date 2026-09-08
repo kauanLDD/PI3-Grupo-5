@@ -58,7 +58,8 @@ pulmao = sitk.GetArrayFromImage(mascara_iso) > 0
 print(f"\npulmão: {pulmao.mean():.1%} dos voxels do volume reamostrado")
 
 arr = sitk.GetArrayFromImage(processado)
-print(f"intensidade depois: de {arr.min()} a {arr.max()} HU, dentro da janela {hu[0]} a {hu[1]}")
+print(f"intensidade depois: de {arr.min():.3f} a {arr.max():.3f}, "
+      f"que é a janela de {hu[0]} a {hu[1]} HU normalizada em [0, 1]")
 
 for nome, imagem in [("antes", original), ("depois", processado)]:
     print(f"o nódulo cai no voxel {imagem.TransformPhysicalPointToIndex(mundo)} {nome}")
@@ -73,7 +74,8 @@ print(f"\n{saida}  {saida.stat().st_size / 1e6:.1f} MB")
 
 figura = cfg["caminhos"]["figuras"] / "preprocessamento.png"
 fatias.antes_e_depois(
-    original, processado, mundo, escolhido.diameter_mm / 2, hu,
-    f"nódulo de {escolhido.diameter_mm:.1f} mm, {escolhido.orientacao}", figura,
+    original, processado, mundo, escolhido.diameter_mm / 2, (hu, (0, 1)),
+    f"nódulo de {escolhido.diameter_mm:.1f} mm, {escolhido.orientacao}    "
+    f"janela HU {hu[0]} a {hu[1]}, normalizada à direita", figura,
 )
 print(figura)

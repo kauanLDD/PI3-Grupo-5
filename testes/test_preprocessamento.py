@@ -1,4 +1,4 @@
-"""Janela de HU, reamostragem isotrópica e máscara de pulmão."""
+"""Janela de HU, reamostragem isotrópica, máscara de pulmão e normalização."""
 
 import sys
 from pathlib import Path
@@ -16,6 +16,11 @@ HU = (-1000, 400)
 ALVO = [1.0, 1.0, 1.0]
 ESPACAMENTO = (0.7, 0.7, 2.5)
 ORIGEM = (-100.0, -50.0, -200.0)
+
+
+def na_escala(hu: float) -> float:
+    """O mesmo limiar em HU, na escala [0, 1] que o pré-processamento devolve."""
+    return (hu - HU[0]) / (HU[1] - HU[0])
 
 
 def sintetico(valor_fundo=-1000, valor_cubo=100, parede=200):
@@ -43,6 +48,32 @@ def mascara_sintetica():
 def test_janela_corta_nos_dois_lados():
     arr = sitk.GetArrayFromImage(pre.janela(sintetico(valor_fundo=-2000, valor_cubo=3000), *HU))
     assert arr.min() == HU[0] and arr.max() == HU[1]
+
+
+def test_normalizar_leva_a_janela_para_zero_e_um():
+    janelado = pre.janela(sintetico(valor_fundo=-2000, valor_cubo=3000), *HU)
+    arr = sitk.GetArrayFromImage(pre.normalizar(janelado, *HU))
+    assert arr.min() == 0.0 and arr.max() == 1.0
+
+
+def test_normalizar_e_linear_no_meio_da_janela():
+    """Pega inversão de sinal e escala errada, que os extremos sozinhos não pegam."""
+    meio = (HU[0] + HU[1]) / 2
+    imagem = sitk.Cast(sitk.Image(4, 4, 4, sitk.sitkInt16) + int(meio), sitk.sitkInt16)
+    arr = sitk.GetArrayFromImage(pre.normalizar(imagem, *HU))
+    assert np.allclose(arr, 0.5)
+
+
+def test_normalizar_devolve_float_de_32_bits():
+    """Dividir por escalar promove a 64 bits e dobra o tamanho de cada volume em disco."""
+    normalizado = pre.normalizar(pre.janela(sintetico(), *HU), *HU)
+    assert normalizado.GetPixelID() == sitk.sitkFloat32
+
+
+def test_o_preprocessamento_devolve_tudo_dentro_de_zero_e_um():
+    processado, _ = pre.preprocessar(sintetico(), mascara_sintetica(), HU, ALVO)
+    arr = sitk.GetArrayFromImage(processado)
+    assert arr.min() >= 0.0 and arr.max() <= 1.0
 
 
 def test_reamostragem_preserva_origem_e_direcao():
@@ -105,7 +136,7 @@ def test_fora_do_pulmao_vira_ar_e_nao_agua():
     fora = sitk.GetArrayFromImage(mascara) == 0
 
     assert fora.any(), "a máscara sintética não deixou nada de fora"
-    assert (arr[fora] == HU[0]).all(), (
+    assert (arr[fora] == na_escala(HU[0])).all(), (
         "sobrou tecido fora do pulmão: ou a máscara não foi aplicada, ou foi aplicada "
         "antes da reamostragem e a borda vazou na interpolação"
     )
@@ -170,7 +201,7 @@ def test_o_nodulo_sobrevive_ao_preprocessamento(linha, caminho, caminho_mascara)
     ip = processado.TransformPhysicalPointToIndex(mundo)
 
     assert antes[ia[2], ia[1], ia[0]] > -500
-    assert depois[ip[2], ip[1], ip[0]] > -500
+    assert depois[ip[2], ip[1], ip[0]] > na_escala(-500)
 
 
 # Exame em que as duas formas de binarizar discordam. Ver decisão 0002.
@@ -268,7 +299,7 @@ def test_a_janela_vem_antes_da_reamostragem(caminho, caminho_mascara):
 
     arr = sitk.GetArrayFromImage(processado)
     pulmao = sitk.GetArrayFromImage(mascara) > 0
-    no_piso = (arr[pulmao] == HU[0]).mean()
+    no_piso = (arr[pulmao] == na_escala(HU[0])).mean()
 
     assert no_piso < 0.001, (
         f"{no_piso:.2%} do pulmão está exatamente no piso da janela. "

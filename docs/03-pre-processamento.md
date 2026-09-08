@@ -1,7 +1,7 @@
 # Pré-processamento
 
 Deixar um exame comparável com qualquer outro, antes de procurar nódulo em qualquer um deles.
-São três operações, e a ordem entre elas importa.
+São quatro operações, e a ordem entre elas importa.
 
 O código está em `src/preprocessing/volume.py` e roda por
 `scripts/04_preprocessar.py`.
@@ -15,15 +15,23 @@ vizinhos forem misturados na reamostragem.
 **Depois a reamostragem** para voxel de 1 mm isotrópico. O volume usa interpolação linear e a
 máscara usa vizinho mais próximo, para continuar binária.
 
-**Por último a máscara**, aplicada ao volume já reamostrado, para não interpolar a borda dura
+**Depois a máscara**, aplicada ao volume já reamostrado, para não interpolar a borda dura
 entre pulmão e o lado de fora. O que fica fora do pulmão recebe −1000, que é ar, e não zero,
 que na escala Hounsfield é água.
+
+**Por último a normalização**, que leva a janela de HU para o intervalo de 0 a 1. Vai depois da
+máscara justamente porque o preenchimento de fora do pulmão é −1000, o piso da janela, e
+normalizar em seguida faz esse fundo virar exatamente 0. Guardamos o volume já normalizado, e o
+motivo está em `docs/decisoes/0006-normalizacao-entra-no-volume-salvo.md`.
 
 ## O que muda em um exame
 
 Um exame típico, de 512 por 512 por 123 voxels de 0,82 por 0,82 por 2,5 mm, sai como 420 por
 420 por 308 voxels de 1 por 1 por 1 mm. A extensão física é preservada dentro de meio voxel, e
 o pulmão fica sendo 8,3% do volume.
+
+Os valores saem entre 0 e 1, e não mais em HU. O arquivo ocupa 9,7 MB em float de 32 bits
+comprimido, contra 7,1 MB se guardássemos o HU em inteiro de 16 bits.
 
 A figura `relatorios/figuras/preprocessamento.png` mostra a mesma posição física antes e
 depois, com um nódulo de 32,3 mm circulado nos dois lados. À esquerda o tórax inteiro, à
@@ -56,6 +64,6 @@ código pública do LUNA16, a perda sobe para quatro nódulos. Usamos `> 0`, que
 
 ## O que ainda não existe
 
-A reamostragem roda hoje em um exame por vez, para verificação. Processar os 888 e gravar em
-disco é passo seguinte, assim como o recorte dos cubos ao redor de cada candidato, o baseline
-e a avaliação FROC.
+O pipeline roda hoje em um exame por vez, para verificação. Processar os 888 e gravar em disco
+é passo seguinte, assim como o recorte dos cubos ao redor de cada candidato, o baseline e a
+avaliação FROC.
