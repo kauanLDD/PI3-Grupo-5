@@ -28,5 +28,8 @@ pyyaml
 tqdm
 jupyterlab
 
+# Pipeline. O dvc.yaml declara os estágios e o dvc.lock registra o que produziu cada saída.
+dvc
+
 # Testes
 pytest

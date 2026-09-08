@@ -1,0 +1,112 @@
+# O grafo do pipeline. Cada estágio declara o que lê, qual parâmetro usa e o que escreve,
+# e o dvc.lock guarda o hash disso tudo a cada execução.
+#
+# A base bruta do LUNA16 não entra como dependência: são 112 GB num HD que é de leitura,
+# e o caminho até ela muda de máquina para máquina. Ver docs/decisoes/0005.
+#
+# As figuras são `cache: false` porque continuam versionadas no git: a mesma imagem vai para
+# o Sprint Review e depois para o paper. O DVC guarda o hash delas, o git guarda o arquivo.
+
+stages:
+  inventario:
+    cmd: python scripts/02_inventario_volumes.py
+    deps:
+      - scripts/02_inventario_volumes.py
+      - src/config.py
+      - src/dataset/volumes.py
+    params:
+      - configuracao/config.yaml:
+          - selecao.subsets
+    outs:
+      - dados/intermediario/inventario_volumes.csv
+
+  coordenadas:
+    cmd: python scripts/03_verificar_coordenadas.py
+    deps:
+      - scripts/03_verificar_coordenadas.py
+      - src/config.py
+      - src/dataset/volumes.py
+      - src/preprocessing/coordenadas.py
+      - src/visualization/fatias.py
+      - dados/intermediario/inventario_volumes.csv
+    params:
+      - configuracao/config.yaml:
+          - pre_processamento.hu_min
+          - pre_processamento.hu_max
+    outs:
+      - relatorios/figuras/coordenada_rai.png:
+          cache: false
+      - relatorios/figuras/coordenada_lpi.png:
+          cache: false
+
+  preprocessar:
+    cmd: python scripts/04_preprocessar.py
+    deps:
+      - scripts/04_preprocessar.py
+      - src/config.py
+      - src/dataset/volumes.py
+      - src/preprocessing/volume.py
+      - src/visualization/fatias.py
+      - dados/intermediario/inventario_volumes.csv
+    params:
+      - configuracao/config.yaml:
+          - pre_processamento.hu_min
+          - pre_processamento.hu_max
+          - pre_processamento.espacamento_alvo
+          - pre_processamento.usar_mascara_do_desafio
+    outs:
+      # O exame é o de maior nódulo entre os de direção identidade, escolhido pelo próprio
+      # script a partir do inventário. Declarado pelo caminho porque `dados/processado` guarda
+      # o README que explica a pasta, e o DVC não assume diretório que o git já rastreia.
+      - dados/processado/1.3.6.1.4.1.14519.5.2.1.6279.6001.287966244644280690737019247886.mha
+      - relatorios/figuras/preprocessamento.png:
+          cache: false
+
+  eda:
+    cmd: python scripts/05_eda.py
+    deps:
+      - scripts/05_eda.py
+      - src/config.py
+      - src/dataset/volumes.py
+      - src/visualization/eda.py
+      - dados/intermediario/inventario_volumes.csv
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - selecao.subsets
+          - pre_processamento.hu_min
+          - pre_processamento.hu_max
+          - pre_processamento.espacamento_alvo
+          - candidatos.patch
+    outs:
+      - relatorios/figuras/eda_espacamento_z.png:
+          cache: false
+      - relatorios/figuras/eda_diametro.png:
+          cache: false
+      - relatorios/figuras/eda_nodulos_por_scan.png:
+          cache: false
+      - relatorios/figuras/eda_hu.png:
+          cache: false
+      - relatorios/figuras/eda_desbalanceamento.png:
+          cache: false
+
+  espacamento:
+    cmd: python scripts/06_escolher_espacamento.py
+    deps:
+      - scripts/06_escolher_espacamento.py
+      - src/config.py
+      - src/dataset/volumes.py
+      - src/preprocessing/volume.py
+      - src/visualization/eda.py
+      - dados/intermediario/inventario_volumes.csv
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - selecao.subsets
+          - pre_processamento.hu_min
+          - pre_processamento.hu_max
+          - candidatos.patch
+    outs:
+      - dados/intermediario/espacamento.csv
+      - relatorios/figuras/eda_espacamento_alvo.png:
+          cache: false

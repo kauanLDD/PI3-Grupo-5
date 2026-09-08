@@ -92,6 +92,17 @@ divisão nossa.
 
 O `02` precisa rodar primeiro: os outros três leem o inventário que ele grava.
 
+Ou deixe o DVC cuidar da ordem, que é o mesmo pipeline declarado em `dvc.yaml`:
+
+```bash
+.venv/bin/dvc repro
+```
+
+Ele executa só os estágios cujo script, módulo ou parâmetro do `config.yaml` mudou desde a
+última vez, e grava no `dvc.lock` o hash do que entrou e do que saiu. É assim que se sabe qual
+versão do código produziu cada figura. O registro `docs/decisoes/0005` explica por que o dado
+bruto fica fora desse grafo.
+
 **4. Testes**
 
 ```bash
