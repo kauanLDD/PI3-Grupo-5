@@ -81,6 +81,7 @@ divisão nossa.
 .venv/bin/python scripts/03_verificar_coordenadas.py
 .venv/bin/python scripts/04_preprocessar.py
 .venv/bin/python scripts/05_eda.py
+.venv/bin/python scripts/07_preprocessar_base.py
 ```
 
 | Script | O que produz |
@@ -89,8 +90,12 @@ divisão nossa.
 | `03_verificar_coordenadas.py` | as duas figuras que provam que a conversão de coordenada está certa |
 | `04_preprocessar.py` | um volume pré-processado e a figura de antes e depois |
 | `05_eda.py` | as cinco figuras da análise exploratória |
+| `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
 
-O `02` precisa rodar primeiro: os outros três leem o inventário que ele grava.
+O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
+
+O `07` demora. São 41 minutos e 8,6 GiB medidos em 07/09/2026, e ele aceita um número de exames
+como argumento para uma rodada curta de teste.
 
 Ou deixe o DVC cuidar da ordem, que é o mesmo pipeline declarado em `dvc.yaml`:
 

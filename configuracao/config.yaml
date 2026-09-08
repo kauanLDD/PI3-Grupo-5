@@ -21,6 +21,9 @@ caminhos:
   # Dentro do repo, fora do git.
   intermediario: "dados/intermediario"
   processado: "dados/processado"
+  # Os volumes ficam numa subpasta só deles porque o DVC assume a pasta inteira como saída,
+  # e o README que explica dados/processado é rastreado pelo git. Ver decisão 0005.
+  volumes: "dados/processado/volumes"
 
   # Versionado: a mesma figura vai para o Sprint Review e depois para o paper.
   figuras: "relatorios/figuras"

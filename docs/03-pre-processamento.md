@@ -62,8 +62,43 @@ A forma como lemos a máscara importa. Usando os rótulos 3 e 4, como faz toda a
 código pública do LUNA16, a perda sobe para quatro nódulos. Usamos `> 0`, que inclui o rótulo
 5, e isso recupera três deles.
 
+## A rodada na base completa
+
+Rodamos nos 888 exames em 07/09/2026, com `scripts/07_preprocessar_base.py`. O relatório por
+exame fica em `dados/intermediario/preprocessamento.csv`.
+
+| | |
+|---|---|
+| Exames na lista | 888 |
+| Gravados | 888 |
+| Sem volume em disco | 0 |
+| Sem máscara do desafio | 0 |
+| Erro na leitura ou no pré-processamento | 0 |
+| Tempo total | 41 minutos |
+| Tempo por exame | mediana 2,6 s, de 1,3 a 5,6 |
+| Tamanho por exame | mediana 10,0 MB, de 3,2 a 51,1 |
+| Total em disco | 8,6 GiB |
+
+Depois da reamostragem os volumes vão de 236 a 500 voxels no plano, com mediana de 360, e de 166
+a 416 fatias, com mediana de 318.
+
+## A máscara é larga demais em 37 exames
+
+O volume que a máscara do desafio marca como pulmão tem mediana de 4,87 litros nos 888 exames, o
+que é a capacidade pulmonar de um adulto. Mas **37 exames passam de 8 litros**, e o maior chega a
+31 litros, o que nenhum pulmão humano tem.
+
+Não é máscara trocada nem invertida: o HU mediano dentro dela é de -968 nesse exame extremo, ou
+seja, ar. É máscara larga, que vazou para o ar em volta do paciente, que tem a mesma densidade do
+ar dentro do pulmão.
+
+Isso **não perde nódulo**, porque região a mais não corta nada. O que ele custa é área de busca,
+e o efeito prático aparece só quando gerarmos candidatos próprios por detecção de blob: nesses 37
+exames a busca sairia do corpo do paciente. Fica registrado aqui para ser tratado lá, e não agora.
+
+Medido com `scripts/07_preprocessar_base.py` e conferido lendo o HU dentro da máscara nos cinco
+exames de maior fração.
+
 ## O que ainda não existe
 
-O pipeline roda hoje em um exame por vez, para verificação. Processar os 888 e gravar em disco
-é passo seguinte, assim como o recorte dos cubos ao redor de cada candidato, o baseline e a
-avaliação FROC.
+O recorte dos cubos ao redor de cada candidato, o baseline e a avaliação FROC.

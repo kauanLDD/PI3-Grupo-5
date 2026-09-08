@@ -110,3 +110,25 @@ stages:
       - dados/intermediario/espacamento.csv
       - relatorios/figuras/eda_espacamento_alvo.png:
           cache: false
+
+  base:
+    cmd: python scripts/07_preprocessar_base.py
+    deps:
+      - scripts/07_preprocessar_base.py
+      - src/config.py
+      - src/dataset/volumes.py
+      - src/preprocessing/volume.py
+      - dados/intermediario/inventario_volumes.csv
+    params:
+      - configuracao/config.yaml:
+          - selecao.subsets
+          - pre_processamento.hu_min
+          - pre_processamento.hu_max
+          - pre_processamento.espacamento_alvo
+          - pre_processamento.usar_mascara_do_desafio
+    outs:
+      # `cache: false` pela decisão 0005: o DVC guarda o hash dos 888 volumes e não o conteúdo.
+      # São 8,6 GiB que o pipeline refaz em 41 minutos, e não temos remote para onde mandar.
+      - dados/processado/volumes:
+          cache: false
+      - dados/intermediario/preprocessamento.csv
