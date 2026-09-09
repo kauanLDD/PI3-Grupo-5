@@ -92,12 +92,17 @@ Não é máscara trocada nem invertida: o HU mediano dentro dela é de -968 ness
 seja, ar. É máscara larga, que vazou para o ar em volta do paciente, que tem a mesma densidade do
 ar dentro do pulmão.
 
-Isso **não perde nódulo**, porque região a mais não corta nada. O que ele custa é área de busca,
-e o efeito prático aparece só quando gerarmos candidatos próprios por detecção de blob: nesses 37
-exames a busca sairia do corpo do paciente. Fica registrado aqui para ser tratado lá, e não agora.
+Isso **não perde nódulo**, porque região a mais não corta nada. O que a máscara larga custa é área
+de busca, e a região que ela acrescenta fica fora do corpo do paciente.
 
-Medido com `scripts/07_preprocessar_base.py` e conferido lendo o HU dentro da máscara nos cinco
-exames de maior fração.
+O litro sai de `dados/intermediario/preprocessamento.csv`, que
+`scripts/07_preprocessar_base.py` grava: como o volume é isotrópico de 1 mm, a fração de pulmão
+vezes as três dimensões dá o volume em milímetros cúbicos direto. A contagem dos 37 está trancada
+por teste em `testes/test_base_preprocessada.py`, que guarda quais são os exames e não só quantos.
+
+O HU mediano dentro da máscara não está nesse relatório. Ele foi lido uma vez, em 08/09/2026,
+direto do volume bruto e da máscara do desafio no HD, nos cinco exames de maior fração de pulmão:
+deu -968, -328, -934, -929 e -917, contra -870, -866 e -884 em três exames de fração típica.
 
 ## O que ainda não existe
 
