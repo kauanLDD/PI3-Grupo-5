@@ -1,7 +1,8 @@
 # Critérios de inclusão
 
-Quais exames e quais nódulos entram no estudo, e por quê. Medido em 03/09/2026 sobre a cópia
-do LUNA16 em disco, com `scripts/02_inventario_volumes.py` e leitura direta dos CSV do desafio.
+Quais exames e quais nódulos entram no estudo, e por quê. Medido em 03/09/2026 sobre a cópia do
+LUNA16 em disco. A contagem de exames, subsets e espaçamento sai de `scripts/02_inventario_volumes.py`,
+e a comparação entre as duas listas de candidatos de `scripts/08_comparar_candidatos.py`.
 
 ## A regra é do desafio, e adotamos inteira
 
@@ -64,7 +65,9 @@ a divisão os trata.
 ### Qual lista de candidatos usar
 
 O desafio entrega duas, e a escolha muda o teto do que conseguimos alcançar. Medimos as duas
-contra os 1.186 nódulos de referência:
+contra os 1.186 nódulos de referência, com o critério de acerto do próprio desafio: um nódulo é
+alcançado quando existe candidato a menos de R do centro dele, com R igual ao diâmetro dividido
+por dois. É o mesmo critério da decisão 0002, e está em `src/detection/candidatos.py`.
 
 | Lista | Pontos | Positivos | Por exame | Nódulos alcançados | Teto |
 |---|---|---|---|---|---|
@@ -95,8 +98,11 @@ infla o número de falso positivo e o resultado deixa de ser comparável com qua
 
 ```
 .venv/bin/python scripts/02_inventario_volumes.py
+.venv/bin/python scripts/08_comparar_candidatos.py
 .venv/bin/python -m pytest testes -q
 ```
 
 O inventário imprime a contagem por subset, a distribuição de espaçamento em z e quantos exames
-passam de 2,5 mm. A suíte confere a divisão por paciente.
+passam de 2,5 mm. O `08` refaz a tabela das duas listas e grava em
+`dados/intermediario/comparacao_candidatos.csv`. A suíte confere a divisão por paciente e o
+critério de acerto.
