@@ -1,7 +1,7 @@
 # 0004: o espaçamento alvo da reamostragem é 1 mm isotrópico
 
 **Estado:** decidido e verificado
-**Data:** 07/09/2026. Medido em 02/09/2026 e refeito em 07/09/2026 com resultado idêntico.
+**Data:** 08/09/2026. Medido em 02/09/2026 e refeito em 07/09/2026 com resultado idêntico.
 
 ## Contexto
 
@@ -71,9 +71,6 @@ Ficamos em 1,0 mm por dois motivos que não são estatísticos e que declaramos 
 que a literatura do LUNA16 usa, e sair dele introduz uma diferença nossa contra o baseline público
 sem ganho medido, que é o mesmo argumento de não segmentarmos pulmão e de não escrevermos curva
 FROC própria. E é o valor que o professor nomeia no feedback.
-
-Se em algum momento o custo de processar os 888 virar o gargalo, 1,25 mm é a primeira coisa a
-testar, e esta tabela é o ponto de partida.
 
 **0,5 mm.** Descartado por medição: oito vezes o custo, sem contraste a mais, e com 112 nódulos
 que não cabem no recorte.

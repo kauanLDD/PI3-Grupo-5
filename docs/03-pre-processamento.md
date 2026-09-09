@@ -64,7 +64,7 @@ código pública do LUNA16, a perda sobe para quatro nódulos. Usamos `> 0`, que
 
 ## A rodada na base completa
 
-Rodamos nos 888 exames em 07/09/2026, com `scripts/07_preprocessar_base.py`. O relatório por
+Rodamos nos 888 exames em 08/09/2026, com `scripts/07_preprocessar_base.py`. O relatório por
 exame fica em `dados/intermediario/preprocessamento.csv`.
 
 | | |

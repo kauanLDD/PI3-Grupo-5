@@ -1,7 +1,9 @@
 # Os dados
 
-O que é o LUNA16, o que temos em disco, e o que cada campo significa. Todos os números desta
-página foram medidos em 29/08/2026, e ao lado de cada um está o script que mediu.
+O que é o LUNA16, o que temos em disco, e o que cada campo significa. Os números dos volumes e
+das anotações foram medidos em 29/08/2026, com o script que mediu ao lado de cada um. Os das duas
+listas de candidatos são de 03/09/2026 e estão em `criterios_inclusao_luna16.md`, que traz a
+tabela inteira e o comando que a produz.
 
 ## De onde vem
 

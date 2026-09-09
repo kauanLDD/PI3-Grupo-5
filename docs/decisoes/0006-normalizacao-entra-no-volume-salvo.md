@@ -1,7 +1,7 @@
 # 0006: a normalização [0, 1] entra no volume salvo
 
 **Estado:** decidido e verificado
-**Data:** 07/09/2026
+**Data:** 08/09/2026
 
 ## Contexto
 
@@ -36,7 +36,7 @@ compressão resolve isso igual nos dois tipos.
 
 Extrapolando para os 888 exames pelo tamanho de um só, o que é ordem de grandeza e não medição:
 cerca de 6,3 GB guardando HU contra 8,6 GB guardando normalizado, uma diferença de 2,3 GB. O disco
-interno tem 223 GB livres, medido com `df -h` em 07/09/2026.
+interno tem 223 GB livres, medido com `df -h` em 08/09/2026.
 
 ## Decisão
 

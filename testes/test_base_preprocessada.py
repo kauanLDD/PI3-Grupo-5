@@ -8,7 +8,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import config
 
-# Medido em 07/09/2026: a máscara do desafio vaza para o ar em volta do paciente nestes exames.
+# Medido em 08/09/2026: a máscara do desafio vaza para o ar em volta do paciente nestes exames.
 MASCARAS_LARGAS = 37
 LIMITE_LITROS = 8.0
 

@@ -8,7 +8,8 @@ por mais bonita que seja.
 normalizamos de um jeito e não de outro, a resposta é uma figura, não uma opinião.
 
 Todas as figuras estão em `relatorios/figuras/` e são geradas por `scripts/05_eda.py`. Os
-números abaixo saíram dos 888 exames do desafio, medidos em 30/08/2026.
+números abaixo saíram dos 888 exames do desafio, medidos em 30/08/2026, com uma exceção: os do
+desbalanceamento são da lista `candidates_V2`, que adotamos em 07/09/2026.
 
 ## Espaçamento entre fatias
 

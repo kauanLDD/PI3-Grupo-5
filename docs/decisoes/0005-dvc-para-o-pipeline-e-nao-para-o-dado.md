@@ -55,10 +55,16 @@ A base bruta não cabe e nem deveria entrar. Ela é pública, vem do Zenodo, tem
 contra os arquivos oficiais, e o HD onde ela vive é de leitura por regra nossa. O `dvc add`
 faz o oposto: move o arquivo para o cache e deixa um link no lugar.
 
-Guardar a saída também não fecha. Os 888 volumes pré-processados dariam cerca de 5,9 GiB, e os
-recortes dos 754.975 candidatos do `candidates_V2` dariam de 23 a 92 GiB conforme o tipo
-numérico. Isso é aritmética sobre o tamanho de um volume já gerado, não medição de arquivo que
-exista. Não temos onde pôr: o GitHub e o Drive gratuitos ficam ordens de grandeza abaixo disso, e
+Guardar a saída também não fecha. Os 888 volumes pré-processados dariam cerca de 5,9 GiB, que é
+o tamanho de um volume em inteiro de 16 bits vezes 888. Os recortes dos 754.975 candidatos dariam
+de 23 a 92 GiB, que é o número de candidatos vezes um cubo de 32 voxels de aresta, a 1 byte e a 4
+bytes por voxel. Isso é aritmética, não medição de arquivo que exista.
+
+Duas ressalvas sobre esses dois números, que ficaram desatualizados no mesmo dia. A decisão 0006
+passou a gravar o volume normalizado em float de 32 bits, e o que ficou em disco são 8,6 GiB e não
+5,9. A decisão 0004 mostrou que o recorte precisa ter 34 voxels de aresta e não 32, o que leva a
+estimativa dos recortes para 28 a 111 GiB. O argumento não muda com isso: em qualquer das
+versões não temos onde pôr. Não temos onde pôr: o GitHub e o Drive gratuitos ficam ordens de grandeza abaixo disso, e
 esses limites são os que as duas empresas publicam, não algo que tenhamos conferido nesta data.
 
 ## O que fica de fora do grafo, e por quê

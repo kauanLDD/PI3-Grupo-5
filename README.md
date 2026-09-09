@@ -94,7 +94,7 @@ divisão nossa.
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
-O `07` demora. São 41 minutos e 8,6 GiB medidos em 07/09/2026, e ele aceita um número de exames
+O `07` demora. São 41 minutos e 8,6 GiB medidos em 08/09/2026, e ele aceita um número de exames
 como argumento para uma rodada curta de teste.
 
 Ou deixe o DVC cuidar da ordem, que é o mesmo pipeline declarado em `dvc.yaml`:

@@ -81,8 +81,7 @@ de redução de falsos positivos, que é o que a seção 4.3 do enunciado descre
 baseline.
 
 Vinte nódulos continuam sem nenhum candidato em cima, mesmo no V2. Esses são inalcançáveis por
-qualquer método que use só a lista pronta, e são o argumento para gerarmos candidatos próprios
-na etapa de Transformação.
+qualquer método que use só a lista pronta.
 
 ## O que fica fora da conta na avaliação
 

@@ -47,7 +47,7 @@ def test_o_painel_de_depois_mostra_o_volume_normalizado(tmp_path):
 def test_desenhar_o_normalizado_com_a_janela_de_hu_apaga_o_painel(tmp_path):
     """Sem este teste, passar a janela errada gera figura chapada e o pipeline não acusa.
 
-    Foi o que aconteceu em 07/09/2026, quando a normalização entrou: o volume passou a sair em
+    Foi o que aconteceu em 08/09/2026, quando a normalização entrou: o volume passou a sair em
     [0, 1] e a figura continuou desenhando com vmin de -1000, virando um retângulo cinza.
     """
     assert maior_mancha_chapada(desenhar((HU, HU), tmp_path / "errado.png")) > 0.5
