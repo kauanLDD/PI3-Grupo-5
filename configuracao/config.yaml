@@ -40,8 +40,8 @@ pre_processamento:
   # O espaçamento em z varia de 0,45 a 2,5 mm entre os 888 volumes, um fator de 5.
   # Medido em docs/decisoes/0004: abaixo de 1 mm o contraste não melhora e o custo octuplica.
   espacamento_alvo: [1.0, 1.0, 1.0]
-  # As máscaras de pulmão vêm prontas em luna16_mascaras. Não segmentar de novo.
-  usar_mascara_do_desafio: true
+  # As máscaras de pulmão vêm prontas em luna16_mascaras, e o pipeline sempre as usa.
+  # Não é parâmetro: não temos segmentação alternativa e não vamos escrever uma.
 
 candidatos:
   # Cubo ao redor de cada candidato, em voxels. Valor sugerido na seção 7.4 do enunciado.

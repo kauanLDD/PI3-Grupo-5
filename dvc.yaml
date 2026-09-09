@@ -55,7 +55,6 @@ stages:
           - pre_processamento.hu_min
           - pre_processamento.hu_max
           - pre_processamento.espacamento_alvo
-          - pre_processamento.usar_mascara_do_desafio
     outs:
       # O exame é o de maior nódulo entre os de direção identidade, escolhido pelo próprio
       # script a partir do inventário. Declarado pelo caminho porque `dados/processado` guarda
@@ -134,7 +133,6 @@ stages:
           - pre_processamento.hu_min
           - pre_processamento.hu_max
           - pre_processamento.espacamento_alvo
-          - pre_processamento.usar_mascara_do_desafio
     outs:
       # `cache: false` pela decisão 0005: o DVC guarda o hash dos 888 volumes e não o conteúdo.
       # São 8,6 GiB que o pipeline refaz em 41 minutos, e não temos remote para onde mandar.
