@@ -67,6 +67,25 @@ estimativa dos recortes para 28 a 111 GiB. O argumento não muda com isso: em qu
 versões não temos onde pôr. Não temos onde pôr: o GitHub e o Drive gratuitos ficam ordens de grandeza abaixo disso, e
 esses limites são os que as duas empresas publicam, não algo que tenhamos conferido nesta data.
 
+## As figuras não podem ser apagadas antes do estágio rodar
+
+O DVC apaga a saída de um estágio antes de executá-lo, para o estágio começar do zero. Com saída
+`cache: false` isso é destrutivo: não há cópia no cache para devolver.
+
+Reproduzimos em 09/09/2026, com o HD desconectado. Um `dvc repro -f -s eda` apagou as cinco
+figuras, o `05_eda.py` gerou só a que depende do inventário, e sobraram quatro figuras
+versionadas apagadas na árvore de trabalho, recuperáveis só por `git checkout`. Quem clonar o
+repositório e seguir o README sem ter a base em disco cai exatamente nisso.
+
+As nove figuras passaram a ser `persist: true`, que manda o DVC não apagar antes de rodar. E o
+`05_eda.py` passou a sair com código diferente de zero quando não consegue gerar as cinco, em vez
+de listar o que faltou e terminar bem sucedido.
+
+**`dados/processado/volumes` continua sem `persist`, de propósito.** Ali apagar antes é o que
+garante que a pasta tenha uma geração só. Volume velho convivendo com volume novo, feitos com
+parâmetros diferentes, é erro que não aparece em lugar nenhum. O preço é refazer os 41 minutos
+quando a rodada falhar no meio, e ele é menor que o de uma pasta com duas gerações misturadas.
+
 ## O que fica de fora do grafo, e por quê
 
 **A base bruta não é dependência de estágio nenhum.** O lock não detectaria a base mudar. Aceitamos

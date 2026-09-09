@@ -36,8 +36,10 @@ stages:
     outs:
       - relatorios/figuras/coordenada_rai.png:
           cache: false
+          persist: true
       - relatorios/figuras/coordenada_lpi.png:
           cache: false
+          persist: true
 
   preprocessar:
     cmd: python scripts/04_preprocessar.py
@@ -61,6 +63,7 @@ stages:
       - dados/processado/1.3.6.1.4.1.14519.5.2.1.6279.6001.287966244644280690737019247886.mha
       - relatorios/figuras/preprocessamento.png:
           cache: false
+          persist: true
 
   eda:
     cmd: python scripts/05_eda.py
@@ -81,14 +84,19 @@ stages:
     outs:
       - relatorios/figuras/eda_espacamento_z.png:
           cache: false
+          persist: true
       - relatorios/figuras/eda_diametro.png:
           cache: false
+          persist: true
       - relatorios/figuras/eda_nodulos_por_scan.png:
           cache: false
+          persist: true
       - relatorios/figuras/eda_hu.png:
           cache: false
+          persist: true
       - relatorios/figuras/eda_desbalanceamento.png:
           cache: false
+          persist: true
 
   espacamento:
     cmd: python scripts/06_escolher_espacamento.py
@@ -110,6 +118,7 @@ stages:
       - dados/intermediario/espacamento.csv
       - relatorios/figuras/eda_espacamento_alvo.png:
           cache: false
+          persist: true
 
   base:
     cmd: python scripts/07_preprocessar_base.py

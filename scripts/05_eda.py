@@ -1,4 +1,4 @@
-"""As cinco figuras da EDA. Gera o que o dado em disco permitir e declara o que faltou."""
+"""As cinco figuras da EDA. Falha se não conseguir gerar as cinco."""
 
 import sys
 from pathlib import Path
@@ -70,3 +70,8 @@ for f in feitas:
     print(f"  {f.name}")
 for f in faltando:
     print(f"  falta {f}")
+
+# Sair com zero gerando menos de cinco engana quem chama: o dvc repro apaga as figuras antes de
+# rodar o estágio, e elas são cache false, então não voltam do cache.
+if faltando:
+    sys.exit(1)
