@@ -139,3 +139,13 @@ stages:
       - dados/processado/volumes:
           cache: false
       - dados/intermediario/preprocessamento.csv
+
+  candidatos:
+    cmd: python scripts/08_comparar_candidatos.py
+    deps:
+      - scripts/08_comparar_candidatos.py
+      - src/config.py
+      - src/detection/candidatos.py
+      - dados/intermediario/inventario_volumes.csv
+    outs:
+      - dados/intermediario/comparacao_candidatos.csv

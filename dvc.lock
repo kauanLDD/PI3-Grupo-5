@@ -128,8 +128,8 @@ stages:
       size: 170759
     - path: scripts/05_eda.py
       hash: md5
-      md5: 16ff5fa41482d9d7d42fdd3c4f1b7034
-      size: 2708
+      md5: ec61594aa4fff3dfb82d4f5a53ad33bf
+      size: 2888
     - path: src/config.py
       hash: md5
       md5: 04e253456f6f5536dc493aa6d79b7717
@@ -296,3 +296,27 @@ stages:
       md5: 7c5c8025a80d44a1b39b31cd341c15c6.dir
       size: 9206037290
       nfiles: 888
+  candidatos:
+    cmd: python scripts/08_comparar_candidatos.py
+    deps:
+    - path: dados/intermediario/inventario_volumes.csv
+      hash: md5
+      md5: 117d7de7e14e6d68ff1fe8831a651e47
+      size: 170759
+    - path: scripts/08_comparar_candidatos.py
+      hash: md5
+      md5: 25e3ef6c4cea1da496838c9c8190e8b1
+      size: 2183
+    - path: src/config.py
+      hash: md5
+      md5: 04e253456f6f5536dc493aa6d79b7717
+      size: 1098
+    - path: src/detection/candidatos.py
+      hash: md5
+      md5: 6863cb34754b452f9a80f2666499e488
+      size: 1027
+    outs:
+    - path: dados/intermediario/comparacao_candidatos.csv
+      hash: md5
+      md5: 7cfc9709a35653c50f521dce892e3667
+      size: 207

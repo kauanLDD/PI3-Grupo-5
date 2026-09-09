@@ -1,8 +1,10 @@
 # Critérios de inclusão
 
 Quais exames e quais nódulos entram no estudo, e por quê. Medido em 03/09/2026 sobre a cópia do
-LUNA16 em disco. A contagem de exames, subsets e espaçamento sai de `scripts/02_inventario_volumes.py`,
-e a comparação entre as duas listas de candidatos de `scripts/08_comparar_candidatos.py`.
+LUNA16 em disco. A contagem de exames, subsets e espaçamento sai de
+`scripts/02_inventario_volumes.py`. A comparação entre as duas listas de candidatos foi contada à
+mão naquela data e refeita por `scripts/08_comparar_candidatos.py` em 09/09/2026, com resultado
+idêntico nas seis colunas.
 
 ## A regra é do desafio, e adotamos inteira
 
