@@ -8,9 +8,20 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import config
 
-# Medido em 08/09/2026: a máscara do desafio vaza para o ar em volta do paciente nestes exames.
-MASCARAS_LARGAS = 37
 LIMITE_LITROS = 8.0
+
+# Medido em 08/09/2026: a máscara do desafio vaza para o ar em volta do paciente nestes exames,
+# marcando mais de 8 litros de pulmão. Guardados pelos oito últimos dígitos, que são únicos entre
+# os 888. Comparar o conjunto e não a contagem: troca de um por outro mantém o total em 37.
+MASCARAS_LARGAS = {
+    "03668137", "05017227", "06266464", "09623059", "10079250", "13903329",
+    "14831537", "20209778", "20864961", "33453512", "36913951", "39120843",
+    "39595820", "40048766", "40311282", "40828684", "42462394", "42618641",
+    "47301883", "50180824", "50909530", "51154201", "51367533", "53159586",
+    "54756843", "54875981", "57657094", "62251777", "63560826", "64161877",
+    "66711534", "70295147", "75453085", "81016103", "84187602", "85874395",
+    "95118048",
+}
 
 
 def relatorio():
@@ -53,8 +64,11 @@ def test_o_pulmao_mediano_e_fisiologico():
 def test_as_mascaras_largas_continuam_sendo_as_mesmas():
     """Falha se aparecer máscara larga nova, ou se as conhecidas sumirem sem registro."""
     d = relatorio()
-    largas = int((d.litros > LIMITE_LITROS).sum())
-    assert largas == MASCARAS_LARGAS, (
-        f"{largas} exames com máscara acima de {LIMITE_LITROS} L, e o registro fala em "
-        f"{MASCARAS_LARGAS}. O documento de pré-processamento precisa ser remedido."
+    agora = set(d[d.litros > LIMITE_LITROS].seriesuid.str[-8:])
+    entraram = sorted(agora - MASCARAS_LARGAS)
+    sairam = sorted(MASCARAS_LARGAS - agora)
+
+    assert not entraram and not sairam, (
+        f"a lista de máscaras acima de {LIMITE_LITROS} L mudou. Entraram: {entraram}. "
+        f"Saíram: {sairam}. O documento de pré-processamento precisa ser remedido."
     )

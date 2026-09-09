@@ -17,16 +17,25 @@ ALVO = [1.0, 1.0, 1.0]
 ESPACAMENTO = (0.7, 0.7, 2.5)
 ORIGEM = (-100.0, -50.0, -200.0)
 
+# A caixa da máscara sintética, em (z, y, x). As duas fixtures leem daqui para o tecido colado
+# na borda cair exatamente no limite da máscara.
+CAIXA = (slice(6, 14), slice(20, 44), slice(20, 44))
+
 
 def na_escala(hu: float) -> float:
     """O mesmo limiar em HU, na escala [0, 1] que o pré-processamento devolve."""
     return (hu - HU[0]) / (HU[1] - HU[0])
 
 
-def sintetico(valor_fundo=-1000, valor_cubo=100, parede=200):
-    """Volume com um cubo denso no meio e uma parede de tecido fora da máscara."""
+def sintetico(valor_fundo=-1000, valor_cubo=100, parede=200, borda=100):
+    """Volume com um cubo denso no meio, tecido colado na borda da máscara, e parede fora dela."""
     arr = np.full((20, 64, 64), valor_fundo, dtype=np.int16)
     arr[8:12, 28:36, 28:36] = valor_cubo
+    # Colado por dentro da máscara: mascarar antes de reamostrar espalha este valor para fora
+    # dela na interpolação, e é o que separa as duas ordens sem precisar de exame de verdade.
+    z, y, x = CAIXA
+    arr[z, y.start:y.start + 2, x] = borda
+    arr[z, y.stop - 2:y.stop, x] = borda
     # Fora da máscara de pulmão: se aplicar_mascara não rodar, isto sobrevive e o teste pega.
     arr[:, 0:8, :] = parede
     imagem = sitk.GetImageFromArray(arr)
@@ -36,9 +45,11 @@ def sintetico(valor_fundo=-1000, valor_cubo=100, parede=200):
 
 
 def mascara_sintetica():
+    z, y, x = CAIXA
+    meio = (x.start + x.stop) // 2
     arr = np.zeros((20, 64, 64), dtype=np.uint8)
-    arr[6:14, 20:44, 20:32] = 3
-    arr[6:14, 20:44, 32:44] = 4
+    arr[z, y, x.start:meio] = 3
+    arr[z, y, meio:x.stop] = 4
     imagem = sitk.GetImageFromArray(arr)
     imagem.SetSpacing(ESPACAMENTO)
     imagem.SetOrigin(ORIGEM)
