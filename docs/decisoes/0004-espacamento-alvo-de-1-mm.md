@@ -1,6 +1,6 @@
 # 0004: o espaçamento alvo da reamostragem é 1 mm isotrópico
 
-**Estado:** decidido e verificado
+**Estado:** decidido e verificado, com atualização em 10/09/2026
 **Data:** 08/09/2026. Medido em 02/09/2026 e refeito em 07/09/2026 com resultado idêntico.
 
 ## Contexto
@@ -95,3 +95,29 @@ bits comprimido.
 **O valor está declarado no `dvc.lock`.** Mudar `pre_processamento.espacamento_alvo` no
 `config.yaml` marca os estágios `preprocessar` e `eda` como desatualizados, então a tabela acima e
 o valor em uso não podem mais divergir em silêncio. Ver a decisão 0005.
+
+## Atualização de 10/09/2026
+
+O recorte passou de 32 para 34 voxels, que é o que a seção de consequências acima pedia. Com
+isso a coluna "Não cabem em 32" da tabela deixou de descrever o que o pipeline faz, e refizemos
+a medição com o recorte novo:
+
+| Alvo (mm) | Não cabem em 32 | Não cabem em 34 |
+|---|---|---|
+| 0,5 | 112 | 94 |
+| 0,625 | 50 | 38 |
+| 0,7 | 23 | 14 |
+| 0,8 | 6 | 3 |
+| **1,0** | **1** | **0** |
+| 1,25 | 0 | 0 |
+| 1,5 | 0 | 0 |
+| 2,0 | 0 | 0 |
+
+**A 1 mm com recorte de 34, nenhum dos 1.186 nódulos fica de fora.** O nódulo de 32,27 mm, que
+era o único que não cabia, agora cabe. A escolha de 1 mm não muda, e o argumento a favor dela
+fica mais forte: era o espaçamento mais barato que preservava o contraste ao custo de um nódulo,
+e agora não custa nenhum.
+
+A coluna da tabela original continua escrita como estava, porque foi medida com o recorte de 32
+que valia naquela data. As duas medições saem de `scripts/06_escolher_espacamento.py`, que lê o
+tamanho do recorte do `config.yaml`.

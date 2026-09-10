@@ -18,6 +18,7 @@ def carregar(caminho=None):
     caminhos = {}
     for chave, valor in cfg["caminhos"].items():
         caminho = Path(valor)
+        # Caminho absoluto fica como está: no Windows a base pode viver em outro disco.
         caminhos[chave] = caminho if caminho.is_absolute() else RAIZ / caminho
     cfg["caminhos"] = caminhos
     return cfg
