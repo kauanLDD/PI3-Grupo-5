@@ -45,6 +45,12 @@ def test_janela_corta_nos_dois_lados():
     assert arr.min() == HU[0] and arr.max() == HU[1]
 
 
+def test_normalizacao_mapeia_os_limites_da_janela_para_zero_e_um():
+    imagem = pre.janela(sintetico(valor_fundo=-2000, valor_cubo=3000), *HU)
+    arr = sitk.GetArrayFromImage(pre.normalizar(imagem, *HU))
+    assert arr.min() == 0.0 and arr.max() == 1.0
+
+
 def test_reamostragem_preserva_origem_e_direcao():
     original = sintetico()
     iso = pre.reamostrar(original, ALVO)
@@ -98,14 +104,14 @@ def test_mascara_continua_binaria_depois_de_reamostrar():
     assert set(np.unique(sitk.GetArrayFromImage(iso))) <= {0, 1}
 
 
-def test_fora_do_pulmao_vira_ar_e_nao_agua():
+def test_fora_do_pulmao_vira_zero():
     """Pega três erros: não mascarar, mascarar antes de reamostrar, e preencher com zero."""
     processado, mascara = pre.preprocessar(sintetico(), mascara_sintetica(), HU, ALVO)
     arr = sitk.GetArrayFromImage(processado)
     fora = sitk.GetArrayFromImage(mascara) == 0
 
     assert fora.any(), "a máscara sintética não deixou nada de fora"
-    assert (arr[fora] == HU[0]).all(), (
+    assert (arr[fora] == 0.0).all(), (
         "sobrou tecido fora do pulmão: ou a máscara não foi aplicada, ou foi aplicada "
         "antes da reamostragem e a borda vazou na interpolação"
     )
@@ -170,7 +176,7 @@ def test_o_nodulo_sobrevive_ao_preprocessamento(linha, caminho, caminho_mascara)
     ip = processado.TransformPhysicalPointToIndex(mundo)
 
     assert antes[ia[2], ia[1], ia[0]] > -500
-    assert depois[ip[2], ip[1], ip[0]] > -500
+    assert depois[ip[2], ip[1], ip[0]] > (-500 - HU[0]) / (HU[1] - HU[0])
 
 
 # Exame em que as duas formas de binarizar discordam. Ver decisão 0002.
@@ -268,7 +274,7 @@ def test_a_janela_vem_antes_da_reamostragem(caminho, caminho_mascara):
 
     arr = sitk.GetArrayFromImage(processado)
     pulmao = sitk.GetArrayFromImage(mascara) > 0
-    no_piso = (arr[pulmao] == HU[0]).mean()
+    no_piso = (arr[pulmao] == 0.0).mean()
 
     assert no_piso < 0.001, (
         f"{no_piso:.2%} do pulmão está exatamente no piso da janela. "

@@ -9,16 +9,16 @@ caminhos:
 
   # LUNA16, a base principal do Grupo 5 pela seção 7.2 do enunciado.
   # O zip do Kaggle extrai com a pasta repetida: subset0/subset0, seg-lungs-LUNA16/seg-lungs-LUNA16.
-  luna16: "/media/kauan/HD Samuel/luna/archive"
-  luna16_anotacoes: "/media/kauan/HD Samuel/luna/archive/annotations.csv"
-  luna16_candidatos: "/media/kauan/HD Samuel/luna/archive/candidates.csv"
-  luna16_candidatos_v2: "/media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv"
-  luna16_mascaras: "/media/kauan/HD Samuel/luna/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
-  luna16_avaliacao: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript"
+  luna16: 'G:\Meu Drive\PI3-Grupo-5\Dataset'
+  luna16_anotacoes: 'G:\Meu Drive\PI3-Grupo-5\Dataset\annotations.csv'
+  luna16_candidatos: 'G:\Meu Drive\PI3-Grupo-5\Dataset\candidates.csv'
+  luna16_candidatos_v2: 'G:\Meu Drive\PI3-Grupo-5\Dataset\candidates_V2\candidates_V2.csv'
+  luna16_mascaras: 'G:\Meu Drive\PI3-Grupo-5\Dataset\seg-lungs-LUNA16\seg-lungs-LUNA16'
+  luna16_avaliacao: 'G:\Meu Drive\PI3-Grupo-5\Dataset\evaluationScript\evaluationScript'
 
-  # Dentro do repo, fora do git.
-  intermediario: "dados/intermediario"
-  processado: "dados/processado"
+  # Gerados fora do repo para não ocupar o disco local.
+  intermediario: 'G:\Meu Drive\PI3-Grupo-5\Dataset\intermediario'
+  processado: 'G:\Meu Drive\PI3-Grupo-5\Dataset\processado'
 
   # Versionado: a mesma figura vai para o Sprint Review e depois para o paper.
   figuras: "relatorios/figuras"
@@ -31,6 +31,7 @@ pre_processamento:
   # Janela de HU. O ar do pulmão fica perto de -1000, o osso passa de 400.
   hu_min: -1000
   hu_max: 400
+  normalizar_0_a_1: true
   # Reamostragem para voxel isotrópico, em mm.
   # O espaçamento em z varia de 0,5 a 2,5 mm entre os 445 volumes, um fator de 5.
   espacamento_alvo: [1.0, 1.0, 1.0]
@@ -39,7 +40,7 @@ pre_processamento:
 
 candidatos:
   # Cubo ao redor de cada candidato, em voxels. Valor sugerido na seção 7.4 do enunciado.
-  patch: [32, 32, 32]
+  patch: [34, 34, 34]
 
 divisao:
   # Por paciente, nunca por imagem. Seção 3.1 do enunciado.
