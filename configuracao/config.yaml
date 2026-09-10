@@ -44,8 +44,9 @@ pre_processamento:
   # Não é parâmetro: não temos segmentação alternativa e não vamos escrever uma.
 
 candidatos:
-  # Cubo ao redor de cada candidato, em voxels. Valor sugerido na seção 7.4 do enunciado.
-  patch: [32, 32, 32]
+  # Cubo ao redor de cada candidato, em voxels. A seção 7.4 do enunciado sugere 32, mas o maior
+  # nódulo tem 32,27 mm e não caberia. Ver docs/decisoes/0004.
+  patch: [34, 34, 34]
 
 divisao:
   # Por paciente, nunca por imagem. Seção 3.1 do enunciado.

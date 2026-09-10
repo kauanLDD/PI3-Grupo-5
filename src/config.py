@@ -15,7 +15,11 @@ def carregar(caminho=None):
     with open(caminho or CAMINHO, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
-    cfg["caminhos"] = {chave: RAIZ / valor for chave, valor in cfg["caminhos"].items()}
+    caminhos = {}
+    for chave, valor in cfg["caminhos"].items():
+        caminho = Path(valor)
+        caminhos[chave] = caminho if caminho.is_absolute() else RAIZ / caminho
+    cfg["caminhos"] = caminhos
     return cfg
 
 
