@@ -59,7 +59,7 @@ nódulo é alcançado quando existe candidato a menos de um raio do centro dele.
 ## O que os parâmetros de partida entregam
 
 A rodada nos 888 exames não aconteceu. O que medimos, em 13/09/2026, foi uma amostra de 8 exames,
-um por subset, com `python scripts/10_detectar_candidatos.py 8`:
+um de cada um dos subsets 0 a 7, com `python scripts/10_detectar_candidatos.py 8`:
 
 | | |
 |---|---|

@@ -14,10 +14,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import config
 
-METADATA = Path("/media/kauan/HD Samuel/LIDC-IDRI/Imagens LIDC-IDRI/metadata/metadata.csv")
-
 cfg = config.carregar()
 config.fixar_semente()
+
+METADATA = cfg["caminhos"]["lidc_metadata"]
 
 inventario = cfg["caminhos"]["intermediario"] / "inventario_volumes.csv"
 if not inventario.exists():

@@ -7,6 +7,10 @@ caminhos:
   # As bases vivem fora do repo, em HD externo.
   # Cada um do grupo aponta para onde a base está na máquina dele.
 
+  # Metadata do LIDC-IDRI. Só o 01_pacientes.py lê, para extrair o mapa de exame para
+  # paciente que o LUNA16 não tem, e só roda em máquina que tenha o LIDC. Ver decisão 0003.
+  lidc_metadata: "/media/kauan/HD Samuel/LIDC-IDRI/Imagens LIDC-IDRI/metadata/metadata.csv"
+
   # LUNA16, a base principal do Grupo 5 pela seção 7.2 do enunciado.
   # O zip do Kaggle extrai com a pasta repetida: subset0/subset0, seg-lungs-LUNA16/seg-lungs-LUNA16.
   luna16: "/media/kauan/HD Samuel/luna/archive"

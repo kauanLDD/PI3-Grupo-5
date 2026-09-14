@@ -135,7 +135,7 @@ stages:
           - pre_processamento.espacamento_alvo
     outs:
       # `cache: false` pela decisão 0005: o DVC guarda o hash dos 888 volumes e não o conteúdo.
-      # São 8,6 GiB que o pipeline refaz em 41 minutos, e não temos remote para onde mandar.
+      # São 8,6 GiB que o pipeline refaz em 39,8 minutos, e não temos remote para onde mandar.
       - dados/processado/volumes:
           cache: false
       - dados/intermediario/preprocessamento.csv

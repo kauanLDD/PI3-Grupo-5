@@ -40,11 +40,16 @@ critério do desafio.
 ### Dois exames aparentam ter fatia acima de 2,5 mm
 
 O cabeçalho de `1.3...2873394709` e `1.3...0416228517` traz espaçamento em z de
-`2.500000238418579`. É a representação em float32 do número 2,5. Arredondando para quatro casas,
-**nenhum exame dos 888 passa de 2,5 mm**.
+`2.500000238418579`. Esse valor **não** é a representação de 2,5 em float32: o 2,5 é exatamente
+representável, e `2.500000238418579` é o float32 imediatamente seguinte, maior por 2 elevado a
+menos 22. Os dois exames passam do limite, por um bit.
 
-Não são exceção ao critério, são ruído de precisão. Entram normalmente, e comparações com o
-limite de 2,5 mm no nosso código usam tolerância em vez de igualdade exata.
+Conferido em 14/09/2026 com
+`python -c "import numpy as np; print(float(np.float32(2.5)) == 2.5)"`, que devolve `True`.
+
+Não tratamos os dois como exceção ao critério, são ruído de precisão da gravação do cabeçalho.
+Entram normalmente, e comparações com o limite de 2,5 mm no nosso código usam tolerância em vez
+de igualdade exata, que é o que essa diferença de um bit obriga.
 
 ### Dois nódulos passam de 30 mm
 
