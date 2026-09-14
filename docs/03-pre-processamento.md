@@ -64,8 +64,9 @@ código pública do LUNA16, a perda sobe para quatro nódulos. Usamos `> 0`, que
 
 ## A rodada na base completa
 
-Rodamos nos 888 exames em 08/09/2026, com `scripts/07_preprocessar_base.py`. O relatório por
-exame fica em `dados/intermediario/preprocessamento.csv`.
+Rodamos nos 888 exames em 08/09/2026, com `scripts/07_preprocessar_base.py`, e refizemos a
+rodada em 10/09/2026 quando o recorte passou de 32 para 34 voxels. Os números abaixo são os da
+segunda rodada, que é a que está em `dados/intermediario/preprocessamento.csv`.
 
 | | |
 |---|---|
@@ -74,8 +75,8 @@ exame fica em `dados/intermediario/preprocessamento.csv`.
 | Sem volume em disco | 0 |
 | Sem máscara do desafio | 0 |
 | Erro na leitura ou no pré-processamento | 0 |
-| Tempo total | 41 minutos |
-| Tempo por exame | mediana 2,6 s, de 1,3 a 5,6 |
+| Tempo total | 39,8 minutos |
+| Tempo por exame | mediana 2,52 s, de 0,92 a 5,67 |
 | Tamanho por exame | mediana 10,0 MB, de 3,2 a 51,1 |
 | Total em disco | 8,6 GiB |
 
@@ -106,4 +107,5 @@ deu -968, -328, -934, -929 e -917, contra -870, -866 e -884 em três exames de f
 
 ## O que ainda não existe
 
-O recorte dos cubos ao redor de cada candidato, o baseline e a avaliação FROC.
+O recorte dos cubos tem código e teste em `src/detection/patches.py`, e nunca rodou na base. Não
+existem as features de intensidade, o baseline, o modelo treinado nem a avaliação FROC.

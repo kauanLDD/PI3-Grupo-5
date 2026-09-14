@@ -61,7 +61,7 @@ sobra.
 
 ## Verificação
 
-Quatro testes novos em `testes/test_preprocessamento.py`, e a suíte inteira passa em 43.
+Quatro testes novos em `testes/test_preprocessamento.py`, e a suíte inteira passava em 43 testes nessa data.
 
 Confirmamos que eles protegem de verdade, quebrando a função de propósito de quatro jeitos:
 

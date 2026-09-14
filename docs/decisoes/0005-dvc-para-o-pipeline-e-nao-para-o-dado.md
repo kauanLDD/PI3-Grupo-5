@@ -28,7 +28,7 @@ Ou seja, ninguém nos obriga. Adotamos porque o buraco descrito acima é real.
 
 Usamos o DVC para **declarar o pipeline**, não para guardar o dado.
 
-Entra no git: `dvc.yaml` com os cinco estágios, `dvc.lock` com o hash de cada entrada, parâmetro
+Entra no git: `dvc.yaml` com os estágios, `dvc.lock` com o hash de cada entrada, parâmetro
 e saída, e `.dvc/config`. O cache fica em `.dvc/cache`, no disco interno, fora do git. Não
 configuramos remote.
 
@@ -83,7 +83,7 @@ de listar o que faltou e terminar bem sucedido.
 
 **`dados/processado/volumes` continua sem `persist`, de propósito.** Ali apagar antes é o que
 garante que a pasta tenha uma geração só. Volume velho convivendo com volume novo, feitos com
-parâmetros diferentes, é erro que não aparece em lugar nenhum. O preço é refazer os 41 minutos
+parâmetros diferentes, é erro que não aparece em lugar nenhum. O preço é refazer os 39,8 minutos
 quando a rodada falhar no meio, e ele é menor que o de uma pasta com duas gerações misturadas.
 
 ## O que fica de fora do grafo, e por quê

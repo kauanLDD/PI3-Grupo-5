@@ -32,8 +32,10 @@ A pergunta é se o cubo de 32 voxels cobre o nódulo inteiro. A distribuição t
 5 mm, mediana de 6,4 mm, e uma cauda longa e fina à direita. A 1 mm isotrópico, o cubo cobre
 32 mm, e **apenas 1 dos 1.186 nódulos passa disso**, com 32,3 mm.
 
-**Mantivemos o cubo de 32 voxels** e registramos esse nódulo como perda conhecida, em vez de
-aumentar o recorte e trazer mais fundo que sinal.
+Na época mantivemos o cubo de 32 voxels e registramos esse nódulo como perda conhecida, em vez
+de aumentar o recorte e trazer mais fundo que sinal. **Em 10/09/2026 passamos o cubo para 34
+voxels**, e com isso nenhum dos 1.186 fica de fora. A medição das duas opções lado a lado está
+na atualização de `docs/decisoes/0004-espacamento-alvo-de-1-mm.md`.
 
 ## Nódulos por exame
 

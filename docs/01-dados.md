@@ -66,7 +66,7 @@ voxels. O inventário dos 888 está em `dados/intermediario/inventario_volumes.c
 | `tamanho_raw_mb` | MB | tamanho do `.raw` em disco |
 
 **Os exames não são todos iguais.** O espaçamento entre fatias assume dez valores distintos e
-vai de 0,45 a 2,5 mm, e o número de fatias vai de 95 a 764, com mediana de 238. É isso que
+vai de 0,45 a 2,5 mm, e o número de fatias vai de 95 a 764, com mediana de 237,5. É isso que
 obriga a reamostragem antes de comparar qualquer coisa entre exames.
 
 ## A armadilha das coordenadas

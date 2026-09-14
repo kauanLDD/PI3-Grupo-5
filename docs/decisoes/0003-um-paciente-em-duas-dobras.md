@@ -32,7 +32,8 @@ correspondência.
 | Pacientes com mais de uma série | 1 |
 
 **`LIDC-IDRI-0332` tem duas séries**, uma no subset 2 e outra no subset 6. Como os subsets são
-as dobras, esse paciente cai em treino e em teste na mesma rodada em oito das dez.
+as dobras, esse paciente cai em treino e em teste na mesma rodada nas duas em que o subset de
+teste é o 2 ou o 6. Nas outras oito as duas séries ficam juntas no treino.
 
 Nenhum outro paciente se repete.
 

@@ -15,7 +15,7 @@ nada mais. O feedback do professor nomeia 1 mm isotrópico na descrição das et
 pré-processamento.
 
 O problema é que o valor de 1 mm não entrou aqui por medição nossa. Ele está no
-`configuracao/config.yaml` desde o commit `1c2ef4d`, de 25/08/2026, que é o primeiro commit do
+`configuracao/config.yaml` desde o commit `1c2ef4d`, de 25/08/2026, que é o commit de estrutura do
 repositório e só criou a estrutura de pastas. O script que mede alguma coisa a respeito,
 `scripts/06_escolher_espacamento.py`, só apareceu no commit `e370aa4`, de 02/09/2026. Por oito
 dias o parâmetro central do pré-processamento foi herança, e a justificativa que dávamos para ele

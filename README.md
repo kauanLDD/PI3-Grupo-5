@@ -47,10 +47,12 @@ registro em `docs/decisoes/` traz a medição e o motivo de mesmo assim não dil
 
 Leitura do cabeçalho dos volumes e inventário dos 888 exames. Conversão entre coordenada de
 mundo em milímetro e índice de voxel, com teste e figura de verificação. Análise exploratória
-com cinco figuras. Pré-processamento de um volume: janela de HU, reamostragem para voxel
-isotrópico e aplicação da máscara de pulmão.
+com cinco figuras. Pré-processamento nos 888 exames, com as cinco etapas: leitura MetaImage,
+janela de HU, reamostragem para voxel isotrópico, máscara de pulmão e normalização [0, 1].
+Geração própria de candidatos por blob detection 3D, medida em 8 exames.
 
-Ainda não existem: extração de patches, baseline, modelo e avaliação FROC.
+O recorte dos cubos ao redor de cada candidato tem código e teste, mas nunca rodou na base.
+Ainda não existem: features, baseline, modelo treinado e avaliação FROC.
 
 ## Como reproduzir
 
@@ -81,7 +83,10 @@ divisão nossa.
 .venv/bin/python scripts/03_verificar_coordenadas.py
 .venv/bin/python scripts/04_preprocessar.py
 .venv/bin/python scripts/05_eda.py
+.venv/bin/python scripts/06_escolher_espacamento.py
 .venv/bin/python scripts/07_preprocessar_base.py
+.venv/bin/python scripts/08_comparar_candidatos.py
+.venv/bin/python scripts/10_detectar_candidatos.py
 ```
 
 | Script | O que produz |
@@ -90,12 +95,19 @@ divisão nossa.
 | `03_verificar_coordenadas.py` | as duas figuras que provam que a conversão de coordenada está certa |
 | `04_preprocessar.py` | um volume pré-processado e a figura de antes e depois |
 | `05_eda.py` | as cinco figuras da análise exploratória |
+| `06_escolher_espacamento.py` | a tabela que sustenta o espaçamento de 1 mm e a figura dela |
 | `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
+| `08_comparar_candidatos.py` | a tabela que compara as duas listas de candidatos do desafio |
+| `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
-O `07` demora. São 41 minutos e 8,6 GiB medidos em 08/09/2026, e ele aceita um número de exames
-como argumento para uma rodada curta de teste.
+O `07` demora. São 39,8 minutos e 8,6 GiB, medidos em 10/09/2026 sobre `preprocessamento.csv`, e
+ele aceita um número de exames como argumento para uma rodada curta de teste. O `10` também
+demora, 23,6 s por exame medidos em 13/09/2026, e aceita o mesmo argumento.
+
+Fora dessa lista fica o `01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina
+que o tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
 
 Ou deixe o DVC cuidar da ordem, que é o mesmo pipeline declarado em `dvc.yaml`:
 
@@ -114,7 +126,7 @@ bruto fica fora desse grafo.
 .venv/bin/python -m pytest testes -q
 ```
 
-São 30 testes. Os que precisam abrir volume são pulados automaticamente se o disco com o
+São 71 testes. Os que precisam abrir volume são pulados automaticamente se o disco com o
 LUNA16 não estiver acessível, e escolhem sozinhos os extremos de espaçamento do inventário.
 
 ## Estrutura
@@ -122,7 +134,7 @@ LUNA16 não estiver acessível, e escolhem sozinhos os extremos de espaçamento 
 ```
 src/
   preprocessing/     janela de HU, reamostragem, máscara de pulmão, coordenadas
-  detection/         geração de candidatos, ainda vazia
+  detection/         blob detection, recorte dos cubos e o critério de acerto
   dataset/           leitura dos volumes do desafio
   visualization/     as figuras
   config.py          lê o config.yaml e fixa a semente
