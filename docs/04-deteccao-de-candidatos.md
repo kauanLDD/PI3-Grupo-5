@@ -52,23 +52,27 @@ O critério de acerto é o mesmo de `src/detection/candidatos.py`, usado em
 `docs/criterios_inclusao_luna16.md` para comparar `candidates.csv` e `candidates_V2.csv`: um
 nódulo é alcançado quando existe candidato a menos de um raio do centro dele. Rodar
 `scripts/10_detectar_candidatos.py` grava a cobertura da lista própria em
-`dados/intermediario/cobertura_candidatos_proprios.csv`, no mesmo formato da tabela que
-`scripts/08_comparar_candidatos.py` grava para as duas listas prontas, para comparar lado a lado.
+`dados/intermediario/cobertura_candidatos_proprios.csv`, na mesma tabela que
+`scripts/08_comparar_candidatos.py` grava para as duas listas prontas, menos a coluna
+`positivos`, que só existe onde há rótulo de classe.
 
-**A rodada nos 888 exames ainda não aconteceu.** Esta sessão implementou e testou o código com
-volumes sintéticos (`testes/test_blobs.py`), mas não tem acesso ao LUNA16 nem aos `.mha`
-pré-processados nesta máquina — o `configuracao/config.yaml` aponta para o disco de quem rodou o
-pré-processamento por último. Falta, com o disco montado:
+## O que os parâmetros de partida entregam
 
-```
-python scripts/07_preprocessar_base.py   # se dados/processado/volumes ainda não existir
-python scripts/10_detectar_candidatos.py
-```
+A rodada nos 888 exames não aconteceu. O que medimos, em 13/09/2026, foi uma amostra de 8 exames,
+um por subset, com `python scripts/10_detectar_candidatos.py 8`:
 
-e preencher aqui a tabela de cobertura contra os 1.186 nódulos e os 98,3% de teto do
-`candidates_V2.csv`, ajustando `min_sigma`, `max_sigma` e `threshold` no `config.yaml` se a
-cobertura ficar longe disso.
+| | |
+|---|---|
+| Candidatos | 112.287 nos 8 exames, 14.036 por exame |
+| Nódulos alcançados | 6 de 6 |
+| Tempo | 189 s nos 8 exames, 23,6 s por exame |
+
+Para comparar, o `candidates_V2.csv` do desafio tem 850,2 candidatos por exame e alcança 1.166
+dos 1.186 nódulos, 98,3%, medido em 03/09/2026 com `scripts/08_comparar_candidatos.py` e
+registrado em `docs/criterios_inclusao_luna16.md`. A nossa lista sai com 16 vezes mais pontos por
+exame, e os 8 exames da amostra têm 6 nódulos anotados, que é pouco para comparar cobertura.
 
 ## O que ainda não existe
 
-Redução de falsos positivos sobre os candidatos gerados aqui.
+A calibração de `min_sigma`, `max_sigma` e `threshold` contra a cobertura nos 888 exames, e a
+redução de falsos positivos sobre os candidatos gerados aqui.

@@ -15,7 +15,6 @@ import sys
 import time
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import SimpleITK as sitk
 
@@ -33,7 +32,10 @@ pasta_volumes = cfg["caminhos"]["volumes"]
 
 inventario = pd.read_csv(cfg["caminhos"]["intermediario"] / "inventario_volumes.csv")
 disponiveis = {p.stem for p in pasta_volumes.glob("*.mha")}
+no_inventario = len(inventario)
 inventario = inventario[inventario.seriesuid.isin(disponiveis)]
+print(f"{no_inventario} exames no inventário, {len(inventario)} com volume pré-processado em disco, "
+      f"{no_inventario - len(inventario)} sem")
 if inventario.empty:
     sys.exit(
         f"nenhum volume pré-processado em {pasta_volumes}. "
@@ -49,14 +51,19 @@ def carregar(seriesuid: str):
     return imagem, sitk.GetArrayFromImage(imagem)
 
 
-def detectar_exame(seriesuid: str, imagem, volume) -> pd.DataFrame:
+def detectar_exame(seriesuid: str, imagem, volume):
+    """Devolve o par (candidatos em mm, blobs crus em voxel)."""
     achados = blobs.detectar(volume, **parametros)
     return blobs.candidatos_do_exame(seriesuid, imagem, achados), achados
 
 
-# --- Passo 1 a 4: um exame só, com nódulo grande, para aprender e validar visualmente. ---
-
 candidatos_do_inventario = nodulos.merge(inventario, on="seriesuid")
+if candidatos_do_inventario.empty:
+    sys.exit(
+        "nenhum dos exames com volume pré-processado tem nódulo anotado, "
+        "e a demonstração precisa de um para validar a geometria"
+    )
+
 retos = candidatos_do_inventario[candidatos_do_inventario.matriz_identidade]
 escolhido = (retos if not retos.empty else candidatos_do_inventario).nlargest(1, "diameter_mm").iloc[0]
 uid_demo = escolhido.seriesuid
@@ -99,8 +106,6 @@ fatias.fatia_com_candidatos(
 )
 print(f"{figura}\n")
 
-# --- Passo 5: os 888 exames, gravando candidatos.csv. ---
-
 limite = int(sys.argv[1]) if len(sys.argv) > 1 else None
 lote = inventario if not limite else inventario.groupby("subset", group_keys=False).head(
     max(1, limite // 10)
@@ -135,8 +140,6 @@ print(f"\n{len(lote)} exames na lista, {len(lote) - len(falhas)} processados, {l
 print(f"{len(candidatos_proprios)} candidatos no total, "
       f"{len(candidatos_proprios) / max(1, len(lote) - len(falhas)):.0f} por exame")
 print(destino)
-
-# --- Medir a cobertura, e comparar com o teto das listas prontas do desafio. ---
 
 nodulos_do_lote = nodulos[nodulos.seriesuid.isin(lote.seriesuid)]
 alcancados = int(det.alcancados(nodulos_do_lote, candidatos_proprios).sum())

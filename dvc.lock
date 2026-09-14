@@ -58,8 +58,8 @@ stages:
       size: 1140
     - path: src/visualization/fatias.py
       hash: md5
-      md5: 0cd3be4bf61170a44111091e1ef3f20e
-      size: 2609
+      md5: e3e02409bf2ecd9307b9e626e859beb9
+      size: 4107
     params:
       configuracao/config.yaml:
         pre_processamento.hu_max: 400
@@ -98,8 +98,8 @@ stages:
       size: 1898
     - path: src/visualization/fatias.py
       hash: md5
-      md5: 0cd3be4bf61170a44111091e1ef3f20e
-      size: 2609
+      md5: e3e02409bf2ecd9307b9e626e859beb9
+      size: 4107
     params:
       configuracao/config.yaml:
         pre_processamento.espacamento_alvo:
