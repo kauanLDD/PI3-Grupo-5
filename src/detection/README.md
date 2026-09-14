@@ -1,13 +1,13 @@
 # Detecção
 
-Vazio de propósito. É aqui que entra a geração de candidatos a nódulo, que é o produto
-central do grupo e a etapa de Transformação do KDD.
+Geração de candidatos a nódulo, o produto central do grupo e a etapa de Transformação do KDD.
+Cada candidato sai com coordenada e raio estimado, gravado em `candidatos.csv`, e validado
+visualmente sobre os cortes. Ver `docs/04-deteccao-de-candidatos.md`.
 
-O que vai ficar aqui:
+- `blobs.py`: geração por blob detection 3D (Laplacian of Gaussian, `skimage.feature.blob_log`),
+  rodada por `scripts/10_detectar_candidatos.py`.
+- `candidatos.py`: o critério de acerto do desafio, usado tanto para comparar as listas prontas
+  (`scripts/08_comparar_candidatos.py`) quanto para medir a cobertura da lista própria.
+- `patches.py`: recorte dos cubos ao redor de cada candidato.
 
-- geração de candidatos por blob detection 3D, ou por limiar adaptativo com componentes conexos
-- recorte dos cubos ao redor de cada candidato
-- redução de falsos positivos
-
-Cada candidato precisa sair com coordenada e raio estimado, gravado em `candidatos.csv`,
-e validado visualmente sobre os cortes.
+O que ainda falta aqui: redução de falsos positivos.
