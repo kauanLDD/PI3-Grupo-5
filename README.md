@@ -142,6 +142,7 @@ configuracao/        config.yaml, único lugar com caminhos e parâmetros
 dados/               fora do git, é onde o pipeline escreve
 modelos/             o peso fica fora do git, o registro fica no README
 docs/                o que o grupo estabeleceu, incluindo os registros de decisão
+                     e historico-do-projeto.md, com a ordem em que cada coisa foi feita
 notebooks/           análise exploratória
 relatorios/figuras/  as figuras que vão para a apresentação e para o artigo
 scripts/             executáveis, numerados na ordem de execução
