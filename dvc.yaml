@@ -149,3 +149,25 @@ stages:
       - dados/intermediario/inventario_volumes.csv
     outs:
       - dados/intermediario/comparacao_candidatos.csv
+
+  evidencia_normalizacao:
+    cmd: python scripts/11_evidencia_normalizacao.py
+    deps:
+      - scripts/11_evidencia_normalizacao.py
+      - src/config.py
+      - src/preprocessing/volume.py
+      - src/dataset/volumes.py
+      - dados/intermediario/inventario_volumes.csv
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - selecao.subsets
+          - pre_processamento.hu_min
+          - pre_processamento.hu_max
+          - evidencia_normalizacao.seriesuid
+          - evidencia_normalizacao.faixa_pulmonar
+    outs:
+      - dados/intermediario/evidencia_normalizacao.csv
+      - relatorios/figuras/normalizacao_hu.png:
+          cache: false
+          persist: true

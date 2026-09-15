@@ -87,6 +87,7 @@ divisão nossa.
 .venv/bin/python scripts/07_preprocessar_base.py
 .venv/bin/python scripts/08_comparar_candidatos.py
 .venv/bin/python scripts/10_detectar_candidatos.py
+.venv/bin/python scripts/11_evidencia_normalizacao.py
 ```
 
 | Script | O que produz |
@@ -99,6 +100,7 @@ divisão nossa.
 | `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
 | `08_comparar_candidatos.py` | a tabela que compara as duas listas de candidatos do desafio |
 | `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
+| `11_evidencia_normalizacao.py` | figura e tabela da janela de HU e normalização de um volume bruto inteiro |
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
@@ -109,7 +111,8 @@ demora, 23,6 s por exame medidos em 13/09/2026, e aceita o mesmo argumento.
 Fora dessa lista fica o `01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina
 que o tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
 
-Ou deixe o DVC cuidar da ordem, que é o mesmo pipeline declarado em `dvc.yaml`:
+O DVC cuida da ordem dos oito estágios declarados em `dvc.yaml`, incluindo a evidência da
+normalização. O recorte (`09`) e a detecção própria (`10`) ainda rodam separadamente:
 
 ```bash
 .venv/bin/dvc repro
@@ -126,8 +129,9 @@ bruto fica fora desse grafo.
 .venv/bin/python -m pytest testes -q
 ```
 
-São 71 testes. Os que precisam abrir volume são pulados automaticamente se o disco com o
-LUNA16 não estiver acessível, e escolhem sozinhos os extremos de espaçamento do inventário.
+São 73 testes, verificados com o comando acima em 15/09/2026. Os que precisam abrir volume são
+pulados automaticamente se o disco com o LUNA16 não estiver acessível, e escolhem sozinhos os
+extremos de espaçamento do inventário.
 
 ## Estrutura
 

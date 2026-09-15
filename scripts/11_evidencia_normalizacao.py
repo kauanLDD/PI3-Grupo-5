@@ -1,29 +1,33 @@
-from __future__ import annotations
+"""Evidência da janela de HU e da normalização sobre um volume bruto inteiro."""
 
 import argparse
 import csv
+import sys
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import SimpleITK as sitk
 
-
-hu_minimo = -1000.0
-hu_maximo = 400.0
-
-
-def normalizar_hu(volume: np.ndarray) -> np.ndarray:
-    volume_limitado = np.clip(volume.astype(np.float32), hu_minimo, hu_maximo)
-    volume_normalizado = (volume_limitado - hu_minimo) / (hu_maximo - hu_minimo)
-    return volume_normalizado.astype(np.float32)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import config
+from dataset import volumes
+from preprocessing import volume as pre
 
 
-def escolher_corte(volume: np.ndarray) -> int:
+def escolher_corte(volume: np.ndarray, faixa) -> int:
+    """Maior área na faixa de HU na metade central; sem área, usa o meio do volume."""
+    if volume.ndim != 3 or any(d == 0 for d in volume.shape):
+        raise ValueError("volume precisa ter três dimensões não vazias: z, y, x")
     inicio = volume.shape[0] // 4
-    fim = 3 * volume.shape[0] // 4
+    fim = max(inicio + 1, 3 * volume.shape[0] // 4)
     candidatos = volume[inicio:fim]
-    area_pulmonar = ((candidatos > -1000) & (candidatos < -400)).sum(axis=(1, 2))
+    area_pulmonar = ((candidatos > faixa[0]) & (candidatos < faixa[1])).sum(axis=(1, 2))
+    if not area_pulmonar.any():
+        return volume.shape[0] // 2
     return int(inicio + np.argmax(area_pulmonar))
 
 
@@ -32,14 +36,15 @@ def salvar_comparacao(
     corte_normalizado: np.ndarray,
     indice_corte: int,
     destino: Path,
+    hu,
 ) -> None:
     figura, eixos = plt.subplots(2, 2, figsize=(12, 9), constrained_layout=True)
 
     imagem_original = eixos[0, 0].imshow(
         corte_original,
         cmap="gray",
-        vmin=hu_minimo,
-        vmax=hu_maximo,
+        vmin=hu[0],
+        vmax=hu[1],
     )
     eixos[0, 0].set_title(f"antes: valores em hu - corte axial {indice_corte}")
     eixos[0, 0].axis("off")
@@ -56,7 +61,7 @@ def salvar_comparacao(
     figura.colorbar(imagem_normalizada, ax=eixos[0, 1], label="intensidade", shrink=0.82)
 
     eixos[1, 0].hist(
-        np.clip(corte_original.ravel(), hu_minimo, hu_maximo),
+        np.clip(corte_original.ravel(), *hu),
         bins=80,
         color="#8a1538",
     )
@@ -75,7 +80,7 @@ def salvar_comparacao(
     eixos[1, 1].set_ylabel("numero de voxels")
 
     figura.suptitle(
-        "padronizacao de intensidades do luna16: janela [-1000, 400] hu",
+        f"padronizacao de intensidades do luna16: janela [{hu[0]}, {hu[1]}] hu",
         fontsize=15,
         fontweight="bold",
     )
@@ -84,33 +89,60 @@ def salvar_comparacao(
 
 
 def main() -> None:
+    cfg = config.carregar()
+    config.fixar_semente()
+    # A janela preserva ar e tecido pulmonar e limita a contribuição de osso e metal.
+    hu = (cfg["pre_processamento"]["hu_min"], cfg["pre_processamento"]["hu_max"])
     parser = argparse.ArgumentParser(
         description="aplica janelamento hu e normalizacao min-max a um volume de ct"
     )
-    parser.add_argument("entrada", type=Path, help="arquivo .mha ou .mhd")
-    parser.add_argument("--saida-imagem", type=Path, default=Path("comparacao_hu.png"))
-    parser.add_argument("--saida-metricas", type=Path, default=Path("metricas_hu.csv"))
+    parser.add_argument("entrada", type=Path, nargs="?", help="volume bruto .mha ou .mhd, em HU")
+    parser.add_argument("--saida-imagem", type=Path,
+                        default=cfg["caminhos"]["figuras"] / "normalizacao_hu.png")
+    parser.add_argument("--saida-metricas", type=Path,
+                        default=cfg["caminhos"]["intermediario"] / "evidencia_normalizacao.csv")
     parser.add_argument("--salvar-volume", type=Path, default=None)
     argumentos = parser.parse_args()
 
-    imagem = sitk.ReadImage(str(argumentos.entrada))
-    volume = sitk.GetArrayFromImage(imagem).astype(np.float32)
-    volume_normalizado = normalizar_hu(volume)
+    caminho = argumentos.entrada
+    if caminho is None:
+        uid = cfg["evidencia_normalizacao"]["seriesuid"]
+        inventario = pd.read_csv(cfg["caminhos"]["intermediario"] / "inventario_volumes.csv")
+        exame = inventario[inventario.seriesuid == uid]
+        subsets = exame[exame.subset.isin(cfg["selecao"]["subsets"])].subset.tolist()
+        caminho = volumes.caminho_do_volume(cfg["caminhos"]["luna16"], uid, subsets)
+        if caminho is None:
+            sys.exit(f"exame {uid} não encontrado no inventário selecionado ou no disco")
+    else:
+        uid = caminho.stem
 
-    assert np.isfinite(volume_normalizado).all()
-    assert float(volume_normalizado.min()) >= 0.0
-    assert float(volume_normalizado.max()) <= 1.0
+    imagem = sitk.ReadImage(str(caminho))
+    normalizada = pre.normalizar(pre.janela(imagem, *hu), *hu)
+    volume = sitk.GetArrayFromImage(imagem)
+    volume_normalizado = sitk.GetArrayFromImage(normalizada)
 
-    indice_corte = escolher_corte(volume)
+    finitos = bool(np.isfinite(volume_normalizado).all())
+    minimo = float(volume_normalizado.min())
+    maximo = float(volume_normalizado.max())
+    print(f"1 exame lido; valores finitos: {finitos}; mínimo: {minimo}; máximo: {maximo}")
+    if not finitos:
+        raise ValueError("normalização produziu valores não finitos")
+    if minimo < 0.0 or maximo > 1.0:
+        raise ValueError(f"normalização fora de [0, 1]: mínimo {minimo}, máximo {maximo}")
+
+    indice_corte = escolher_corte(volume, cfg["evidencia_normalizacao"]["faixa_pulmonar"])
+    argumentos.saida_imagem.parent.mkdir(parents=True, exist_ok=True)
     salvar_comparacao(
         volume[indice_corte],
         volume_normalizado[indice_corte],
         indice_corte,
         argumentos.saida_imagem,
+        hu,
     )
 
     metricas = {
-        "arquivo": argumentos.entrada.name,
+        "seriesuid": uid,
+        "arquivo": caminho.name,
         "dimensoes_zyx": "x".join(map(str, volume.shape)),
         "espacamento_xyz_mm": "x".join(f"{valor:.3f}" for valor in imagem.GetSpacing()),
         "hu_minimo_original": f"{float(volume.min()):.3f}",
@@ -122,12 +154,14 @@ def main() -> None:
         "corte_axial_exibido": str(indice_corte),
     }
 
+    argumentos.saida_metricas.parent.mkdir(parents=True, exist_ok=True)
     with argumentos.saida_metricas.open("w", newline="", encoding="utf-8") as arquivo_csv:
         escritor = csv.DictWriter(arquivo_csv, fieldnames=metricas.keys())
         escritor.writeheader()
         escritor.writerow(metricas)
 
     if argumentos.salvar_volume is not None:
+        argumentos.salvar_volume.parent.mkdir(parents=True, exist_ok=True)
         np.save(argumentos.salvar_volume, volume_normalizado)
 
     for nome, valor in metricas.items():

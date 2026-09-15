@@ -37,6 +37,21 @@ A figura `relatorios/figuras/preprocessamento.png` mostra a mesma posição fís
 depois, com um nódulo de 32,3 mm circulado nos dois lados. À esquerda o tórax inteiro, à
 direita só os dois pulmões.
 
+## Evidência da normalização no volume bruto
+
+Em 15/09/2026 reproduzimos a evidência do exame
+`1.3.6.1.4.1.14519.5.2.1.6279.6001.979083010707182900091062408058` com
+`.venv/bin/python scripts/11_evidencia_normalizacao.py`, usando `janela` e `normalizar`
+de `src/preprocessing/volume.py`. No volume bruto inteiro, de 140 por 512 por 512 voxels,
+o intervalo original foi de -3024 a 1651 HU; após janela e normalização, o mínimo foi 0,
+o máximo 1, a média 0,408845 e o desvio padrão 0,331430. São estatísticas do tórax inteiro,
+incluindo mesa e corpo, sem máscara nem reamostragem. Não descrevem os volumes finais do
+pipeline. A figura `relatorios/figuras/normalizacao_hu.png` mostra o corte axial 61 e seus
+histogramas; a tabela com o identificador do exame fica em
+`dados/intermediario/evidencia_normalizacao.csv`. O estágio `evidencia_normalizacao` do DVC
+rastreia os dois arquivos. O corte é escolhido pela maior área na faixa de HU configurada,
+dentro da metade central do volume; sem voxels nessa faixa, usamos o corte do meio.
+
 ## Onde isso quebra em silêncio
 
 Reamostrar muda o espaçamento. Um volume gravado com a geometria antiga, ou uma coordenada

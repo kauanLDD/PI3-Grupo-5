@@ -1,2 +1,0 @@
-arquivo,dimensoes_zyx,espacamento_xyz_mm,hu_minimo_original,hu_maximo_original,intensidade_minima_normalizada,intensidade_maxima_normalizada,media_normalizada,desvio_padrao_normalizado,corte_axial_exibido
-volume.mhd,140x512x512,0.664x0.664x2.000,-3024.000,1651.000,0.000000,1.000000,0.408845,0.331430,61

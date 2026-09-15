@@ -57,6 +57,12 @@ candidatos:
   # nódulo tem 32,27 mm e não caberia. Ver docs/decisoes/0004.
   patch: [34, 34, 34]
 
+evidencia_normalizacao:
+  # Exame da evidência de HU, mantido fixo para reproduzir a comparação.
+  seriesuid: "1.3.6.1.4.1.14519.5.2.1.6279.6001.979083010707182900091062408058"
+  # Faixa usada apenas para escolher o corte ilustrativo, sem segmentar o volume.
+  faixa_pulmonar: [-1000, -400]
+
 deteccao:
   # Geração de candidatos própria (Sprint 3), por blob detection 3D com Laplacian of Gaussian
   # (skimage.feature.blob_log), sobre o volume já normalizado em [0, 1]. Ponto de partida do

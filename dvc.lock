@@ -318,3 +318,56 @@ stages:
       hash: md5
       md5: 7cfc9709a35653c50f521dce892e3667
       size: 207
+  evidencia_normalizacao:
+    cmd: python scripts/11_evidencia_normalizacao.py
+    deps:
+    - path: dados/intermediario/inventario_volumes.csv
+      hash: md5
+      md5: 117d7de7e14e6d68ff1fe8831a651e47
+      size: 170759
+    - path: scripts/11_evidencia_normalizacao.py
+      hash: md5
+      md5: 3b269f24ddf1f7b187b6150e3201a3c6
+      size: 6514
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/dataset/volumes.py
+      hash: md5
+      md5: 9952b9664a55a6d10220a54f44d684ed
+      size: 3279
+    - path: src/preprocessing/volume.py
+      hash: md5
+      md5: e47fb75dee9b5be9200b3d40d3388a21
+      size: 1898
+    params:
+      configuracao/config.yaml:
+        evidencia_normalizacao.faixa_pulmonar:
+        - -1000
+        - -400
+        evidencia_normalizacao.seriesuid:
+          1.3.6.1.4.1.14519.5.2.1.6279.6001.979083010707182900091062408058
+        pre_processamento.hu_max: 400
+        pre_processamento.hu_min: -1000
+        seed: 42
+        selecao.subsets:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+    outs:
+    - path: dados/intermediario/evidencia_normalizacao.csv
+      hash: md5
+      md5: 92dc919bd4739da2456749a5a377d991
+      size: 439
+    - path: relatorios/figuras/normalizacao_hu.png
+      hash: md5
+      md5: b02b34e86c5e02d35ccfb7b957d72a87
+      size: 726371
