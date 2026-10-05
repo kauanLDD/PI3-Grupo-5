@@ -1,0 +1,54 @@
+{
+  "avaliador": "LUNA16 oficial",
+  "max_marcas_por_exame": 100,
+  "bootstrap": 1000,
+  "confianca": 0.95,
+  "seed": 42,
+  "exames": 2,
+  "fontes": {
+    "noduleCADEvaluationLUNA16.py": {
+      "original": "5c22276353294a6e9de40e7ec8f63f8efa83252c34110b0c0f3c00cbe6b1dcd8",
+      "python3": "621c526b2e097645287395f8836014297835f5eed08ba401953bbb20e43d9963"
+    },
+    "NoduleFinding.py": {
+      "original": "075b8dadecdedc36e83682ff2d7469c64c9d54098446e109dc406c653c32094e",
+      "python3": "075b8dadecdedc36e83682ff2d7469c64c9d54098446e109dc406c653c32094e"
+    },
+    "tools/csvTools.py": {
+      "original": "d8fcfe979a6cdeb603086327c9fba736127bbdc37ad855840670ef833ec53f0a",
+      "python3": "18ddc365691721f304a75332a15f7f815d7828565d88c7e93ad16558285ad349"
+    },
+    "tools/__init__.py": {
+      "original": "a74cc432fc65f314f4f26749f54d90bcc215e942e286e6a7f830eea6355f98ee",
+      "python3": "a74cc432fc65f314f4f26749f54d90bcc215e942e286e6a7f830eea6355f98ee"
+    }
+  },
+  "metricas": {
+    "cpm": 0.0,
+    "sensibilidade_0_125fp": 0.0,
+    "sensibilidade_0_125fp_ic_inferior": 0.0,
+    "sensibilidade_0_125fp_ic_superior": 0.0,
+    "sensibilidade_0_25fp": 0.0,
+    "sensibilidade_0_25fp_ic_inferior": 0.0,
+    "sensibilidade_0_25fp_ic_superior": 0.0,
+    "sensibilidade_0_5fp": 0.0,
+    "sensibilidade_0_5fp_ic_inferior": 0.0,
+    "sensibilidade_0_5fp_ic_superior": 0.0,
+    "sensibilidade_1fp": 0.0,
+    "sensibilidade_1fp_ic_inferior": 0.0,
+    "sensibilidade_1fp_ic_superior": 0.0,
+    "sensibilidade_2fp": 0.0,
+    "sensibilidade_2fp_ic_inferior": 0.0,
+    "sensibilidade_2fp_ic_superior": 0.0,
+    "sensibilidade_4fp": 0.0,
+    "sensibilidade_4fp_ic_inferior": 0.0,
+    "sensibilidade_4fp_ic_superior": 0.0,
+    "sensibilidade_8fp": 0.0,
+    "sensibilidade_8fp_ic_inferior": 0.0,
+    "sensibilidade_8fp_ic_superior": 0.0
+  },
+  "curva_pontos": 7,
+  "curva_bootstrap_pontos": 10000,
+  "correcao_caso_de_borda": "TPR NaN sem positivos detectados passa a sensibilidade zero",
+  "cpm": "media das 7 sensibilidades da curva pontual; IC por ponto do bootstrap oficial"
+}

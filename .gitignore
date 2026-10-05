@@ -32,6 +32,11 @@ modelos/*
 *.h5
 *.onnx
 
+# Dados locais de rastreamento (metadados e artefatos permanecem fora do Git).
+mlflow.db
+mlruns/
+mlartifacts/
+
 # Formatos de imagem médica, caso alguém copie para dentro do repo por engano
 *.dcm
 *.mhd

@@ -53,7 +53,15 @@ Geração própria de candidatos por blob detection 3D, medida em 8 exames.
 
 O recorte dos cubos de 34 voxels ao redor dos 754.975 candidatos V2 rodou nos 888 exames,
 sem falhas. Os números e o comando usado estão em `docs/recortes_v2.md`.
-Ainda não existem: features, baseline, modelo treinado e avaliação FROC.
+Features e Random Forest com MLflow já foram publicados no `main` em
+`7ec3da3`. A cópia local conserva o trabalho de recortes do branch `Lucas`.
+
+A CNN de pesquisa foi integrada como execução independente em
+`scripts/18_treinar_cnn.py`, com MLflow, repetição determinística e avaliação pelo
+programa oficial. A primeira reprodução usa seis exames reais e não representa
+uma avaliação nos 888 exames. Código, comandos, resultados e limites estão em
+[Integração da CNN](docs/09-cnn-mlflow.md); os pesos são registrados em
+[Modelos](modelos/README.md).
 
 ## Como reproduzir
 
