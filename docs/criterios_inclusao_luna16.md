@@ -65,9 +65,9 @@ isotrópico, o que obriga o recorte a ser de 34.
 `LIDC-IDRI-0332` tem duas séries, uma no subset 2 e outra no subset 6. Como os subsets são as
 dobras, esse paciente cai em treino e em teste na mesma rodada.
 
-Está medido e registrado em `docs/decisoes/0003-um-paciente-em-duas-dobras.md`, com o tratamento
-ainda em aberto. Não é critério de inclusão: os dois exames entram, e o que falta decidir é como
-a divisão os trata.
+Está medido e registrado em `docs/decisoes/0003-um-paciente-em-duas-dobras.md`. Na divisão fixa
+do projeto, os subsets 2 e 6 ficam juntos no treino. Os dois exames entram e nenhum paciente
+aparece em mais de uma parte.
 
 ### Qual lista de candidatos usar
 

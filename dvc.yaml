@@ -7,6 +7,9 @@
 # As figuras são `cache: false` porque continuam versionadas no git: a mesma imagem vai para
 # o Sprint Review e depois para o paper. O DVC guarda o hash delas, o git guarda o arquivo.
 
+vars:
+  - configuracao/config.yaml
+
 stages:
   inventario:
     cmd: python scripts/02_inventario_volumes.py
@@ -151,14 +154,21 @@ stages:
       - dados/intermediario/comparacao_candidatos.csv
 
   marcacoes_excluidas:
-    cmd: python scripts/12_marcacoes_excluidas.py
+    cmd: .venv/bin/python scripts/12_marcacoes_excluidas.py
     deps:
       - scripts/12_marcacoes_excluidas.py
+      - requirements-rastreamento.lock.txt
+      - dados/intermediario/candidatos.csv
+      - ${caminhos.luna16_anotacoes}
+      - ${caminhos.luna16_anotacoes_excluidas}
+      - ${caminhos.luna16_candidatos}
       - src/config.py
       - src/detection/candidatos.py
       - dados/intermediario/inventario_volumes.csv
     outs:
-      - dados/intermediario/marcacoes_excluidas.csv
+      - dados/intermediario/marcacoes_excluidas.csv:
+          cache: false
+          persist: true
 
   evidencia_normalizacao:
     cmd: python scripts/11_evidencia_normalizacao.py
@@ -179,5 +189,174 @@ stages:
     outs:
       - dados/intermediario/evidencia_normalizacao.csv
       - relatorios/figuras/normalizacao_hu.png:
+          cache: false
+          persist: true
+
+  divisao:
+    cmd: .venv/bin/python scripts/13_criar_divisao.py
+    deps:
+      - scripts/13_criar_divisao.py
+      - src/config.py
+      - src/dataset/divisao.py
+      - dados/intermediario/pacientes.csv
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - divisao
+    outs:
+      - dados/processado/divisao.csv:
+          cache: false
+          persist: true
+
+  deteccao:
+    cmd: .venv/bin/python scripts/10_detectar_candidatos.py
+    deps:
+      - scripts/10_detectar_candidatos.py
+      - requirements-rastreamento.lock.txt
+      - src/config.py
+      - src/detection/blobs.py
+      - src/detection/rodada.py
+      - src/detection/candidatos.py
+      - src/visualization/fatias.py
+      - dados/processado/volumes
+      - dados/intermediario/inventario_volumes.csv
+      - dados/intermediario/preprocessamento.csv
+      - dados/intermediario/comparacao_candidatos.csv
+      - ${caminhos.luna16_anotacoes}
+      - ${caminhos.luna16_candidatos}
+      - ${caminhos.luna16_candidatos_original}
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - deteccao
+          - avaliacao
+    outs:
+      - dados/intermediario/candidatos.csv:
+          cache: false
+          persist: true
+      - dados/intermediario/cobertura_candidatos_proprios.csv:
+          cache: false
+          persist: true
+      - dados/intermediario/falhas_deteccao.csv:
+          cache: false
+          persist: true
+      - dados/intermediario/situacao_deteccao.csv:
+          cache: false
+          persist: true
+      - dados/intermediario/troca_cobertura_candidatos.csv:
+          cache: false
+          persist: true
+      - relatorios/figuras/deteccao_candidatos.png:
+          cache: false
+          persist: true
+
+  # Experimento encerrado. O protocolo preserva as versões e os hashes originais.
+  # Reexecutar com outro ambiente exige uma nova pasta de experimento.
+  calibracao:
+    frozen: true
+    cmd: .venv/bin/python scripts/12_calibrar_detector.py
+    deps:
+      - scripts/12_calibrar_detector.py
+      - src/config.py
+      - src/detection/calibracao.py
+      - src/detection/blobs.py
+      - src/detection/candidatos.py
+      - dados/processado/volumes
+      - dados/intermediario/pacientes.csv
+      - ${caminhos.luna16_anotacoes}
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - calibracao_log
+          - avaliacao
+    outs:
+      - dados/intermediario/calibracao_log:
+          cache: false
+          persist: true
+
+  features:
+    foreach:
+      - treino
+      - validacao
+    do:
+      cmd: .venv/bin/python scripts/14_extrair_caracteristicas.py --particao ${item}
+      deps:
+        - scripts/14_extrair_caracteristicas.py
+        - requirements-rastreamento.lock.txt
+        - src/config.py
+        - src/detection/features.py
+        - src/detection/patches.py
+        - dados/processado/divisao.csv
+        - dados/processado/volumes
+        - ${caminhos.luna16_candidatos}
+      params:
+        - configuracao/config.yaml:
+            - seed
+            - candidatos.patch
+            - caracteristicas
+      outs:
+        - dados/intermediario/caracteristicas_${item}.csv:
+            cache: false
+            persist: true
+        - dados/intermediario/auditoria_caracteristicas_${item}.csv:
+            cache: false
+            persist: true
+        - dados/intermediario/falhas_caracteristicas_${item}.csv:
+            cache: false
+            persist: true
+
+  registrar_preparacao:
+    cmd: .venv/bin/python scripts/15_registrar_preparacao.py
+    deps:
+      - scripts/15_registrar_preparacao.py
+      - src/experimentos/preparacao.py
+      - src/detection/features.py
+      - src/experimentos/rastreamento.py
+      - src/config.py
+      - requirements-rastreamento.lock.txt
+      - dados/processado/divisao.csv
+      - dados/intermediario/caracteristicas_treino.csv
+      - dados/intermediario/caracteristicas_validacao.csv
+      - dados/intermediario/auditoria_caracteristicas_treino.csv
+      - dados/intermediario/auditoria_caracteristicas_validacao.csv
+      - dados/intermediario/falhas_caracteristicas_treino.csv
+      - dados/intermediario/falhas_caracteristicas_validacao.csv
+      - ${caminhos.luna16_candidatos}
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - candidatos.patch
+          - rastreamento.experimento
+    outs:
+      - dados/intermediario/mlflow_preparacao.json:
+          cache: false
+          persist: true
+
+  treinar_random_forest:
+    cmd: .venv/bin/python scripts/17_treinar_random_forest.py
+    deps:
+      - scripts/17_treinar_random_forest.py
+      - src/experimentos/floresta.py
+      - src/experimentos/preparacao.py
+      - src/experimentos/rastreamento.py
+      - src/detection/features.py
+      - src/config.py
+      - requirements-rastreamento.lock.txt
+      - dados/processado/divisao.csv
+      - dados/intermediario/caracteristicas_treino.csv
+      - dados/intermediario/caracteristicas_validacao.csv
+      - dados/intermediario/auditoria_caracteristicas_treino.csv
+      - dados/intermediario/auditoria_caracteristicas_validacao.csv
+      - dados/intermediario/falhas_caracteristicas_treino.csv
+      - dados/intermediario/falhas_caracteristicas_validacao.csv
+      - ${caminhos.luna16_candidatos}
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - random_forest
+          - rastreamento.experimento
+          - caminhos.random_forest
+    outs:
+      - ${caminhos.random_forest}:
           cache: false
           persist: true

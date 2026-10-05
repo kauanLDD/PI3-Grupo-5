@@ -49,10 +49,20 @@ Leitura do cabeçalho dos volumes e inventário dos 888 exames. Conversão entre
 mundo em milímetro e índice de voxel, com teste e figura de verificação. Análise exploratória
 com cinco figuras. Pré-processamento nos 888 exames, com as cinco etapas: leitura MetaImage,
 janela de HU, reamostragem para voxel isotrópico, máscara de pulmão e normalização [0, 1].
-Geração própria de candidatos por blob detection 3D, medida em 8 exames.
+Geração própria de candidatos por blob detection 3D nos 888 exames: 14.310.042 candidatos,
+16.114,9 por exame, alcançando 1.158 dos 1.186 nódulos. Divisão fixa por paciente em treino,
+validação e teste, sem vazamento entre as três partes.
 
 O recorte dos cubos ao redor de cada candidato tem código e teste, mas nunca rodou na base.
-Ainda não existem: features, baseline, modelo treinado e avaliação FROC.
+As features de intensidade do treino e da validação estão extraídas. O script aceita treino ou validação,
+com retomada por exame. Ver [extração de características](docs/06-extracao-caracteristicas.md).
+Ainda não existem modelo treinado e avaliação FROC válidos.
+
+A comparação exploratória dos parâmetros do LoG tem protocolo, amostra fixa e validação
+separada em `docs/05-calibracao-detector.md`. O limiar 0,20 reduziu 67,1% dos candidatos na
+validação, mas perdeu um dos 11 nódulos. Por isso mantivemos o limiar inicial de 0,10. O
+experimento roda com `.venv/bin/python scripts/12_calibrar_detector.py` e grava os resultados
+em `dados/intermediario/calibracao_log/`, preservando a lista de candidatos anterior.
 
 ## Como reproduzir
 
@@ -88,7 +98,7 @@ divisão nossa.
 .venv/bin/python scripts/08_comparar_candidatos.py
 .venv/bin/python scripts/10_detectar_candidatos.py
 .venv/bin/python scripts/11_evidencia_normalizacao.py
-.venv/bin/python scripts/12_marcacoes_excluidas.py
+.venv/bin/python scripts/13_criar_divisao.py
 ```
 
 | Script | O que produz |
@@ -100,32 +110,37 @@ divisão nossa.
 | `06_escolher_espacamento.py` | a tabela que sustenta o espaçamento de 1 mm e a figura dela |
 | `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
 | `08_comparar_candidatos.py` | a tabela que compara as duas listas de candidatos do desafio |
-| `10_detectar_candidatos.py` | os candidatos próprios por blob detection, a situação de cada exame, a cobertura com intervalo e a troca entre cobertura e candidatos por exame |
+| `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
 | `11_evidencia_normalizacao.py` | figura e tabela da janela de HU e normalização de um volume bruto inteiro |
-| `12_marcacoes_excluidas.py` | quantos candidatos caem nas marcações excluídas do desafio e o falso positivo por exame com e sem a regra |
+| `13_criar_divisao.py` | `dados/processado/divisao.csv`, sem paciente em mais de uma parte |
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
 O `07` demora. São 39,8 minutos e 8,6 GiB, medidos em 10/09/2026 sobre `preprocessamento.csv`, e
 ele aceita um número de exames como argumento para uma rodada curta de teste. O `10` também
-demora, 23,6 s por exame medidos em 13/09/2026, aceita o mesmo argumento e é retomável: rodar
-de novo pula os exames prontos. Ver `docs/04-deteccao-de-candidatos.md`.
+demora, aceita o mesmo argumento e grava um arquivo atômico por exame. Se for interrompido, uma
+nova execução reaproveita os exames completos antes de montar o CSV consolidado.
 
-Fora dessa lista fica o `01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina
-que o tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
+O `13` depende do `dados/intermediario/pacientes.csv`. Fora dessa lista fica o
+`01_pacientes.py`, que gera esse mapa lendo o metadata do LIDC-IDRI e só roda em máquina que o
+tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
 
-O DVC cuida da ordem dos nove estágios declarados em `dvc.yaml`, incluindo a evidência da
-normalização e as marcações excluídas. O recorte (`09`) e a detecção própria (`10`) ainda rodam
-separadamente:
+O DVC agora inclui divisão, detecção, calibração encerrada e features de treino e
+validação e treinamento do Random Forest. O MLflow registra a conferência das features
+e os experimentos de treinamento. Os comandos e os limites do registro estão em
+[Pipeline e registro de experimentos](docs/07-dvc-mlflow.md).
 
 ```bash
-.venv/bin/dvc repro
+.venv/bin/dvc status
+.venv/bin/python scripts/16_abrir_mlflow.py
 ```
 
-Ele executa só os estágios cujo script, módulo ou parâmetro do `config.yaml` mudou desde a
-última vez, e grava no `dvc.lock` o hash do que entrou e do que saiu. É assim que se sabe qual
-versão do código produziu cada figura. O registro `docs/decisoes/0005` explica por que o dado
-bruto fica fora desse grafo.
+O painel do MLflow fica em http://127.0.0.1:5000. O primeiro registro contém a
+preparação dos dados, sem métricas de modelo. Ainda não há remote DVC.
+
+O [primeiro treino do Random Forest](docs/08-primeiro-treino.md) usa somente a
+partição de treino e salva os escores da validação. A avaliação FROC e o teste final
+são etapas separadas.
 
 **4. Testes**
 
@@ -133,7 +148,7 @@ bruto fica fora desse grafo.
 .venv/bin/python -m pytest testes -q
 ```
 
-São 73 testes, verificados com o comando acima em 15/09/2026. Os que precisam abrir volume são
+A contagem atual de testes é informada pela execução do comando acima. Os que precisam abrir volume são
 pulados automaticamente se o disco com o LUNA16 não estiver acessível, e escolhem sozinhos os
 extremos de espaçamento do inventário.
 

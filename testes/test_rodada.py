@@ -88,3 +88,15 @@ def test_juntar_sem_nada_devolve_tabela_vazia(tmp_path):
     lista = rodada.juntar(tmp_path, ["a"], blobs.COLUNAS)
     assert lista.empty
     assert list(lista.columns) == blobs.COLUNAS
+
+
+def test_cache_sem_manifesto_nao_recebe_parametros_novos(tmp_path):
+    rodada.gravar_exame(tmp_path, "a", candidatos("a", 1))
+    with pytest.raises(ValueError, match="sem manifesto"):
+        rodada.preparar_pasta(tmp_path, PARAMETROS)
+
+
+def test_cache_com_outro_exame_nao_e_reutilizado(tmp_path):
+    rodada.gravar_exame(tmp_path, "a", candidatos("b", 1))
+    with pytest.raises(ValueError, match="exame incorreto"):
+        rodada.pendentes(tmp_path, ["a"])

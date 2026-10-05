@@ -58,8 +58,32 @@ nódulo é alcançado quando existe candidato a menos de um raio do centro dele.
 
 ## O que os parâmetros de partida entregam
 
-A rodada nos 888 exames não aconteceu. O que medimos, em 13/09/2026, foi uma amostra de 8 exames,
-um de cada um dos subsets 0 a 7, com `python scripts/10_detectar_candidatos.py 8`:
+Em 03/10/2026, concluímos a rodada nos 888 exames com
+`.venv/bin/python scripts/10_detectar_candidatos.py`. O processo foi interrompido depois de 218
+exames e retomado a partir dos arquivos por exame, sem recalcular o que já estava completo.
+
+| | |
+|---|---|
+| Exames no inventário | 888 |
+| Exames processados | 888 |
+| Exames com erro | 0 |
+| Candidatos | 14.310.042 |
+| Candidatos por exame | 16.114,9 |
+| Nódulos alcançados | 1.158 de 1.186, 97,6% |
+
+O CSV consolidado tem os mesmos 14.310.042 registros que a soma dos 888 arquivos por exame e
+contém exatamente os 888 identificadores do inventário. O relatório
+`dados/intermediario/falhas_deteccao.csv` ficou sem linhas de falha.
+
+Para comparar, o `candidates_V2.csv` do desafio tem 754.975 candidatos, 850,2 por exame, e
+alcança 1.166 dos 1.186 nódulos, 98,3%. A nossa lista tem 19 vezes mais candidatos por exame e
+alcança oito nódulos a menos. Contagem de candidatos por exame não é FP por exame: a lista
+ainda não passou por um classificador nem pelo script oficial da FROC.
+
+### Rodada curta anterior
+
+Em 13/09/2026, antes da rodada completa, medimos uma amostra de 8 exames, um de cada um dos
+subsets 0 a 7, com `python scripts/10_detectar_candidatos.py 8`:
 
 | | |
 |---|---|
@@ -67,10 +91,20 @@ um de cada um dos subsets 0 a 7, com `python scripts/10_detectar_candidatos.py 8
 | Nódulos alcançados | 6 de 6 |
 | Tempo | 189 s nos 8 exames, 23,6 s por exame |
 
-Para comparar, o `candidates_V2.csv` do desafio tem 850,2 candidatos por exame e alcança 1.166
-dos 1.186 nódulos, 98,3%, medido em 03/09/2026 com `scripts/08_comparar_candidatos.py` e
-registrado em `docs/criterios_inclusao_luna16.md`. A nossa lista sai com 16 vezes mais pontos por
-exame, e os 8 exames da amostra têm 6 nódulos anotados, que é pouco para comparar cobertura.
+Naquela amostra, a lista saía com 16 vezes mais pontos por exame que o `candidates_V2`, mas os
+8 exames tinham somente 6 nódulos anotados. A rodada completa substitui essa amostra como
+medição da cobertura e da quantidade de candidatos.
+
+## Calibração exploratória
+
+Em 20/09/2026, comparamos quatro configurações em 21 exames de desenvolvimento e conferimos
+a escolhida em 12 exames de validação. O limiar 0,20 reduziu os candidatos em 68,9% no
+desenvolvimento e preservou 23 de 23 nódulos. Na validação, reduziu 67,1%, mas alcançou 10 de
+11 nódulos, contra 11 de 11 da configuração inicial. As 108 execuções terminaram sem falhas.
+
+O critério definido antes da comparação reprovou o limiar 0,20. Mantivemos os parâmetros
+iniciais no detector de produção. O protocolo, os intervalos de confiança e as limitações da
+amostra estão em `docs/05-calibracao-detector.md`.
 
 ## A rodada nos 888 exames
 
@@ -90,15 +124,14 @@ cada candidato, e os números desta seção não podem ser reportados como ponto
 .venv/bin/python scripts/10_detectar_candidatos.py      # os 888
 ```
 
-A 23,6 s por exame, os 888 levam umas seis horas. A rodada é retomável: cada exame grava o
-próprio arquivo em `dados/intermediario/rodada_deteccao/`, com escrita atômica, e rodar o mesmo
-comando de novo pula os que já estão prontos e tenta de novo os que falharam. Uma queda no meio
-custa só o exame que estava rodando.
+A rodada usa dois processos e reaproveita os arquivos por exame em
+`dados/intermediario/deteccao_log/<chave>/por_exame/`. A chave considera o código
+do detector, seus parâmetros e o relatório de pré-processamento. Conferimos as
+colunas, a identidade do exame e os valores finitos antes de reutilizar um CSV.
 
-A pasta guarda em `parametros.json` os parâmetros do `blob_log` com que nasceu, e o script
-recusa continuar se o `config.yaml` estiver diferente. Sem isso, mudar o limiar no meio da
-rodada daria uma lista em que cada exame foi buscado de um jeito, sem erro nenhum. Para trocar
-de parâmetro, apague a pasta ou aponte `caminhos.rodada_deteccao` para outra.
+Volumes ausentes interrompem a rodada. Falhas de processamento são registradas
+em `falhas_deteccao.csv` e impedem a substituição das saídas finais. Os arquivos
+já concluídos ficam disponíveis para a retomada.
 
 **Antes de soltar os 888, confirme a configuração.** Os parâmetros que valem são os registrados
 no card S4-T9, e o limiar de 0,20 não pode ser o escolhido, porque perdeu um nódulo na
@@ -116,9 +149,8 @@ validação. O script imprime os parâmetros no começo da rodada.
 **Exame sem candidato é resultado, não falha.** Ele entra no denominador da média de candidatos
 por exame, como vai entrar na média de falso positivo da FROC.
 
-**A cobertura é medida só nos exames que rodaram.** Exame que falhou não teve busca, e contar os
-nódulos dele como perdidos misturaria falha de execução com falha do método. As falhas ficam
-contadas à parte, na situação.
+**Só publicamos a cobertura quando todo o lote termina.** Falhas ficam registradas
+separadamente e fazem o comando terminar com erro, preservando as saídas anteriores.
 
 **O intervalo de 95% é por bootstrap de exame**, com as reamostras de
 `avaliacao.bootstrap_reamostras`. Os nódulos de um mesmo exame não são independentes, e
@@ -133,10 +165,12 @@ mostra quanto de cobertura cada corte custa. Na mesma tabela entram o `candidate
 
 ### O que ela mediu
 
-A rodada ainda não foi feita. Quando for, entram aqui a data, os parâmetros, a situação dos
-888, a cobertura com o intervalo, os candidatos por exame e a tabela da troca.
+Os 888 exames foram processados com a configuração inicial, sem falhas, conforme
+o registro acima. A integração da PR #4 acrescenta a situação por exame, o
+intervalo de confiança e a tabela de comparação por escala, reutilizando os
+candidatos já gerados.
 
 ## O que ainda não existe
 
-A calibração de `min_sigma`, `max_sigma` e `threshold` contra a cobertura nos 888 exames, e a
-redução de falsos positivos sobre os candidatos gerados aqui.
+A redução de falsos positivos sobre os candidatos gerados aqui, o modelo treinado e a
+avaliação FROC no conjunto de teste.

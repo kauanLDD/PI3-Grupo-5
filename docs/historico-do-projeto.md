@@ -310,3 +310,124 @@ Nenhum modelo treinado, e a tabela de `modelos/README.md` está vazia.
 A pergunta de pesquisa não está escrita. O documento de revisão de literatura também não existe,
 e o que já foi lido e usado está dentro da decisão 0002, que cita nove referências, três delas
 de 2020 em diante.
+
+## Atualização de 28/09/2026: divisão por paciente
+
+Fechamos a decisão 0003 antes do treino dos modelos. Mantivemos os subsets oficiais intactos e
+fixamos os subsets 0 a 6 para treino, o 7 para validação e os 8 e 9 para teste. As duas séries do
+`LIDC-IDRI-0332`, nos subsets 2 e 6, ficaram juntas no treino.
+
+O `scripts/13_criar_divisao.py` gravou `dados/processado/divisao.csv` com 623 exames de 622
+pacientes no treino, 89 exames de 89 pacientes na validação e 176 exames de 176 pacientes no
+teste. Nenhum dos 887 pacientes aparece em mais de uma parte. O módulo reutilizável fica em
+`src/dataset/divisao.py` e os testes ficam em `testes/test_divisao.py`.
+
+## Atualização de 28/09/2026: calibração do detector
+
+Conferimos a comparação de quatro configurações do LoG registrada em 20/09/2026. Foram 108
+execuções sem falha: 84 no desenvolvimento e 24 na validação. Os hashes dos quatro arquivos de
+código conferem com o manifesto do experimento, e o resumo foi recalculado a partir dos JSONs
+por exame com resultado idêntico ao CSV salvo.
+
+O limiar 0,20 reduziu os candidatos em 68,9% no desenvolvimento e preservou 23 de 23 nódulos.
+Na validação, reduziu 67,1%, mas alcançou 10 de 11 nódulos, contra 11 de 11 da configuração
+inicial. A regra definida antes da comparação reprovou essa escolha. Mantivemos o limiar 0,10
+no detector de produção e não usamos o conjunto de teste. O protocolo e os intervalos de
+confiança estão em `docs/05-calibracao-detector.md`.
+
+## Atualização de 03/10/2026: detector nos 888 exames
+
+Executamos `scripts/10_detectar_candidatos.py` nos 888 volumes pré-processados com a configuração
+inicial mantida pela calibração. O computador interrompeu a primeira execução depois de 218
+exames. O script passou a gravar resultados atômicos por exame e retomou a mesma rodada sem
+recalcular os arquivos completos.
+
+A rodada terminou com 888 exames processados e zero erros. Geramos 14.310.042 candidatos,
+16.114,9 por exame, e alcançamos 1.158 dos 1.186 nódulos de referência, 97,6%. A soma das linhas
+dos 888 arquivos por exame coincide com o CSV consolidado, e os dois conjuntos de identificadores
+coincidem com o inventário. Os resultados ficam em `dados/intermediario/candidatos.csv`,
+`dados/intermediario/cobertura_candidatos_proprios.csv` e
+`dados/intermediario/falhas_deteccao.csv`.
+
+A lista `candidates_V2` do desafio continua menor e cobre mais nódulos: 754.975 candidatos,
+850,2 por exame, e 1.166 de 1.186 nódulos alcançados. A contagem da lista própria é 19 vezes
+maior e sua cobertura perde oito nódulos em relação ao V2. Essa comparação ainda não é FROC,
+porque candidatos por exame não são falsos positivos por exame.
+
+## Atualização de 04/10/2026: características de treino e validação
+
+O extrator de intensidade está em `src/detection/features.py`, executado por
+`scripts/14_extrair_caracteristicas.py`. O CSV de treino contém 529.500 candidatos
+dos 623 exames, com 1.098 positivos. A execução com `--particao validacao` produziu
+75.063 candidatos dos 89 exames do subset 7, com 120 positivos, zero descartes e
+zero falhas. Essas contagens descrevem candidatos, não nódulos.
+
+A validação terminou em 183 segundos. Uma segunda execução retomou os 89 exames
+do cache. Conferimos identificadores, coordenadas, rótulos, valores finitos e ausência
+de pacientes compartilhados com treino. Os comandos e hashes estão em
+`docs/06-extracao-caracteristicas.md`. Nenhum volume de teste foi aberto nesta etapa.
+
+## Atualização de 04/10/2026: DVC e MLflow
+
+Incluímos divisão, detecção, calibração encerrada, features de treino e validação
+e registro da preparação no DVC. O pipeline passou a ter 14 estágios.
+Registramos as saídas existentes no lock após conferir os hashes; não repetimos
+a detecção nem o pré-processamento. A calibração permanece congelada como
+experimento histórico.
+
+Instalamos DVC 3.67.1 e MLflow 3.16.1, com versões registradas em
+`requirements-rastreamento.lock.txt`. A conferência com `pip check` não encontrou
+dependências incompatíveis. As bibliotecas previamente instaladas mantiveram
+suas versões.
+
+O `scripts/15_registrar_preparacao.py` conferiu os CSVs de treino e validação e
+criou a execução `1311d756049a4988b315a33831bfeb67` do tipo `preparacao`, com
+12 contagens dos dados, parâmetros, hashes, ambiente e cópia do código.
+O registro indica as alterações locais ainda sem commit. Não há treinamento
+nem métricas FROC nessa execução.
+
+Verificamos o banco e os artefatos pelo cliente e pela API do painel local,
+com resposta HTTP 200. `dvc status --json` retornou um objeto vazio, e
+`dvc repro --dry registrar_preparacao` indicou todos os estágios do caminho
+atualizados. `.venv/bin/python -m pytest -q` passou em 95 testes.
+O guia está em `docs/07-dvc-mlflow.md`.
+
+## Atualização de 04/10/2026: primeiro treino do Random Forest
+
+Executamos `.venv/bin/dvc repro --single-item treinar_random_forest`, que chama
+`scripts/17_treinar_random_forest.py`. Usamos 200 árvores, profundidade máxima 20,
+mínimo de dois candidatos por folha, pesos por classe `balanced`, dois processos
+e semente 42. A configuração foi fixada antes da avaliação da validação.
+
+O treino utilizou 529.500 candidatos V2, sendo 1.098 positivos e 528.402 negativos,
+de 623 exames e 622 pacientes. O ajuste levou 145,01 segundos. Geramos 75.063
+probabilidades para os 89 exames e pacientes da validação. Não usamos as features
+de teste, não ajustamos parâmetros pela validação e não calculamos FROC nesta etapa.
+
+O run `1663d6b906ee486bb0cfff9fdd09457d` terminou como `FINISHED` no MLflow, com
+modelo, probabilidades, parâmetros, ambiente, hashes das entradas e cópia do código.
+A cópia do modelo recarregada reproduziu as previsões em memória. O código estava
+baseado em `c87bf93`, com alterações locais ainda não commitadas.
+
+Extraímos a conferência das features para `src/experimentos/preparacao.py`, usada
+tanto pelo registro da preparação quanto pelo treinamento. O DVC passou a conter
+15 estágios. A execução `.venv/bin/python -m pytest testes -q` passou em 103 testes.
+
+## Atualização de 05/10/2026: integração das marcações excluídas e cobertura
+
+Integramos a PR #4 e conciliamos o detector com o cache dos 888 exames já
+processados. O script confere identidade e valores dos CSVs reutilizados e
+interrompe a publicação se houver volumes ausentes ou falhas. O módulo de
+retomada também recusa adotar arquivos sem manifesto de parâmetros.
+
+Executamos `.venv/bin/dvc repro --single-item deteccao marcacoes_excluidas`.
+A lista própria manteve 14.310.042 candidatos e 1.158 de 1.186 nódulos cobertos,
+com média de 16.114,91 candidatos por exame. O intervalo de 95% por bootstrap
+de exame foi de 96,71% a 98,57%. Essa medida descreve cobertura, não FROC, e
+os filtros por escala não foram usados para escolher parâmetros no teste.
+
+O DVC passou a registrar as dependências das marcações excluídas e as saídas
+de situação e comparação do detector. O pipeline contém 16 estágios. Os testes
+da integração passaram em 126 casos, incluindo rejeição de cache com identidade
+incorreta e de pasta sem manifesto. O treinamento e a avaliação oficial continuam
+sendo etapas separadas; os escores de validação do primeiro treino estão salvos.

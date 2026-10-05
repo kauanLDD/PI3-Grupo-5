@@ -1,5 +1,16 @@
 # Guia das tasks S3-T5 e S4-T10
 
+## Integração em 05/10/2026
+
+A PR #4 foi incorporada na main. A execução usa o cache já existente em
+`dados/intermediario/deteccao_log/<chave>/por_exame`, com dois processos,
+conferência da identidade dos exames e interrupção antes de publicar resultados
+finais se houver falhas. A pasta `rodada_deteccao` descrita no guia original não
+é usada pelo script integrado. O DVC acompanha também os relatórios de situação,
+cobertura e marcações excluídas. A comparação por escala é descritiva da base;
+não usamos o teste para escolher o parâmetro de produção. As seções abaixo
+registram a implementação original da PR.
+
 Este documento explica tudo o que foi feito nas duas tasks do Trello atribuídas ao Arthur, por
 que foi feito assim, e o passo a passo completo para configurar a máquina, testar e rodar. Ele
 foi escrito para quem vai executar a rodada nos 888 exames sem ter acompanhado o trabalho.

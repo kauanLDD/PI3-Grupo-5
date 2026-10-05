@@ -11,6 +11,9 @@ import os
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
+
+from detection.blobs import COLUNAS
 
 ARQUIVO_PARAMETROS = "parametros.json"
 ARQUIVO_REGISTRO = "registro.csv"
@@ -33,6 +36,8 @@ def preparar_pasta(pasta: Path, parametros: dict) -> bool:
     arquivo = pasta / ARQUIVO_PARAMETROS
 
     if not arquivo.exists():
+        if any(p.name != ARQUIVO_REGISTRO for p in pasta.glob("*.csv")):
+            raise ValueError("cache sem manifesto de parametros; origem precisa ser conferida")
         arquivo.write_text(json.dumps(parametros, indent=2, sort_keys=True), encoding="utf-8")
         return False
 
@@ -54,7 +59,25 @@ def caminho_do_exame(pasta: Path, seriesuid: str) -> Path:
 
 def pendentes(pasta: Path, seriesuids) -> list:
     """Os exames que ainda não têm arquivo na pasta, na ordem recebida."""
-    return [uid for uid in seriesuids if not caminho_do_exame(pasta, uid).exists()]
+    faltam = []
+    for uid in seriesuids:
+        caminho = caminho_do_exame(pasta, uid)
+        if caminho.exists():
+            ler_exame(caminho, uid)
+        else:
+            faltam.append(uid)
+    return faltam
+
+
+def ler_exame(caminho, seriesuid):
+    dados = pd.read_csv(caminho)
+    if list(dados.columns) != COLUNAS:
+        raise ValueError("colunas invalidas no cache")
+    if dados.isna().any().any() or not dados.seriesuid.eq(seriesuid).all():
+        raise ValueError("cache com exame incorreto ou valores ausentes")
+    if not np.isfinite(dados[COLUNAS[1:]].to_numpy(dtype=float)).all():
+        raise ValueError("cache com valores infinitos")
+    return dados
 
 
 def gravar_exame(pasta: Path, seriesuid: str, candidatos: pd.DataFrame) -> None:
@@ -93,7 +116,7 @@ def situacao(pasta: Path, seriesuids) -> pd.DataFrame:
         caminho = caminho_do_exame(pasta, uid)
         anterior = ultima.loc[uid] if uid in ultima.index else None
         if caminho.exists():
-            n = len(pd.read_csv(caminho))
+            n = len(ler_exame(caminho, uid))
             status = CONCLUIDO if n else SEM_CANDIDATO
             erro = ""
         else:
@@ -109,7 +132,7 @@ def situacao(pasta: Path, seriesuids) -> pd.DataFrame:
 
 def juntar(pasta: Path, seriesuids, colunas) -> pd.DataFrame:
     """A lista única, na ordem dos exames pedidos, com os que já têm arquivo."""
-    partes = [pd.read_csv(caminho_do_exame(pasta, uid)) for uid in seriesuids
+    partes = [ler_exame(caminho_do_exame(pasta, uid), uid) for uid in seriesuids
               if caminho_do_exame(pasta, uid).exists()]
     partes = [p for p in partes if not p.empty]
     if not partes:

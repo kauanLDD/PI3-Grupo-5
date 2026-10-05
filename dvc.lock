@@ -109,7 +109,7 @@ stages:
         pre_processamento.hu_max: 400
         pre_processamento.hu_min: -1000
     outs:
-    - path: 
+    - path:
         dados/processado/1.3.6.1.4.1.14519.5.2.1.6279.6001.287966244644280690737019247886.mha
       hash: md5
       md5: 476dd0768810c9c43c75105c9f7c5a39
@@ -311,8 +311,8 @@ stages:
       size: 1306
     - path: src/detection/candidatos.py
       hash: md5
-      md5: 6863cb34754b452f9a80f2666499e488
-      size: 1027
+      md5: e027f4f5fd792b3a8a68e035d60ba01d
+      size: 4736
     outs:
     - path: dados/intermediario/comparacao_candidatos.csv
       hash: md5
@@ -371,3 +371,588 @@ stages:
       hash: md5
       md5: b02b34e86c5e02d35ccfb7b957d72a87
       size: 726371
+  divisao:
+    cmd: .venv/bin/python scripts/13_criar_divisao.py
+    deps:
+    - path: dados/intermediario/pacientes.csv
+      hash: md5
+      md5: dc1560506de521378452dd5e8fa55e74
+      size: 72842
+    - path: scripts/13_criar_divisao.py
+      hash: md5
+      md5: 565cccfefb228e1960238d4aaf5b3b52
+      size: 954
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/dataset/divisao.py
+      hash: md5
+      md5: da3c2dbba5432298b7532dd635561983
+      size: 1934
+    params:
+      configuracao/config.yaml:
+        divisao:
+          chave: paciente
+          usar_subsets_como_dobras: true
+          particoes:
+            treino:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            validacao:
+            - 7
+            teste:
+            - 8
+            - 9
+        seed: 42
+    outs:
+    - path: dados/processado/divisao.csv
+      hash: md5
+      md5: 5dd7faea5aa4de0bc721c9c1e082674b
+      size: 79158
+  deteccao:
+    cmd: .venv/bin/python scripts/10_detectar_candidatos.py
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/annotations.csv
+      hash: md5
+      md5: f4404df491aee6445a4485061bfdffdd
+      size: 136986
+      isexec: true
+    - path: /media/kauan/HD Samuel/luna/archive/candidates.csv
+      hash: md5
+      md5: 2493fb3a766f71a7e1c6591d45191215
+      size: 55427881
+      isexec: true
+    - path: /media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+      isexec: true
+    - path: dados/intermediario/comparacao_candidatos.csv
+      hash: md5
+      md5: 7cfc9709a35653c50f521dce892e3667
+      size: 207
+    - path: dados/intermediario/inventario_volumes.csv
+      hash: md5
+      md5: 117d7de7e14e6d68ff1fe8831a651e47
+      size: 170759
+    - path: dados/intermediario/preprocessamento.csv
+      hash: md5
+      md5: ffb7cbefe3f63179783363360cd00c56
+      size: 112482
+    - path: dados/processado/volumes
+      hash: md5
+      md5: 7c5c8025a80d44a1b39b31cd341c15c6.dir
+      size: 9206037290
+      nfiles: 888
+    - path: requirements-rastreamento.lock.txt
+      hash: md5
+      md5: 2d947512d861bd4971f6accc420639e3
+      size: 2837
+    - path: scripts/10_detectar_candidatos.py
+      hash: md5
+      md5: 059c980f6868573d6c01ff8d7ed18430
+      size: 12958
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/blobs.py
+      hash: md5
+      md5: b844f3872b72d1d46aeba905a641b6f8
+      size: 2666
+    - path: src/detection/candidatos.py
+      hash: md5
+      md5: e027f4f5fd792b3a8a68e035d60ba01d
+      size: 4736
+    - path: src/detection/rodada.py
+      hash: md5
+      md5: b7a51c0166faec3ff835d1013fbdb1d0
+      size: 5743
+    - path: src/visualization/fatias.py
+      hash: md5
+      md5: e3e02409bf2ecd9307b9e626e859beb9
+      size: 4107
+    params:
+      configuracao/config.yaml:
+        avaliacao:
+          pontos_fp_por_exame:
+          - 0.125
+          - 0.25
+          - 0.5
+          - 1
+          - 2
+          - 4
+          - 8
+          pontos_de_operacao:
+          - 1
+          - 4
+          bootstrap_reamostras: 1000
+          intervalo_confianca: 0.95
+        deteccao:
+          blob_log:
+            min_sigma: 1.0
+            max_sigma: 5.0
+            num_sigma: 5
+            threshold: 0.1
+          trabalhadores: 2
+        seed: 42
+    outs:
+    - path: dados/intermediario/candidatos.csv
+      hash: md5
+      md5: c0d40f6cbf8f3685a72be6135e546bf9
+      size: 1714804240
+    - path: dados/intermediario/cobertura_candidatos_proprios.csv
+      hash: md5
+      md5: 50552ce88b8963cdcd9aaac70bbe2608
+      size: 246
+    - path: dados/intermediario/falhas_deteccao.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+    - path: dados/intermediario/situacao_deteccao.csv
+      hash: md5
+      md5: b31a109d363e7f14fc2a30244cb141f5
+      size: 73727
+    - path: dados/intermediario/troca_cobertura_candidatos.csv
+      hash: md5
+      md5: c8bdcb3e7974708a0a8c833e83106e08
+      size: 1044
+    - path: relatorios/figuras/deteccao_candidatos.png
+      hash: md5
+      md5: ade0e068e2b98e002cc76822cb9072c9
+      size: 295465
+  calibracao:
+    cmd: .venv/bin/python scripts/12_calibrar_detector.py
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/annotations.csv
+      hash: md5
+      md5: f4404df491aee6445a4485061bfdffdd
+      size: 136986
+      isexec: true
+    - path: dados/intermediario/pacientes.csv
+      hash: md5
+      md5: dc1560506de521378452dd5e8fa55e74
+      size: 72842
+    - path: dados/processado/volumes
+      hash: md5
+      md5: 7c5c8025a80d44a1b39b31cd341c15c6.dir
+      size: 9206037290
+      nfiles: 888
+    - path: scripts/12_calibrar_detector.py
+      hash: md5
+      md5: 3449b6da2d5cd5fe302c5c167362a089
+      size: 9348
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/blobs.py
+      hash: md5
+      md5: b844f3872b72d1d46aeba905a641b6f8
+      size: 2666
+    - path: src/detection/calibracao.py
+      hash: md5
+      md5: a5cb1426ab2f9743b0a2ea6aa291c8c2
+      size: 4327
+    - path: src/detection/candidatos.py
+      hash: md5
+      md5: 6863cb34754b452f9a80f2666499e488
+      size: 1027
+    params:
+      configuracao/config.yaml:
+        avaliacao:
+          pontos_fp_por_exame:
+          - 0.125
+          - 0.25
+          - 0.5
+          - 1
+          - 2
+          - 4
+          - 8
+          pontos_de_operacao:
+          - 1
+          - 4
+          bootstrap_reamostras: 1000
+          intervalo_confianca: 0.95
+        calibracao_log:
+          desenvolvimento:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          validacao:
+          - 7
+          teste:
+          - 8
+          - 9
+          positivos_por_subset: 2
+          negativos_por_subset: 1
+          positivos_validacao: 8
+          negativos_validacao: 4
+          trabalhadores: 2
+          configuracoes:
+            inicial:
+              min_sigma: 1.0
+              max_sigma: 5.0
+              num_sigma: 5
+              threshold: 0.1
+            limiar_015:
+              min_sigma: 1.0
+              max_sigma: 5.0
+              num_sigma: 5
+              threshold: 0.15
+            limiar_020:
+              min_sigma: 1.0
+              max_sigma: 5.0
+              num_sigma: 5
+              threshold: 0.2
+            escalas_9:
+              min_sigma: 1.0
+              max_sigma: 9.0
+              num_sigma: 9
+              threshold: 0.15
+        seed: 42
+    outs:
+    - path: dados/intermediario/calibracao_log
+      hash: md5
+      md5: aefc504a4b84b2258eb6cf9863860985.dir
+      size: 169261
+      nfiles: 120
+  features@treino:
+    cmd: .venv/bin/python scripts/14_extrair_caracteristicas.py --particao
+      treino
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+      isexec: true
+    - path: dados/processado/divisao.csv
+      hash: md5
+      md5: 5dd7faea5aa4de0bc721c9c1e082674b
+      size: 79158
+    - path: dados/processado/volumes
+      hash: md5
+      md5: 7c5c8025a80d44a1b39b31cd341c15c6.dir
+      size: 9206037290
+      nfiles: 888
+    - path: requirements-rastreamento.lock.txt
+      hash: md5
+      md5: 2d947512d861bd4971f6accc420639e3
+      size: 2837
+    - path: scripts/14_extrair_caracteristicas.py
+      hash: md5
+      md5: a917a40db1e7c624cba2f0877f9fc2ae
+      size: 12364
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/features.py
+      hash: md5
+      md5: 81f95727eece1e7ce7913e361f078c02
+      size: 4038
+    - path: src/detection/patches.py
+      hash: md5
+      md5: 1c214aac71fac81a40c221acaa20b193
+      size: 1244
+    params:
+      configuracao/config.yaml:
+        candidatos.patch:
+        - 34
+        - 34
+        - 34
+        caracteristicas:
+          amostra_treino:
+            positivos: 50
+            negativos: 50
+          trabalhadores: 2
+        seed: 42
+    outs:
+    - path: dados/intermediario/auditoria_caracteristicas_treino.csv
+      hash: md5
+      md5: 6169e2f94463300aa2ff2502d059bcc6
+      size: 43867457
+    - path: dados/intermediario/caracteristicas_treino.csv
+      hash: md5
+      md5: f52d11b0947f3fa448cc850112d9213b
+      size: 126990027
+    - path: dados/intermediario/falhas_caracteristicas_treino.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+  features@validacao:
+    cmd: .venv/bin/python scripts/14_extrair_caracteristicas.py --particao
+      validacao
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+      isexec: true
+    - path: dados/processado/divisao.csv
+      hash: md5
+      md5: 5dd7faea5aa4de0bc721c9c1e082674b
+      size: 79158
+    - path: dados/processado/volumes
+      hash: md5
+      md5: 7c5c8025a80d44a1b39b31cd341c15c6.dir
+      size: 9206037290
+      nfiles: 888
+    - path: requirements-rastreamento.lock.txt
+      hash: md5
+      md5: 2d947512d861bd4971f6accc420639e3
+      size: 2837
+    - path: scripts/14_extrair_caracteristicas.py
+      hash: md5
+      md5: a917a40db1e7c624cba2f0877f9fc2ae
+      size: 12364
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/features.py
+      hash: md5
+      md5: 81f95727eece1e7ce7913e361f078c02
+      size: 4038
+    - path: src/detection/patches.py
+      hash: md5
+      md5: 1c214aac71fac81a40c221acaa20b193
+      size: 1244
+    params:
+      configuracao/config.yaml:
+        candidatos.patch:
+        - 34
+        - 34
+        - 34
+        caracteristicas:
+          amostra_treino:
+            positivos: 50
+            negativos: 50
+          trabalhadores: 2
+        seed: 42
+    outs:
+    - path: dados/intermediario/auditoria_caracteristicas_validacao.csv
+      hash: md5
+      md5: 714d9c6c8626a998b4a3c307fc3ac878
+      size: 6219351
+    - path: dados/intermediario/caracteristicas_validacao.csv
+      hash: md5
+      md5: 9594f9cc8bc7f6a9a4853b82f75ec8b4
+      size: 18255767
+    - path: dados/intermediario/falhas_caracteristicas_validacao.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+  registrar_preparacao:
+    cmd: .venv/bin/python scripts/15_registrar_preparacao.py
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+      isexec: true
+    - path: dados/intermediario/auditoria_caracteristicas_treino.csv
+      hash: md5
+      md5: 6169e2f94463300aa2ff2502d059bcc6
+      size: 43867457
+    - path: dados/intermediario/auditoria_caracteristicas_validacao.csv
+      hash: md5
+      md5: 714d9c6c8626a998b4a3c307fc3ac878
+      size: 6219351
+    - path: dados/intermediario/caracteristicas_treino.csv
+      hash: md5
+      md5: f52d11b0947f3fa448cc850112d9213b
+      size: 126990027
+    - path: dados/intermediario/caracteristicas_validacao.csv
+      hash: md5
+      md5: 9594f9cc8bc7f6a9a4853b82f75ec8b4
+      size: 18255767
+    - path: dados/intermediario/falhas_caracteristicas_treino.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+    - path: dados/intermediario/falhas_caracteristicas_validacao.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+    - path: dados/processado/divisao.csv
+      hash: md5
+      md5: 5dd7faea5aa4de0bc721c9c1e082674b
+      size: 79158
+    - path: requirements-rastreamento.lock.txt
+      hash: md5
+      md5: 2d947512d861bd4971f6accc420639e3
+      size: 2837
+    - path: scripts/15_registrar_preparacao.py
+      hash: md5
+      md5: 79c2cf2378f7c8631f731674fe63fbd0
+      size: 1345
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/features.py
+      hash: md5
+      md5: 81f95727eece1e7ce7913e361f078c02
+      size: 4038
+    - path: src/experimentos/preparacao.py
+      hash: md5
+      md5: afb7e89eb6a672b40f0be5e25ca07cec
+      size: 3116
+    - path: src/experimentos/rastreamento.py
+      hash: md5
+      md5: f38a6e59e00a3e90d8882dbe400e53c5
+      size: 3739
+    params:
+      configuracao/config.yaml:
+        candidatos.patch:
+        - 34
+        - 34
+        - 34
+        rastreamento.experimento: PI3-Grupo-5
+        seed: 42
+    outs:
+    - path: dados/intermediario/mlflow_preparacao.json
+      hash: md5
+      md5: 12a93c556e6706d570259244d44965da
+      size: 465
+  treinar_random_forest:
+    cmd: .venv/bin/python scripts/17_treinar_random_forest.py
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+      isexec: true
+    - path: dados/intermediario/auditoria_caracteristicas_treino.csv
+      hash: md5
+      md5: 6169e2f94463300aa2ff2502d059bcc6
+      size: 43867457
+    - path: dados/intermediario/auditoria_caracteristicas_validacao.csv
+      hash: md5
+      md5: 714d9c6c8626a998b4a3c307fc3ac878
+      size: 6219351
+    - path: dados/intermediario/caracteristicas_treino.csv
+      hash: md5
+      md5: f52d11b0947f3fa448cc850112d9213b
+      size: 126990027
+    - path: dados/intermediario/caracteristicas_validacao.csv
+      hash: md5
+      md5: 9594f9cc8bc7f6a9a4853b82f75ec8b4
+      size: 18255767
+    - path: dados/intermediario/falhas_caracteristicas_treino.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+    - path: dados/intermediario/falhas_caracteristicas_validacao.csv
+      hash: md5
+      md5: 59e1208efbec45181cb19bbeab25d50a
+      size: 15
+    - path: dados/processado/divisao.csv
+      hash: md5
+      md5: 5dd7faea5aa4de0bc721c9c1e082674b
+      size: 79158
+    - path: requirements-rastreamento.lock.txt
+      hash: md5
+      md5: 2d947512d861bd4971f6accc420639e3
+      size: 2837
+    - path: scripts/17_treinar_random_forest.py
+      hash: md5
+      md5: 66a2d12653653b7691ff983e90394aee
+      size: 3345
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/features.py
+      hash: md5
+      md5: 81f95727eece1e7ce7913e361f078c02
+      size: 4038
+    - path: src/experimentos/floresta.py
+      hash: md5
+      md5: c61fadb404500e4a136c8de6db3420f3
+      size: 1830
+    - path: src/experimentos/preparacao.py
+      hash: md5
+      md5: afb7e89eb6a672b40f0be5e25ca07cec
+      size: 3116
+    - path: src/experimentos/rastreamento.py
+      hash: md5
+      md5: f38a6e59e00a3e90d8882dbe400e53c5
+      size: 3739
+    params:
+      configuracao/config.yaml:
+        caminhos.random_forest: modelos/random_forest_v2
+        random_forest:
+          n_estimators: 200
+          max_depth: 20
+          min_samples_leaf: 2
+          max_features: sqrt
+          class_weight: balanced
+          n_jobs: 2
+        rastreamento.experimento: PI3-Grupo-5
+        seed: 42
+    outs:
+    - path: modelos/random_forest_v2
+      hash: md5
+      md5: 5eb8783c961efd609e347bccd88c2575.dir
+      size: 25830356
+      nfiles: 3
+  marcacoes_excluidas:
+    cmd: .venv/bin/python scripts/12_marcacoes_excluidas.py
+    deps:
+    - path: /media/kauan/HD Samuel/luna/archive/annotations.csv
+      hash: md5
+      md5: f4404df491aee6445a4485061bfdffdd
+      size: 136986
+      isexec: true
+    - path: /media/kauan/HD Samuel/luna/archive/candidates_V2/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+      isexec: true
+    - path: /media/kauan/HD
+        Samuel/luna/archive/evaluationScript/evaluationScript/annotations/annotations_excluded.csv
+      hash: md5
+      md5: cc20913a2f1a44e183958e7e2154ddfd
+      size: 3534875
+      isexec: true
+    - path: dados/intermediario/candidatos.csv
+      hash: md5
+      md5: c0d40f6cbf8f3685a72be6135e546bf9
+      size: 1714804240
+    - path: dados/intermediario/inventario_volumes.csv
+      hash: md5
+      md5: 117d7de7e14e6d68ff1fe8831a651e47
+      size: 170759
+    - path: requirements-rastreamento.lock.txt
+      hash: md5
+      md5: 2d947512d861bd4971f6accc420639e3
+      size: 2837
+    - path: scripts/12_marcacoes_excluidas.py
+      hash: md5
+      md5: eebb5d9006989e41cd8694426e8820ce
+      size: 3655
+    - path: src/config.py
+      hash: md5
+      md5: 8167e0210942c88a2baaec8b50216f0f
+      size: 1306
+    - path: src/detection/candidatos.py
+      hash: md5
+      md5: e027f4f5fd792b3a8a68e035d60ba01d
+      size: 4736
+    outs:
+    - path: dados/intermediario/marcacoes_excluidas.csv
+      hash: md5
+      md5: b2b5e2d9020bc4f3113efffa7e8458e2
+      size: 265

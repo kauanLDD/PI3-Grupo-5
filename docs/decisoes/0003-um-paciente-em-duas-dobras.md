@@ -1,7 +1,7 @@
 # 0003: um paciente aparece em duas dobras do desafio
 
-**Estado:** medido, tratamento em aberto
-**Data:** 30/08/2026
+**Estado:** fechada
+**Data:** 30/08/2026, fechada em 28/09/2026
 
 ## Contexto
 
@@ -46,26 +46,28 @@ quando não é seria errar exatamente onde o enunciado avisa.
 Vale registrar também que o problema só apareceu com o desafio completo. Nos subsets 0 a 4,
 medidos em 29/08, os 445 exames eram 445 pacientes distintos, sem uma colisão sequer.
 
-## O que fica decidido agora
+## Decisão
 
-Registramos a exceção e corrigimos a afirmação falsa do `config.yaml`. O tratamento fica em
-aberto até existir a divisão de fato, e as duas saídas são:
+Mantivemos os subsets oficiais sem mover exames e fixamos uma divisão única antes do treino:
+subsets 0 a 6 para treino, subset 7 para validação e subsets 8 e 9 para teste. Os subsets 2 e 6
+ficam na mesma parte, portanto as duas séries do `LIDC-IDRI-0332` entram juntas no treino.
 
-**Manter as dobras do desafio como estão** e declarar a exceção em todo resultado. Preserva a
-comparação com o leaderboard, que é o motivo de usar as dobras dele.
+Essa escolha preserva a composição dos subsets do desafio, reserva dois deles para a avaliação
+final e elimina o vazamento entre as três partes. O arquivo gerado tem 623 exames de 622
+pacientes no treino, 89 exames de 89 pacientes na validação e 176 exames de 176 pacientes no
+teste. Nenhum paciente aparece em mais de uma parte.
 
-**Mover as duas séries para a mesma dobra.** Elimina o vazamento e introduz uma diferença
-nossa contra o baseline público, em uma dobra de 89 exames.
-
-Não escolhemos ainda porque a divisão ainda não existe em código. A escolha entra aqui quando
-entrar, com o número que a sustentar.
+A divisão fica em `dados/processado/divisao.csv`, gerada por `scripts/13_criar_divisao.py`. O
+arquivo traz `seriesuid`, `paciente`, `subset` e `particao` para que baseline e CNN usem
+exatamente os mesmos pacientes.
 
 ## Como verificar
 
 ```
+.venv/bin/python scripts/13_criar_divisao.py
 .venv/bin/python -m pytest testes/test_divisao.py -v
 ```
 
-O teste lê `dados/intermediario/pacientes.csv` e falha se algum paciente além do
-`LIDC-IDRI-0332` aparecer em mais de uma dobra, se esse deixar de aparecer, ou se a tabela
-deixar de cobrir os 888 exames.
+O script imprime a quantidade de exames e pacientes de cada parte. Os testes falham se o mapa
+deixar de cobrir os 888 exames, se a exceção conhecida mudar ou se qualquer paciente aparecer
+em mais de uma parte.

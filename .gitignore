@@ -3,6 +3,7 @@ _local/
 CLAUDE.md
 AGENTS.md
 .claude/
+.codex/
 .cursor/
 .cursorrules
 .aider*
@@ -15,6 +16,7 @@ PROMPT*.md
 separar-material-local.sh
 limpar-estrutura-em-ingles.sh
 copiar-material-do-professor.sh
+tmp/
 
 # Dados. Nada de imagem médica ou anotação bruta no git.
 dados/bruto/*
@@ -67,3 +69,9 @@ htmlcov/
 Thumbs.db
 .idea/
 .vscode/
+.agents/
+
+# Registros locais do MLflow.
+mlruns/
+mlartifacts/
+mlflow.db*
