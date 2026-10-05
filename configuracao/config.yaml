@@ -21,6 +21,10 @@ caminhos:
   luna16_candidatos_original: "/media/kauan/HD Samuel/luna/archive/candidates.csv"
   luna16_mascaras: "/media/kauan/HD Samuel/luna/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
   luna16_avaliacao: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript"
+  # Os 35.192 achados que o desafio tira da conta: candidato em cima de um deles não é acerto
+  # nem falso positivo. Vem dentro do pacote do avaliador, em annotations/.
+  # Ver src/detection/candidatos.py, função rotular, e docs/criterios_inclusao_luna16.md.
+  luna16_anotacoes_excluidas: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript/annotations/annotations_excluded.csv"
 
   # Dentro do repo, fora do git.
   intermediario: "dados/intermediario"
@@ -36,6 +40,13 @@ caminhos:
   # vem pronto do desafio. Fora do git, como todo dado gerado. Ver src/detection/blobs.py.
   candidatos_proprios: "dados/intermediario/candidatos.csv"
   cobertura_candidatos_proprios: "dados/intermediario/cobertura_candidatos_proprios.csv"
+  # A rodada nos 888 grava um arquivo por exame aqui, para poder retomar se cair no meio, e
+  # guarda os parâmetros com que a pasta nasceu. Ver src/detection/rodada.py.
+  rodada_deteccao: "dados/intermediario/rodada_deteccao"
+  # Uma linha por exame: concluído, sem candidato, falha ou pendente.
+  situacao_deteccao: "dados/intermediario/situacao_deteccao.csv"
+  # Cobertura contra candidatos por exame, para a nossa lista e para as do desafio.
+  troca_cobertura_candidatos: "dados/intermediario/troca_cobertura_candidatos.csv"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.

@@ -88,6 +88,7 @@ divisão nossa.
 .venv/bin/python scripts/08_comparar_candidatos.py
 .venv/bin/python scripts/10_detectar_candidatos.py
 .venv/bin/python scripts/11_evidencia_normalizacao.py
+.venv/bin/python scripts/12_marcacoes_excluidas.py
 ```
 
 | Script | O que produz |
@@ -99,20 +100,23 @@ divisão nossa.
 | `06_escolher_espacamento.py` | a tabela que sustenta o espaçamento de 1 mm e a figura dela |
 | `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
 | `08_comparar_candidatos.py` | a tabela que compara as duas listas de candidatos do desafio |
-| `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
+| `10_detectar_candidatos.py` | os candidatos próprios por blob detection, a situação de cada exame, a cobertura com intervalo e a troca entre cobertura e candidatos por exame |
 | `11_evidencia_normalizacao.py` | figura e tabela da janela de HU e normalização de um volume bruto inteiro |
+| `12_marcacoes_excluidas.py` | quantos candidatos caem nas marcações excluídas do desafio e o falso positivo por exame com e sem a regra |
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
 O `07` demora. São 39,8 minutos e 8,6 GiB, medidos em 10/09/2026 sobre `preprocessamento.csv`, e
 ele aceita um número de exames como argumento para uma rodada curta de teste. O `10` também
-demora, 23,6 s por exame medidos em 13/09/2026, e aceita o mesmo argumento.
+demora, 23,6 s por exame medidos em 13/09/2026, aceita o mesmo argumento e é retomável: rodar
+de novo pula os exames prontos. Ver `docs/04-deteccao-de-candidatos.md`.
 
 Fora dessa lista fica o `01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina
 que o tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
 
-O DVC cuida da ordem dos oito estágios declarados em `dvc.yaml`, incluindo a evidência da
-normalização. O recorte (`09`) e a detecção própria (`10`) ainda rodam separadamente:
+O DVC cuida da ordem dos nove estágios declarados em `dvc.yaml`, incluindo a evidência da
+normalização e as marcações excluídas. O recorte (`09`) e a detecção própria (`10`) ainda rodam
+separadamente:
 
 ```bash
 .venv/bin/dvc repro

@@ -150,6 +150,16 @@ stages:
     outs:
       - dados/intermediario/comparacao_candidatos.csv
 
+  marcacoes_excluidas:
+    cmd: python scripts/12_marcacoes_excluidas.py
+    deps:
+      - scripts/12_marcacoes_excluidas.py
+      - src/config.py
+      - src/detection/candidatos.py
+      - dados/intermediario/inventario_volumes.csv
+    outs:
+      - dados/intermediario/marcacoes_excluidas.csv
+
   evidencia_normalizacao:
     cmd: python scripts/11_evidencia_normalizacao.py
     deps:
