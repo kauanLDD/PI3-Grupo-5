@@ -21,6 +21,10 @@ caminhos:
   luna16_candidatos_original: "/media/kauan/HD Samuel/luna/archive/candidates.csv"
   luna16_mascaras: "/media/kauan/HD Samuel/luna/archive/seg-lungs-LUNA16/seg-lungs-LUNA16"
   luna16_avaliacao: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript"
+  # Os 35.192 achados que o desafio tira da conta: candidato em cima de um deles não é acerto
+  # nem falso positivo. Vem dentro do pacote do avaliador, em annotations/.
+  # Ver src/detection/candidatos.py, função rotular, e docs/criterios_inclusao_luna16.md.
+  luna16_anotacoes_excluidas: "/media/kauan/HD Samuel/luna/archive/evaluationScript/evaluationScript/annotations/annotations_excluded.csv"
 
   # Dentro do repo, fora do git.
   intermediario: "dados/intermediario"

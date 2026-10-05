@@ -5,6 +5,14 @@ import pandas as pd
 
 COLUNAS = ["coordX", "coordY", "coordZ"]
 
+ACERTO = "acerto"
+IGNORADO = "ignorado"
+FALSO_POSITIVO = "falso_positivo"
+
+# O annotations_excluded.csv traz diameter_mm = -1 em 30.513 dos 35.192 achados, os que não são
+# nódulo. O avaliador oficial troca esse -1 por 10 mm, então o raio vale 5 mm.
+DIAMETRO_SEM_MEDIDA_MM = 10.0
+
 
 def alcancados(nodulos: pd.DataFrame, candidatos: pd.DataFrame) -> np.ndarray:
     """Quais nódulos têm ao menos um candidato dentro do raio deles.
@@ -57,3 +65,39 @@ def cobertura(nodulos: pd.DataFrame, alcancado: np.ndarray, reamostras: int,
         "ic_superior": float(np.quantile(fracoes, 1 - cauda)),
     }
 
+
+def _dentro(pontos: np.ndarray, achados: pd.DataFrame) -> np.ndarray:
+    """Para cada ponto, se ele cai a menos de um raio do centro de algum dos achados."""
+    if achados.empty or len(pontos) == 0:
+        return np.zeros(len(pontos), dtype=bool)
+    centros = achados[COLUNAS].to_numpy(float)
+    diametros = achados["diameter_mm"].to_numpy(float)
+    diametros = np.where(diametros < 0, DIAMETRO_SEM_MEDIDA_MM, diametros)
+    distancia2 = ((pontos[:, None, :] - centros[None, :, :]) ** 2).sum(axis=2)
+    # Estritamente menor, como no avaliador oficial (`dist < radiusSquared`).
+    return (distancia2 < (diametros / 2) ** 2).any(axis=1)
+
+
+def rotular(candidatos: pd.DataFrame, nodulos: pd.DataFrame,
+            excluidos: pd.DataFrame) -> np.ndarray:
+    """Acerto, ignorado ou falso positivo, para cada candidato, pela regra do avaliador oficial.
+
+    Reproduz `noduleCADEvaluationLUNA16.py`: o candidato que cai em cima de um nódulo de
+    `annotations.csv` é acerto; senão, se cai em cima de um achado de `annotations_excluded.csv`,
+    sai da conta, sem ser acerto nem falso positivo; o resto é falso positivo. O nódulo vem antes
+    do achado excluído, então candidato em cima dos dois é acerto.
+    """
+    rotulos = np.full(len(candidatos), FALSO_POSITIVO, dtype=object)
+    nodulos_por_exame = dict(tuple(nodulos.groupby("seriesuid")))
+    excluidos_por_exame = dict(tuple(excluidos.groupby("seriesuid")))
+    vazio = nodulos.iloc[:0]
+
+    todos = candidatos[COLUNAS].to_numpy(float)
+    for uid, indices in candidatos.groupby("seriesuid").indices.items():
+        pontos = todos[indices]
+        acerto = _dentro(pontos, nodulos_por_exame.get(uid, vazio))
+        ignorado = ~acerto & _dentro(pontos, excluidos_por_exame.get(uid, vazio))
+        rotulos[indices[acerto]] = ACERTO
+        rotulos[indices[ignorado]] = IGNORADO
+
+    return rotulos

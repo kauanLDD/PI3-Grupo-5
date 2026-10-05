@@ -101,6 +101,28 @@ critério, achado não nodular, e anotação com concordância insuficiente.
 Candidato que casa com um deles **não é acerto nem alarme falso: sai da conta**. Ignorar isso
 infla o número de falso positivo e o resultado deixa de ser comparável com qualquer publicação.
 
+O caminho do arquivo está em `configuracao/config.yaml`, chave `caminhos.luna16_anotacoes_excluidas`,
+dentro da pasta `annotations/` do pacote do avaliador. A regra está em
+`src/detection/candidatos.py`, função `rotular`, e reproduz o `noduleCADEvaluationLUNA16.py`
+do pacote oficial em três detalhes que mudam a contagem:
+
+- **Achado sem diâmetro vale 10 mm.** 30.513 dos 35.192 achados vêm com `diameter_mm = -1`,
+  que são os não nodulares, e o avaliador troca o -1 por 10 mm, raio de 5 mm.
+- **Nódulo antes de achado excluído.** Candidato em cima dos dois é acerto, e não ignorado.
+- **A distância é estritamente menor que o raio** (`dist < radiusSquared`). O `alcancados`, que
+  mede a cobertura das listas mais acima, usa menor ou igual. Com coordenada em float a
+  diferença só aparece em empate exato na borda, mas as duas funções divergem e isso fica
+  registrado aqui até o grupo alinhar.
+
+O caso pequeno que confirma que o candidato em cima de um achado excluído não vira falso
+positivo está em `testes/test_candidatos.py`. O `scripts/12_marcacoes_excluidas.py` mede o
+efeito no `candidates_V2.csv`: quantos pontos saem da conta e o falso positivo por exame com e
+sem a regra. Esse número ainda não foi medido, porque a base não está na máquina de quem
+escreveu o script.
+
+O avaliador do card T4 ainda não existe no repositório. Quando existir, ele lê o arquivo por
+essa chave do config e aplica `rotular`, em vez de ter caminho escrito no código.
+
 ## Como verificar
 
 ```
