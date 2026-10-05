@@ -150,6 +150,35 @@ stages:
     outs:
       - dados/intermediario/comparacao_candidatos.csv
 
+  patches:
+    # Caminhos relativos permitem usar os mesmos dados no Windows e no Linux.
+    # A lista V2 fica em dados/bruto; volumes e recortes podem ser pastas ligadas ao HD.
+    cmd: >-
+      python scripts/09_extrair_patches.py
+      --candidatos "dados/bruto/candidates_V2.csv"
+      --volumes "dados/processado/volumes"
+      --saida "dados/processado/patches"
+    deps:
+      - scripts/09_extrair_patches.py
+      - src/config.py
+      - src/detection/patches.py
+      - configuracao/config.yaml
+      - dados/bruto/candidates_V2.csv
+      - dados/processado/volumes
+    params:
+      - configuracao/config.yaml:
+          - candidatos.patch
+    outs:
+      # Sem segunda copia no cache; o Git ignora dados/processado.
+      # Preserva o lote existente para a validacao e retomada do script.
+      - dados/processado/patches:
+          cache: false
+          persist: true
+      - dados/intermediario/resumo_patches.json:
+          cache: false
+      - dados/intermediario/falhas_patches.csv:
+          cache: false
+
   evidencia_normalizacao:
     cmd: python scripts/11_evidencia_normalizacao.py
     deps:

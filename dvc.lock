@@ -371,3 +371,53 @@ stages:
       hash: md5
       md5: b02b34e86c5e02d35ccfb7b957d72a87
       size: 726371
+  patches:
+    cmd: python scripts/09_extrair_patches.py --candidatos
+      "dados/bruto/candidates_V2.csv" --volumes "dados/processado/volumes"
+      --saida "dados/processado/patches"
+    deps:
+    - path: configuracao/config.yaml
+      hash: md5
+      md5: 8211a846454f6dc35a236ebaf4d472ea
+      size: 4623
+    - path: dados/bruto/candidates_V2.csv
+      hash: md5
+      md5: eaef417c9e202327405f838f0e8bf7ac
+      size: 72058556
+    - path: dados/processado/volumes
+      hash: md5
+      md5: ab83867aab77c2b8d9fe31d650db1293.dir
+      size: 9208718676
+      nfiles: 889
+    - path: scripts/09_extrair_patches.py
+      hash: md5
+      md5: d21f5e63dd6e58ce3547051343b792c4
+      size: 8523
+    - path: src/config.py
+      hash: md5
+      md5: 170a8b7317d9effb5273ecc5985cfd43
+      size: 1355
+    - path: src/detection/patches.py
+      hash: md5
+      md5: ddf1f3baebb0abfcfa42098939feff10
+      size: 1276
+    params:
+      configuracao/config.yaml:
+        candidatos.patch:
+        - 34
+        - 34
+        - 34
+    outs:
+    - path: dados/intermediario/falhas_patches.csv
+      hash: md5
+      md5: 2a2a7784e6d203c2fd66aa01c0249e14
+      size: 16
+    - path: dados/intermediario/resumo_patches.json
+      hash: md5
+      md5: 39327e2a53f9df893f03a66da116ca4e
+      size: 369
+    - path: dados/processado/patches
+      hash: md5
+      md5: db8be53c9b61fc7f2abfbb7cf3b5e37d.dir
+      size: 39861743747
+      nfiles: 889

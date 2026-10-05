@@ -51,7 +51,8 @@ com cinco figuras. Pré-processamento nos 888 exames, com as cinco etapas: leitu
 janela de HU, reamostragem para voxel isotrópico, máscara de pulmão e normalização [0, 1].
 Geração própria de candidatos por blob detection 3D, medida em 8 exames.
 
-O recorte dos cubos ao redor de cada candidato tem código e teste, mas nunca rodou na base.
+O recorte dos cubos de 34 voxels ao redor dos 754.975 candidatos V2 rodou nos 888 exames,
+sem falhas. Os números e o comando usado estão em `docs/recortes_v2.md`.
 Ainda não existem: features, baseline, modelo treinado e avaliação FROC.
 
 ## Como reproduzir
@@ -86,6 +87,7 @@ divisão nossa.
 .venv/bin/python scripts/06_escolher_espacamento.py
 .venv/bin/python scripts/07_preprocessar_base.py
 .venv/bin/python scripts/08_comparar_candidatos.py
+.venv/bin/python scripts/09_extrair_patches.py
 .venv/bin/python scripts/10_detectar_candidatos.py
 .venv/bin/python scripts/11_evidencia_normalizacao.py
 ```
@@ -99,6 +101,7 @@ divisão nossa.
 | `06_escolher_espacamento.py` | a tabela que sustenta o espaçamento de 1 mm e a figura dela |
 | `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
 | `08_comparar_candidatos.py` | a tabela que compara as duas listas de candidatos do desafio |
+| `09_extrair_patches.py` | um `.npz` por exame, com cubos 3D e metadados dos candidatos V2 |
 | `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
 | `11_evidencia_normalizacao.py` | figura e tabela da janela de HU e normalização de um volume bruto inteiro |
 
@@ -108,15 +111,37 @@ O `07` demora. São 39,8 minutos e 8,6 GiB, medidos em 10/09/2026 sobre `preproc
 ele aceita um número de exames como argumento para uma rodada curta de teste. O `10` também
 demora, 23,6 s por exame medidos em 13/09/2026, e aceita o mesmo argumento.
 
-Fora dessa lista fica o `01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina
-que o tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
+O `09` pode ser retomado pelo mesmo comando: confere os arquivos existentes,
+reaproveita os válidos e recria os incompletos. Fora dessa lista fica o
+`01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina que o tenha.
 
-O DVC cuida da ordem dos oito estágios declarados em `dvc.yaml`, incluindo a evidência da
-normalização. O recorte (`09`) e a detecção própria (`10`) ainda rodam separadamente:
+O DVC cuida da ordem dos nove estágios declarados em `dvc.yaml`, incluindo a evidência da
+normalização e os recortes (`09`). A detecção própria (`10`) ainda roda separadamente:
 
 ```bash
 .venv/bin/dvc repro
 ```
+
+O estágio `patches` usa `dados/bruto/candidates_V2.csv` e `dados/processado/volumes`, e grava
+em `dados/processado/patches`. Coloque a lista V2 nesse caminho e use pastas ou links para
+os volumes e recortes no HD externo. Os argumentos do comando DVC prevalecem sobre os
+caminhos do `config.yaml`; o tamanho do cubo continua vindo de `candidatos.patch`.
+Os dados permanecem fora do Git e os recortes usam `cache: false`, sem uma segunda cópia
+no cache. `persist: true` preserva o lote para a validação e retomada do script.
+Essa retomada confere formato e metadados contra a V2. Se os volumes ou a lógica de
+extração mudarem, gere um lote novo em uma pasta vazia: os voxels dos NPZ existentes
+não são comparados com os volumes durante a retomada.
+
+Para executar apenas essa etapa com os volumes já disponíveis e conferir seu registro:
+
+```bash
+.venv/bin/dvc repro --single-item patches
+.venv/bin/dvc status patches
+.venv/bin/dvc dag
+```
+
+No Windows, os executáveis do ambiente ficam em `.venv/Scripts/`. Entregue `dvc.yaml` e
+`dvc.lock` juntos: o primeiro declara o estágio e o segundo registra os hashes da rodada.
 
 Ele executa só os estágios cujo script, módulo ou parâmetro do `config.yaml` mudou desde a
 última vez, e grava no `dvc.lock` o hash do que entrou e do que saiu. É assim que se sabe qual
