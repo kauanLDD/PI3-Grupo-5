@@ -72,6 +72,70 @@ dos 1.186 nódulos, 98,3%, medido em 03/09/2026 com `scripts/08_comparar_candida
 registrado em `docs/criterios_inclusao_luna16.md`. A nossa lista sai com 16 vezes mais pontos por
 exame, e os 8 exames da amostra têm 6 nódulos anotados, que é pouco para comparar cobertura.
 
+## A rodada nos 888 exames
+
+É o card S4-T10. Ela mede duas coisas: quantos dos nódulos anotados a busca alcança e quantos
+candidatos ela gera por exame. Os dois números juntos dão o limite máximo do sistema, porque o
+classificador que vem depois só pode acertar nódulo que tenha candidato em cima, e cada candidato
+a mais é mais um falso positivo em potencial para ele descartar.
+
+**Cobertura não é FROC.** A cobertura é o teto de sensibilidade da lista, sem escore e sem
+contagem de falso positivo. A curva FROC só existe quando houver um classificador dando nota a
+cada candidato, e os números desta seção não podem ser reportados como ponto dela.
+
+### Como rodar
+
+```bash
+.venv/bin/python scripts/10_detectar_candidatos.py 8    # rodada curta, para conferir
+.venv/bin/python scripts/10_detectar_candidatos.py      # os 888
+```
+
+A 23,6 s por exame, os 888 levam umas seis horas. A rodada é retomável: cada exame grava o
+próprio arquivo em `dados/intermediario/rodada_deteccao/`, com escrita atômica, e rodar o mesmo
+comando de novo pula os que já estão prontos e tenta de novo os que falharam. Uma queda no meio
+custa só o exame que estava rodando.
+
+A pasta guarda em `parametros.json` os parâmetros do `blob_log` com que nasceu, e o script
+recusa continuar se o `config.yaml` estiver diferente. Sem isso, mudar o limiar no meio da
+rodada daria uma lista em que cada exame foi buscado de um jeito, sem erro nenhum. Para trocar
+de parâmetro, apague a pasta ou aponte `caminhos.rodada_deteccao` para outra.
+
+**Antes de soltar os 888, confirme a configuração.** Os parâmetros que valem são os registrados
+no card S4-T9, e o limiar de 0,20 não pode ser o escolhido, porque perdeu um nódulo na
+validação. O script imprime os parâmetros no começo da rodada.
+
+### O que ela grava
+
+| Arquivo | O que tem |
+|---|---|
+| `dados/intermediario/candidatos.csv` | a lista, uma linha por candidato: `seriesuid`, `coordX`, `coordY`, `coordZ` em mm de mundo e `raio` em mm |
+| `dados/intermediario/situacao_deteccao.csv` | uma linha por exame: concluído, sem candidato, falha ou pendente, com contagem, tempo e erro |
+| `dados/intermediario/cobertura_candidatos_proprios.csv` | nódulos alcançados, cobertura e intervalo de 95% |
+| `dados/intermediario/troca_cobertura_candidatos.csv` | cobertura contra candidatos por exame, para a lista própria e para as duas do desafio |
+
+**Exame sem candidato é resultado, não falha.** Ele entra no denominador da média de candidatos
+por exame, como vai entrar na média de falso positivo da FROC.
+
+**A cobertura é medida só nos exames que rodaram.** Exame que falhou não teve busca, e contar os
+nódulos dele como perdidos misturaria falha de execução com falha do método. As falhas ficam
+contadas à parte, na situação.
+
+**O intervalo de 95% é por bootstrap de exame**, com as reamostras de
+`avaliacao.bootstrap_reamostras`. Os nódulos de um mesmo exame não são independentes, e
+reamostrar nódulo solto estreitaria o intervalo sem motivo. A função é
+`detection.candidatos.cobertura`.
+
+**A troca entre cobertura e quantidade de candidatos.** Dentro da lista própria, cortar as
+escalas menores do `blob_log` (filtro `raio >= r`) dá menos pontos sem rodar de novo, e a tabela
+mostra quanto de cobertura cada corte custa. Na mesma tabela entram o `candidates.csv` e o
+`candidates_V2.csv`, medidos sobre os mesmos exames. O número a bater é o do V2: 1.166 dos
+1.186 nódulos, com 850 candidatos por exame.
+
+### O que ela mediu
+
+A rodada ainda não foi feita. Quando for, entram aqui a data, os parâmetros, a situação dos
+888, a cobertura com o intervalo, os candidatos por exame e a tabela da troca.
+
 ## O que ainda não existe
 
 A calibração de `min_sigma`, `max_sigma` e `threshold` contra a cobertura nos 888 exames, e a

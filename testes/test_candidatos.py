@@ -52,3 +52,46 @@ def test_conta_cada_nodulo_uma_vez():
     dois = pd.concat([nodulo(x=0.0), nodulo(x=100.0)], ignore_index=True)
     resultado = candidatos.alcancados(dois, pontos(("a", 1.0, 0.0, 0.0), ("a", 2.0, 0.0, 0.0)))
     assert resultado.tolist() == [True, False]
+
+
+def nodulos_em(*exames):
+    """Um nódulo por item, com o exame dado, todos no mesmo lugar."""
+    return pd.concat([nodulo(uid=u) for u in exames], ignore_index=True)
+
+
+def test_cobertura_conta_a_fracao():
+    medida = candidatos.cobertura(nodulos_em("a", "a", "b", "c"), [True, True, False, True],
+                                  reamostras=200)
+    assert (medida["alcancados"], medida["nodulos"]) == (3, 4)
+    assert medida["cobertura"] == 0.75
+    assert medida["ic_inferior"] <= 0.75 <= medida["ic_superior"]
+
+
+def test_cobertura_tudo_alcancado_nao_tem_intervalo_aberto():
+    medida = candidatos.cobertura(nodulos_em("a", "b"), [True, True], reamostras=100)
+    assert medida["ic_inferior"] == medida["ic_superior"] == 1.0
+
+
+def test_cobertura_reamostra_por_exame_e_nao_por_nodulo():
+    """Dez nódulos num exame só são uma unidade: o intervalo tem que ir de 0 a 1.
+
+    Reamostrando nódulo solto, a mesma tabela daria um intervalo estreito em volta de 50%.
+    """
+    exames = ["a"] * 10 + ["b"] * 10
+    medida = candidatos.cobertura(nodulos_em(*exames), [True] * 10 + [False] * 10,
+                                  reamostras=500)
+    assert medida["ic_inferior"] == 0.0
+    assert medida["ic_superior"] == 1.0
+
+
+def test_cobertura_e_reprodutivel_com_a_mesma_semente():
+    args = (nodulos_em("a", "b", "c", "d"), [True, False, True, False])
+    assert (candidatos.cobertura(*args, reamostras=300, semente=42)
+            == candidatos.cobertura(*args, reamostras=300, semente=42))
+
+
+def test_cobertura_sem_nodulo_nenhum():
+    medida = candidatos.cobertura(nodulos_em("a").iloc[:0], [], reamostras=10)
+    assert medida["nodulos"] == 0
+    assert medida["cobertura"] != medida["cobertura"]  # nan
+

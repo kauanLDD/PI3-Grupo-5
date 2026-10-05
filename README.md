@@ -99,14 +99,15 @@ divisão nossa.
 | `06_escolher_espacamento.py` | a tabela que sustenta o espaçamento de 1 mm e a figura dela |
 | `07_preprocessar_base.py` | os 888 volumes pré-processados e o relatório da rodada |
 | `08_comparar_candidatos.py` | a tabela que compara as duas listas de candidatos do desafio |
-| `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
+| `10_detectar_candidatos.py` | os candidatos próprios por blob detection, a situação de cada exame, a cobertura com intervalo e a troca entre cobertura e candidatos por exame |
 | `11_evidencia_normalizacao.py` | figura e tabela da janela de HU e normalização de um volume bruto inteiro |
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
 O `07` demora. São 39,8 minutos e 8,6 GiB, medidos em 10/09/2026 sobre `preprocessamento.csv`, e
 ele aceita um número de exames como argumento para uma rodada curta de teste. O `10` também
-demora, 23,6 s por exame medidos em 13/09/2026, e aceita o mesmo argumento.
+demora, 23,6 s por exame medidos em 13/09/2026, aceita o mesmo argumento e é retomável: rodar
+de novo pula os exames prontos. Ver `docs/04-deteccao-de-candidatos.md`.
 
 Fora dessa lista fica o `01_pacientes.py`, que lê o metadata do LIDC-IDRI e só roda em máquina
 que o tenha, e o `09_extrair_patches.py`, que nunca rodou na base.
