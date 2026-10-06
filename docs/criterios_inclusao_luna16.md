@@ -93,6 +93,22 @@ baseline.
 Vinte nódulos continuam sem nenhum candidato em cima, mesmo no V2. Esses são inalcançáveis por
 qualquer método que use só a lista pronta.
 
+### A lista própria contra o V2
+
+Em 05/10/2026 comparamos a lista que geramos por blob detection 3D com o V2, nos mesmos 888
+exames e nos mesmos 1.186 nódulos, pelo mesmo critério de acerto:
+
+| Lista | Pontos | Por exame | Nódulos alcançados | Teto | Disco |
+|---|---|---|---|---|---|
+| `candidatos.csv`, própria | 14.310.042 | 16.115 | 1.158 de 1.186 | 97,6% | 1,60 GiB |
+| `candidates_V2.csv` | 754.975 | 850 | 1.166 de 1.186 | **98,3%** | 68,7 MiB |
+
+**O V2 continua sendo a entrada dos classificadores.** A lista própria tem 19 vezes mais pontos
+por exame e alcança oito nódulos a menos, e o intervalo de 95% dela, de 96,71% a 98,57%, contém o
+teto do V2. Ela é avaliada como detector, ao lado do V2. A tabela completa, com tempo de geração,
+a decisão por experimento e a alternativa descartada, está em
+`docs/decisoes/0007-lista-de-candidatos-por-experimento.md`. A coluna teto é cobertura, não FROC.
+
 ## O que fica fora da conta na avaliação
 
 O `annotations_excluded.csv` traz 35.192 achados espalhados pelos 888 exames: nódulo abaixo do
@@ -128,10 +144,12 @@ essa chave do config e aplica `rotular`, em vez de ter caminho escrito no códig
 ```
 .venv/bin/python scripts/02_inventario_volumes.py
 .venv/bin/python scripts/08_comparar_candidatos.py
+.venv/bin/python scripts/18_comparar_lista_propria_v2.py
 .venv/bin/python -m pytest testes -q
 ```
 
 O inventário imprime a contagem por subset, a distribuição de espaçamento em z e quantos exames
 passam de 2,5 mm. O `08` refaz a tabela das duas listas e grava em
-`dados/intermediario/comparacao_candidatos.csv`. A suíte confere a divisão por paciente e o
+`dados/intermediario/comparacao_candidatos.csv`. O `18` compara a lista própria com o V2 nos
+mesmos exames e grava `dados/intermediario/comparacao_propria_v2.csv`. A suíte confere a divisão por paciente e o
 critério de acerto.

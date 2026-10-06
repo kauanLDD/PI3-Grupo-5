@@ -18,7 +18,7 @@ de treinamento de CNN: PyTorch e a configuração de GPU serão tratados nessa e
 
 ## DVC
 
-O `dvc.yaml` contém 16 estágios após expandir treino e validação:
+O `dvc.yaml` contém 17 estágios após expandir treino e validação:
 
 - Oito estágios anteriores de inventário, coordenadas, pré-processamento e análise.
 - Divisão por paciente.
@@ -29,6 +29,7 @@ O `dvc.yaml` contém 16 estágios após expandir treino e validação:
 - Conferência das features e registro no MLflow.
 - Treinamento do Random Forest e probabilidades da validação.
 - Conferência das marcações excluídas nas listas V2 e própria.
+- Comparação da lista própria com o V2, que sustenta a decisão 0007.
 
 As novas saídas usam `cache: false`: o DVC registra seus hashes sem duplicar os
 volumes ou as tabelas grandes no cache. Usamos `persist: true` nessas saídas

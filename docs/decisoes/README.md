@@ -20,3 +20,4 @@ memória na hora.
 | [0004](0004-espacamento-alvo-de-1-mm.md) | o espaçamento alvo da reamostragem é 1 mm isotrópico |
 | [0005](0005-dvc-para-o-pipeline-e-nao-para-o-dado.md) | DVC para o pipeline e não para guardar o dado |
 | [0006](0006-normalizacao-entra-no-volume-salvo.md) | a normalização [0, 1] entra no volume salvo |
+| [0007](0007-lista-de-candidatos-por-experimento.md) | o V2 alimenta os classificadores, e a lista própria é avaliada como detector |

@@ -431,3 +431,20 @@ de situação e comparação do detector. O pipeline contém 16 estágios. Os te
 da integração passaram em 126 casos, incluindo rejeição de cache com identidade
 incorreta e de pasta sem manifesto. O treinamento e a avaliação oficial continuam
 sendo etapas separadas; os escores de validação do primeiro treino estão salvos.
+
+## Atualização de 05/10/2026: a lista própria contra o V2
+
+Comparamos a lista própria com o `candidates_V2` nos mesmos 888 exames e 1.186 nódulos, pelo
+critério de `src/detection/candidatos.py`. A própria tem 14.310.042 candidatos, 16.114,9 por
+exame, alcança 1.158 nódulos e ocupa 1,60 GiB. O V2 tem 754.975, 850,2 por exame, alcança 1.166
+e ocupa 68,7 MiB. O espaço vem do `dvc.lock`. O tempo da lista própria foi estimado pela
+calibração, de 23,6 a 27,4 s por exame, porque a rodada completa não gravou o tempo de cada exame.
+
+O intervalo de 95% da lista própria, de 96,71% a 98,57%, contém o teto do V2. A diferença que
+decide é a quantidade de candidatos, 19 vezes maior. Registramos na decisão 0007 que os
+classificadores e a FROC usam o V2, e a lista própria é avaliada como detector, ao lado dele.
+
+O `scripts/18_comparar_lista_propria_v2.py` refaz a tabela e mede o cruzamento nódulo a nódulo,
+com os testes em `testes/test_comparacao_listas.py`. Ele entrou no DVC como o estágio
+`comparar_propria_v2`, e o pipeline passa a ter 17 estágios. O script ainda não rodou na base,
+que não está na máquina de quem o escreveu. Cobertura continua não sendo FROC.

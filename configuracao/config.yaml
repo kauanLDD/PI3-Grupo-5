@@ -47,6 +47,10 @@ caminhos:
   situacao_deteccao: "dados/intermediario/situacao_deteccao.csv"
   # Cobertura contra candidatos por exame, para a nossa lista e para as do desafio.
   troca_cobertura_candidatos: "dados/intermediario/troca_cobertura_candidatos.csv"
+  # A lista própria contra o V2 nos mesmos exames: cobertura, candidatos, tempo e disco,
+  # e o alcance nódulo a nódulo. Ver docs/decisoes/0007.
+  comparacao_propria_v2: "dados/intermediario/comparacao_propria_v2.csv"
+  alcance_por_nodulo_propria_v2: "dados/intermediario/alcance_por_nodulo_propria_v2.csv"
 
   # Amostra técnica usada para conferir o extrator antes de processar todo o treino.
   caracteristicas_treino_amostra: "dados/intermediario/caracteristicas_treino_amostra.csv"

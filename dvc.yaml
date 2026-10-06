@@ -250,6 +250,34 @@ stages:
           cache: false
           persist: true
 
+  # A lista própria contra o V2 nos mesmos exames e nódulos. Sustenta docs/decisoes/0007.
+  # O tempo da lista própria sai da calibração enquanto a rodada não registrar o de cada exame.
+  comparar_propria_v2:
+    cmd: .venv/bin/python scripts/18_comparar_lista_propria_v2.py
+    deps:
+      - scripts/18_comparar_lista_propria_v2.py
+      - requirements-rastreamento.lock.txt
+      - src/config.py
+      - src/detection/candidatos.py
+      - src/detection/comparacao.py
+      - dados/intermediario/inventario_volumes.csv
+      - dados/intermediario/candidatos.csv
+      - dados/intermediario/situacao_deteccao.csv
+      - dados/intermediario/calibracao_log
+      - ${caminhos.luna16_anotacoes}
+      - ${caminhos.luna16_candidatos}
+    params:
+      - configuracao/config.yaml:
+          - seed
+          - avaliacao
+    outs:
+      - dados/intermediario/comparacao_propria_v2.csv:
+          cache: false
+          persist: true
+      - dados/intermediario/alcance_por_nodulo_propria_v2.csv:
+          cache: false
+          persist: true
+
   # Experimento encerrado. O protocolo preserva as versões e os hashes originais.
   # Reexecutar com outro ambiente exige uma nova pasta de experimento.
   calibracao:

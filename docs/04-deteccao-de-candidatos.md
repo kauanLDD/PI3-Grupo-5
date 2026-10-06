@@ -170,6 +170,15 @@ o registro acima. A integração da PR #4 acrescenta a situação por exame, o
 intervalo de confiança e a tabela de comparação por escala, reutilizando os
 candidatos já gerados.
 
+## A lista própria contra o V2
+
+Em 05/10/2026 comparamos as duas listas nos mesmos 888 exames e 1.186 nódulos, com cobertura,
+candidatos por exame, tempo de geração e espaço em disco. O V2 continua sendo a entrada dos
+classificadores, e a lista própria é avaliada como detector, ao lado dele. A tabela e o motivo
+estão em `docs/decisoes/0007-lista-de-candidatos-por-experimento.md`, e o
+`scripts/18_comparar_lista_propria_v2.py` refaz a comparação e mede quais nódulos cada lista
+alcança e a outra não.
+
 ## O que ainda não existe
 
 A redução de falsos positivos sobre os candidatos gerados aqui, o modelo treinado e a
