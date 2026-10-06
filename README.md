@@ -50,7 +50,9 @@ mundo em milímetro e índice de voxel, com teste e figura de verificação. An�
 com cinco figuras. Pré-processamento nos 888 exames, com as cinco etapas: leitura MetaImage,
 janela de HU, reamostragem para voxel isotrópico, máscara de pulmão e normalização [0, 1].
 Geração própria de candidatos por blob detection 3D nos 888 exames: 14.310.042 candidatos,
-16.114,9 por exame, alcançando 1.158 dos 1.186 nódulos. Divisão fixa por paciente em treino,
+16.114,9 por exame, alcançando 1.158 dos 1.186 nódulos. Comparada com o `candidates_V2` nos
+mesmos exames, ela tem 19 vezes mais candidatos e alcança oito nódulos a menos, então o V2
+continua sendo a entrada dos classificadores (`docs/decisoes/0007`). Divisão fixa por paciente em treino,
 validação e teste, sem vazamento entre as três partes.
 
 O recorte dos cubos ao redor de cada candidato tem código e teste, mas nunca rodou na base.
@@ -99,6 +101,7 @@ divisão nossa.
 .venv/bin/python scripts/10_detectar_candidatos.py
 .venv/bin/python scripts/11_evidencia_normalizacao.py
 .venv/bin/python scripts/13_criar_divisao.py
+.venv/bin/python scripts/18_comparar_lista_propria_v2.py
 ```
 
 | Script | O que produz |
@@ -113,6 +116,7 @@ divisão nossa.
 | `10_detectar_candidatos.py` | os candidatos próprios por blob detection e a cobertura deles |
 | `11_evidencia_normalizacao.py` | figura e tabela da janela de HU e normalização de um volume bruto inteiro |
 | `13_criar_divisao.py` | `dados/processado/divisao.csv`, sem paciente em mais de uma parte |
+| `18_comparar_lista_propria_v2.py` | a tabela que compara a lista própria com o `candidates_V2` nos mesmos exames |
 
 O `02` precisa rodar primeiro: os outros leem o inventário que ele grava.
 
