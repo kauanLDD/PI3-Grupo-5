@@ -228,3 +228,5 @@ A CNN foi escolhida entre cinco versões pela validação e avaliada uma vez no 
 Forest não foi avaliado no teste. Os detalhes estão em `docs/10` a `docs/12`, e o caminho
 inteiro, dos dados ao teste, com os erros encontrados, está no
 [dossiê da modelagem](docs/13-dossie-modelagem.md).
+A comparação com a literatura, separando quem usa a lista oficial V2 de quem gera os próprios
+candidatos, está em [comparação com a literatura](docs/14-comparacao-literatura.md).
