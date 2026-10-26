@@ -1,0 +1,18 @@
+{
+  "variante": "lr_3e-4",
+  "conjunto": "validacao",
+  "teste_utilizado": false,
+  "pastas": [
+    "modelos/cnn_lr_3e-4",
+    "modelos/cnn_lr_3e-4_semente_43",
+    "modelos/cnn_lr_3e-4_semente_44"
+  ],
+  "sementes": 3,
+  "cpm_medio": 0.7773487775714286,
+  "cpm_desvio_padrao_amostral": 0.022291516162636124,
+  "cpm_minimo": 0.7516087518571429,
+  "cpm_maximo": 0.7902187904285716,
+  "cpm_amplitude": 0.03861003857142864,
+  "sens_4_media": 0.891891892,
+  "sens_4_desvio_padrao_amostral": 0.009009009000000012
+}

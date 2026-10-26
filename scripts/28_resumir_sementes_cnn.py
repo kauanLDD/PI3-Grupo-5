@@ -14,6 +14,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 import numpy as np
 import pandas as pd
 
@@ -95,6 +96,8 @@ def desenhar(tabela, resumo, destino):
     eixo.set_xticks(posicoes, [f"semente {s}" for s in tabela.seed])
     eixo.set_xlim(-0.5, len(tabela) - 0.5)
     eixo.set_ylabel("CPM na validação")
+    # Marcas de 0,05 em 0,05: com o passo automático de 0,025 e duas casas, 0,825 aparecia como 0,83.
+    eixo.yaxis.set_major_locator(MultipleLocator(0.05))
     eixo.yaxis.set_major_formatter(lambda v, _: f"{v:.2f}".replace(".", ","))
     for lado in ("top", "right"):
         eixo.spines[lado].set_visible(False)

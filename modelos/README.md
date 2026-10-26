@@ -57,6 +57,8 @@ Em 13/10/2026 avaliamos `cnn_lr_3e-4` uma única vez no teste, congelada pela de
 Em 26/10/2026 registramos, antes de executar, o segundo uso do teste só para o Random Forest
 centro congelado (decisão 0009) e o treino da `cnn_lr_3e-4` com as sementes 43 e 44, medidas só
 na validação (decisão 0010). No mesmo dia avaliamos o Random Forest centro uma única vez no teste,
-em `random_forest_centro_teste_final`: CPM 0,420 (IC95% 0,349 a 0,490). As pastas
-`cnn_lr_3e-4_semente_43` e `cnn_lr_3e-4_semente_44` ainda não existem. Ver
+em `random_forest_centro_teste_final`: CPM 0,420 (IC95% 0,349 a 0,490). Também em 26/10/2026 o
+Kauan treinou as sementes 43 e 44 na RTX 4050, em `cnn_lr_3e-4_semente_43` e
+`cnn_lr_3e-4_semente_44`: CPM de validação 0,790 nas duas. Com a semente 42, a média das três é
+0,777 e o desvio padrão 0,022. Nenhuma delas foi ao teste. Ver
 `docs/14-baseline-literatura-sementes-e-teste-rf.md`.

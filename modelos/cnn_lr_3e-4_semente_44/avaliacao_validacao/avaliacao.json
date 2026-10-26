@@ -1,0 +1,56 @@
+{
+  "avaliador": "LUNA16 oficial",
+  "max_marcas_por_exame": 100,
+  "bootstrap": 1000,
+  "confianca": 0.95,
+  "seed": 42,
+  "exames": 89,
+  "fontes": {
+    "noduleCADEvaluationLUNA16.py": {
+      "original": "151fbf7980e228e458f7fb17edc6c611c52cfbacbe0c52fd5de2526fbcd316fb",
+      "python3": "cb89da11ca02602ff8bc9507ecce6031bd75c492563029007ad8374453c1b099"
+    },
+    "NoduleFinding.py": {
+      "original": "dbb0020130b81e3ea589d33aba77a53bf1a3ea9c03348b9bcfb90fa1bb8edad2",
+      "python3": "dbb0020130b81e3ea589d33aba77a53bf1a3ea9c03348b9bcfb90fa1bb8edad2"
+    },
+    "tools/csvTools.py": {
+      "original": "5a51e3f4fb8692dcbb9a207565587a8f8adeb1c58b0a89805c2c23cc249d6276",
+      "python3": "b00010f1fd3d3b2b2eb2ee9079a5efab4fc3c644faffec04e6aa3ba286953bb7"
+    },
+    "tools/__init__.py": {
+      "original": "e799e017f90e82a9319f5f1f1bd2cca0b6fdcd0c9db1546302de182fafbd5b13",
+      "python3": "e799e017f90e82a9319f5f1f1bd2cca0b6fdcd0c9db1546302de182fafbd5b13"
+    }
+  },
+  "metricas": {
+    "cpm": 0.7902187904285716,
+    "cpm_ic_inferior": 0.7283329170829171,
+    "cpm_ic_superior": 0.8584834126661637,
+    "sensibilidade_0_125fp": 0.576576577,
+    "sensibilidade_0_125fp_ic_inferior": 0.458646625,
+    "sensibilidade_0_125fp_ic_superior": 0.709090889,
+    "sensibilidade_0_25fp": 0.684684685,
+    "sensibilidade_0_25fp_ic_inferior": 0.589743614,
+    "sensibilidade_0_25fp_ic_superior": 0.808695674,
+    "sensibilidade_0_5fp": 0.792792793,
+    "sensibilidade_0_5fp_ic_inferior": 0.69421488,
+    "sensibilidade_0_5fp_ic_superior": 0.869230747,
+    "sensibilidade_1fp": 0.81981982,
+    "sensibilidade_1fp_ic_inferior": 0.75,
+    "sensibilidade_1fp_ic_superior": 0.902173936,
+    "sensibilidade_2fp": 0.846846847,
+    "sensibilidade_2fp_ic_inferior": 0.772727251,
+    "sensibilidade_2fp_ic_superior": 0.9206956625306083,
+    "sensibilidade_4fp": 0.891891892,
+    "sensibilidade_4fp_ic_inferior": 0.829787254,
+    "sensibilidade_4fp_ic_superior": 0.94890511,
+    "sensibilidade_8fp": 0.918918919,
+    "sensibilidade_8fp_ic_inferior": 0.872340441,
+    "sensibilidade_8fp_ic_superior": 0.969924808
+  },
+  "curva_pontos": 98,
+  "curva_bootstrap_pontos": 10000,
+  "correcao_caso_de_borda": "TPR NaN sem positivos detectados passa a sensibilidade zero",
+  "cpm": "media das 7 sensibilidades; IC do CPM calculado nas replicas oficiais por exame"
+}

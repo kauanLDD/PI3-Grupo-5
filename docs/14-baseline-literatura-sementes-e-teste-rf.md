@@ -1,8 +1,9 @@
 # Baseline da literatura, segundo uso do teste e sementes da rede, 26/10/2026
 
-Este documento fecha a etapa de baseline. Ele separa três tipos de número: **medido** (com
-arquivo no repositório), **pendente** (script pronto, execução não feita) e **da literatura**
-(publicado por outros, com outro protocolo). Nenhum número pendente foi estimado.
+Este documento fecha a etapa de baseline. Ele separa dois tipos de número: **medido** (com
+arquivo no repositório) e **da literatura** (publicado por outros, com outro protocolo). Enquanto
+as sementes 43 e 44 não tinham sido treinadas, os campos delas ficaram como "pendente", sem
+estimativa; foram preenchidos em 26/10/2026 com os arquivos do treino (seção 4).
 
 ## 1. Pesquisa de baseline na literatura
 
@@ -173,26 +174,55 @@ Decisão 0010: sementes 43 e 44, fixadas antes de treinar; configuração idênt
 
 | Seed | CPM | Sens@0,125 | Sens@0,25 | Sens@0,5 | Sens@1 | Sens@2 | Sens@4 | Sens@8 |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 42 (original, medido) | 0,752 | 0,505 | 0,631 | 0,730 | 0,784 | 0,838 | 0,883 | 0,892 |
-| 43 | pendente | pendente | pendente | pendente | pendente | pendente | pendente | pendente |
-| 44 | pendente | pendente | pendente | pendente | pendente | pendente | pendente | pendente |
+| 42 (original) | 0,752 | 0,505 | 0,631 | 0,730 | 0,784 | 0,838 | 0,883 | 0,892 |
+| 43 | 0,790 | 0,532 | 0,721 | 0,793 | 0,829 | 0,838 | 0,901 | 0,919 |
+| 44 | 0,790 | 0,577 | 0,685 | 0,793 | 0,820 | 0,847 | 0,892 | 0,919 |
 
-Semente 42: checkpoint da época 40 (o protocolo não escolhe época), loss de treino final 0,066,
-IC95% do CPM 0,681 a 0,819, run `2f8b0a3c57c84d9e8f51dea2eab94b7f`.
+Fonte: `relatorios/experimentos/sementes_cnn/sementes.csv`, gerado pelo script 28 a partir do
+`execucao.json` de cada pasta. Em todas o checkpoint é o da época 40 (o protocolo não escolhe
+época).
 
-| Métrica | Resultado |
+| Seed | IC95% do CPM | Loss de treino na época 40 | Run do MLflow | Pasta |
+|---:|---|---:|---|---|
+| 42 | 0,681 a 0,819 | 0,066 | `2f8b0a3c57c84d9e8f51dea2eab94b7f` | `modelos/cnn_lr_3e-4` |
+| 43 | 0,725 a 0,862 | 0,076 | `fe45ac6a8d9e4c3dae67177750d7ec97` | `modelos/cnn_lr_3e-4_semente_43` |
+| 44 | 0,728 a 0,858 | 0,072 | `8464203ec1054b54b9d44c56340c5e76` | `modelos/cnn_lr_3e-4_semente_44` |
+
+| Métrica (CPM na validação, 3 sementes) | Resultado |
 |---|---:|
-| CPM médio | pendente |
-| Desvio padrão | pendente |
-| CPM mínimo | pendente |
-| CPM máximo | pendente |
+| CPM médio | 0,777 |
+| Desvio padrão amostral (n − 1) | 0,022 |
+| CPM mínimo | 0,752 (semente 42) |
+| CPM máximo | 0,790 (sementes 43 e 44) |
+| Amplitude | 0,039 |
+| Sensibilidade a 4 FP, média ± desvio | 0,892 ± 0,009 |
 
-Com uma semente só, média e desvio não existem; não os calculamos.
+Fonte: `relatorios/experimentos/sementes_cnn/resumo.json`; gráfico em `cpm_por_semente.png`.
 
-**Pendente com o Kauan.** O treino precisa de GPU CUDA, como o da semente 42. A máquina do Lucas
-tem a base, mas a GPU é AMD; na CPU cada semente levaria cerca de 4 horas e mudaria o modo de
-determinismo em relação à semente 42 (decisão 0007). O grupo decidiu, em 26/10/2026, que o
-Kauan treina as duas sementes na RTX 4050. Comandos na decisão 0010.
+**Como foi executado.** O Kauan treinou as sementes 43 e 44 em 26/10/2026 na RTX 4050, com os
+comandos da decisão 0010 (`torch 2.14.0+cu130`, determinismo parcial na GPU), cerca de 940 s de
+treino cada. O script 28 aceitou as três pastas: fora a semente, todos os parâmetros do run são
+iguais aos da semente 42, o hash dos dados é o mesmo (`14b0f7da...`), o bootstrap do avaliador usou
+a semente 42 e nenhuma pasta tem `teste_utilizado`. Conferimos também, fora do script, que a
+divisão (`divisao.csv`, sha256 `45b22b5e...`) e os 89 exames avaliados são os mesmos nas três. A
+amostra de negativos do treino muda com a semente, como previsto na decisão 0010; o total é 23.058
+candidatos nas três. Rodamos de novo o script 28 na máquina do Lucas: `sementes.csv` e
+`resumo.json` saíram idênticos aos do Kauan.
+
+**As sementes 43 e 44 têm o mesmo CPM por coincidência, não por erro.** Os pesos são diferentes
+(sha256 `e3092941...` e `4a82a879...`), a correlação entre as probabilidades das duas redes nos
+75.063 candidatos de validação é 0,81, e os nódulos encontrados em cada ponto diferem (59, 80, 88,
+92, 93, 100 e 102 de 111 na semente 43; 64, 76, 88, 91, 94, 99 e 102 na 44). As duas somas dão
+614, e como o CPM é a média dos sete pontos, com o mesmo denominador, o CPM sai igual.
+
+**Leitura sobre estabilidade.** A amplitude entre sementes, 0,039, é bem menor que a largura do
+IC95% de cada uma (cerca de 0,13 a 0,14), e os três intervalos se sobrepõem quase inteiramente.
+Retreinar a mesma configuração mudou o CPM menos do que a incerteza de termos só 89 exames. A
+semente 42, a que foi congelada e levada ao teste, foi a menor das três: o resultado não veio de
+uma inicialização favorável. A sensibilidade a 4 FP ficou entre 0,883 e 0,901 nas três, acima da
+meta de 0,80, na validação. Com três valores, o desvio padrão é uma estimativa grosseira; por isso
+reportamos também mínimo, máximo e amplitude. Nenhuma das novas redes foi ao teste: o CPM de teste
+continua sendo o da semente 42, 0,724.
 
 Três análises que não se misturam:
 
@@ -209,6 +239,7 @@ Três análises que não se misturam:
 | Trilha de redução de FP do LUNA16 | CPM 0,758 a 0,908 | 10 dobras, lista V2, avaliador oficial | Literatura |
 | Random Forest centro | CPM 0,409; 0,559 a 4 FP (IC95% 0,453 a 0,650) | Validação | Medido |
 | Random Forest centro | CPM 0,420; 0,520 a 4 FP (IC95% 0,442 a 0,603) | Teste | Medido |
+| CNN `cnn_lr_3e-4`, 3 sementes | CPM 0,777 ± 0,022 (0,752 a 0,790); 0,892 ± 0,009 a 4 FP | Validação | Medido |
 | CNN `cnn_lr_3e-4` | CPM 0,724; 0,883 a 4 FP (IC95% 0,843 a 0,929) | Teste | Medido |
 | Meta do baseline | sensibilidade ≥ 0,70 a 4 FP por exame | Um ponto da FROC | Meta, não resultado |
 | Meta da CNN | sensibilidade ≥ 0,80 a 4 FP por exame | Um ponto da FROC | Meta, não resultado |
@@ -221,6 +252,7 @@ meta de 0,80 a 4 FP não equivale a CPM 0,80. Comparamos cada meta com a nossa s
 
 Situação das metas, sem transformar meta em resultado:
 
-- **CNN:** no teste, 0,883 a 4 FP, com o IC95% inteiro acima de 0,80.
+- **CNN:** no teste, 0,883 a 4 FP, com o IC95% inteiro acima de 0,80. Na validação, as três
+  sementes ficaram entre 0,883 e 0,901 a 4 FP, todas acima da meta.
 - **Random Forest centro:** no teste, 0,520 a 4 FP, com o IC95% (0,442 a 0,603) inteiro abaixo
   da meta de 0,70; na validação, 0,559. A meta do baseline não foi atingida.

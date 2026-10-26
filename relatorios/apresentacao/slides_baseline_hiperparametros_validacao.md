@@ -63,18 +63,23 @@ depende excessivamente de uma única inicialização.**
 
 | Semente | CPM na validação |
 |---:|---:|
-| 42 (original) | 0,752 |
-| 43 | **pendente** |
-| 44 | **pendente** |
-| Média ± desvio padrão | **pendente** |
-| Mínimo / máximo | **pendente** |
+| Semente | CPM na validação | IC95% | Sensibilidade a 4 FP |
+|---:|---:|---|---:|
+| 42 (original, a que foi ao teste) | 0,752 | 0,681 a 0,819 | 0,883 |
+| 43 | 0,790 | 0,725 a 0,862 | 0,901 |
+| 44 | 0,790 | 0,728 a 0,858 | 0,892 |
+| Média ± desvio padrão | 0,777 ± 0,022 | | 0,892 ± 0,009 |
+| Mínimo / máximo | 0,752 / 0,790 | | 0,883 / 0,901 |
 
-Gráfico: `relatorios/experimentos/sementes_cnn/cpm_por_semente.png`, gerado pelo script 28
-depois dos dois treinos.
+Gráfico: `relatorios/experimentos/sementes_cnn/cpm_por_semente.png`.
 
-**Conclusão sobre estabilidade:** só pode ser escrita depois dos treinos 43 e 44. Sugestão de
-leitura, a decidir com os números: se a amplitude entre sementes for pequena perto do IC95% de
-cada uma (0,681 a 0,819 na semente 42), o resultado não depende de uma inicialização de sorte.
+**Conclusão sobre estabilidade:** a diferença entre sementes (0,039) é bem menor que o IC95% de
+cada uma (cerca de 0,14). A semente congelada, 42, foi a menor das três, então o resultado não
+veio de uma inicialização de sorte. As novas sementes não foram ao teste.
+
+Nota para quem apresentar: 43 e 44 dão o mesmo CPM por coincidência. As redes são diferentes e
+acertam nódulos diferentes em cada ponto, mas a soma dos sete pontos deu igual (seção 4 do
+docs/14).
 
 *Fala sugerida:* "O intervalo de confiança mede a incerteza por termos poucos exames; a variação
 entre sementes mede a incerteza de treinar de novo. São duas perguntas diferentes."
