@@ -44,7 +44,20 @@ def adaptar(nome, texto):
     return texto
 
 
-def avaliar(previsoes, exames, anotacoes, excluidas, destino, semente, bootstrap, confianca):
+def chamada(anotacoes, excluidas, series, resultados, destino, max_marcas):
+    """A chamada do programa oficial; sem limite só para reproduzir a saída do exemplo do LUNA16."""
+    if max_marcas == 100:
+        return (f"oficial.noduleCADEvaluation({str(anotacoes.resolve())!r}, {str(excluidas.resolve())!r}, "
+                f"{str(series.resolve())!r}, {str(resultados.resolve())!r}, {str(destino.resolve())!r})\n")
+    # Mesmo corpo de noduleCADEvaluation, trocando só o maxNumberOfCADMarks.
+    return (f"nodulos, uids = oficial.collect({str(anotacoes.resolve())!r}, {str(excluidas.resolve())!r}, "
+            f"{str(series.resolve())!r})\n"
+            f"oficial.evaluateCAD(uids, {str(resultados.resolve())!r}, {str(destino.resolve())!r}, nodulos, "
+            f"'predicoes', maxNumberOfCADMarks={max_marcas}, performBootstrapping=True, "
+            f"numberOfBootstrapSamples=oficial.bNumberOfBootstrapSamples, confidence=oficial.bConfidence)\n")
+
+
+def avaliar(previsoes, exames, anotacoes, excluidas, destino, semente, bootstrap, confianca, max_marcas=100):
     destino = Path(destino)
     destino.mkdir(parents=True, exist_ok=True)
     uids = sorted(exames)
@@ -70,8 +83,7 @@ def avaliar(previsoes, exames, anotacoes, excluidas, destino, semente, bootstrap
             f"np.random.seed({semente})\n"
             f"oficial.bNumberOfBootstrapSamples = {bootstrap}\n"
             f"oficial.bConfidence = {confianca!r}\n"
-            f"oficial.noduleCADEvaluation({str(anotacoes.resolve())!r}, {str(excluidas.resolve())!r}, "
-            f"{str(series.resolve())!r}, {str(resultados.resolve())!r}, {str(destino.resolve())!r})\n"
+            + chamada(Path(anotacoes), Path(excluidas), series, resultados, destino, max_marcas) +
             f"np.savetxt({str((destino / 'cpm_bootstrap.csv').resolve())!r}, oficial.cpm_replicas, delimiter=',')\n",
             encoding="utf-8",
         )
@@ -107,7 +119,7 @@ def avaliar(previsoes, exames, anotacoes, excluidas, destino, semente, bootstrap
         metricas.update({f"sensibilidade_{chave}fp": float(sens),
                          f"sensibilidade_{chave}fp_ic_inferior": float(baixo),
                          f"sensibilidade_{chave}fp_ic_superior": float(alto)})
-    protocolo = {"avaliador": "LUNA16 oficial", "max_marcas_por_exame": 100,
+    protocolo = {"avaliador": "LUNA16 oficial", "max_marcas_por_exame": max_marcas,
                  "bootstrap": bootstrap, "confianca": confianca, "seed": semente,
                  "exames": len(uids), "fontes": hashes, "metricas": metricas,
                  "curva_pontos": len(curva), "curva_bootstrap_pontos": len(ic),
