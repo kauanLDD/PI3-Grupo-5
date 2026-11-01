@@ -161,6 +161,9 @@ avaliacao:
   pontos_de_operacao: [1, 4]
   bootstrap_reamostras: 1000
   intervalo_confianca: 0.95
+  # Script 30: o exemplo do pacote sem o limite de 100 marcas tem 551.065 marcas e levaria cerca de
+  # 7 horas com 1.000 reamostras. O intervalo desse exemplo não entra em conclusão nenhuma.
+  bootstrap_exemplo_sem_limite: 10
 
 metas:
   # Alvo declarado no enunciado, seção 7.6. É alvo, não resultado.

@@ -238,3 +238,7 @@ Forest centro, congelado antes, foi avaliado no mesmo teste em 26/10/2026, só p
 (decisão 0009; `docs/14`). Os detalhes estão em `docs/10` a `docs/14`, e o caminho
 inteiro, dos dados ao teste, com os erros encontrados, está no
 [dossiê da modelagem](docs/13-dossie-modelagem.md).
+A comparação com a literatura, separando quem usa a lista oficial V2 de quem gera os próprios
+candidatos, está em [comparação com a literatura](docs/16-comparacao-literatura.md).
+A conferência do avaliador oficial contra o cálculo de FROC que o grupo usava antes está em
+[avaliador oficial contra o do grupo](docs/17-avaliador-oficial-contra-o-do-grupo.md).

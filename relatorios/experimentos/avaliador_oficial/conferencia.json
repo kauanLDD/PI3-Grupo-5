@@ -1,0 +1,171 @@
+{
+  "seed": 42,
+  "bootstrap": 1000,
+  "bootstrap_exemplo_sem_limite": 10,
+  "confianca": 0.95,
+  "exemplo": {
+    "com_limite_100": {
+      "metricas": {
+        "cpm": 0.004456757428571429,
+        "cpm_ic_inferior": 0.002264785938305274,
+        "cpm_ic_superior": 0.007438247137529004,
+        "sensibilidade_0_125fp": 0.0,
+        "sensibilidade_0_125fp_ic_inferior": 0.0,
+        "sensibilidade_0_125fp_ic_superior": 0.0016,
+        "sensibilidade_0_25fp": 0.00084317,
+        "sensibilidade_0_25fp_ic_inferior": 0.0,
+        "sensibilidade_0_25fp_ic_superior": 0.003218021,
+        "sensibilidade_0_5fp": 0.00084317,
+        "sensibilidade_0_5fp_ic_inferior": 0.0,
+        "sensibilidade_0_5fp_ic_superior": 0.003378378,
+        "sensibilidade_1fp": 0.001686341,
+        "sensibilidade_1fp_ic_inferior": 0.0,
+        "sensibilidade_1fp_ic_superior": 0.004608295,
+        "sensibilidade_2fp": 0.004215852,
+        "sensibilidade_2fp_ic_inferior": 0.0008396364258925134,
+        "sensibilidade_2fp_ic_superior": 0.008460237,
+        "sensibilidade_4fp": 0.007588533,
+        "sensibilidade_4fp_ic_inferior": 0.003436426,
+        "sensibilidade_4fp_ic_superior": 0.013445378,
+        "sensibilidade_8fp": 0.016020236,
+        "sensibilidade_8fp_ic_inferior": 0.00910596,
+        "sensibilidade_8fp_ic_superior": 0.024179621
+      },
+      "contagens": {
+        "True positives": "244",
+        "False positives": "87140",
+        "False negatives": "942",
+        "Total number of candidates": "88606",
+        "Total number of nodules": "1186",
+        "Ignored candidates on excluded nodules": "1203",
+        "Ignored candidates which were double detections on a nodule": "19"
+      }
+    },
+    "sem_limite": {
+      "metricas": {
+        "cpm": 0.004456757428571429,
+        "cpm_ic_inferior": 0.002682536429205829,
+        "cpm_ic_superior": 0.006028241685061661,
+        "sensibilidade_0_125fp": 0.0,
+        "sensibilidade_0_125fp_ic_inferior": 0.0,
+        "sensibilidade_0_125fp_ic_superior": 0.0,
+        "sensibilidade_0_25fp": 0.00084317,
+        "sensibilidade_0_25fp_ic_inferior": 0.0,
+        "sensibilidade_0_25fp_ic_superior": 0.00331675,
+        "sensibilidade_0_5fp": 0.00084317,
+        "sensibilidade_0_5fp_ic_inferior": 0.0,
+        "sensibilidade_0_5fp_ic_superior": 0.00331675,
+        "sensibilidade_1fp": 0.001686341,
+        "sensibilidade_1fp_ic_inferior": 0.0,
+        "sensibilidade_1fp_ic_superior": 0.004145937,
+        "sensibilidade_2fp": 0.004215852,
+        "sensibilidade_2fp_ic_inferior": 0.001626016,
+        "sensibilidade_2fp_ic_superior": 0.006071119,
+        "sensibilidade_4fp": 0.007588533,
+        "sensibilidade_4fp_ic_inferior": 0.003252032,
+        "sensibilidade_4fp_ic_superior": 0.010407632,
+        "sensibilidade_8fp": 0.016020236,
+        "sensibilidade_8fp_ic_inferior": 0.01092437,
+        "sensibilidade_8fp_ic_superior": 0.019947961
+      },
+      "contagens": {
+        "True positives": "1120",
+        "False positives": "543159",
+        "False negatives": "66",
+        "Total number of candidates": "551065",
+        "Total number of nodules": "1186",
+        "Ignored candidates on excluded nodules": "6555",
+        "Ignored candidates which were double detections on a nodule": "231"
+      }
+    },
+    "conferencia": {
+      "pontos_maior_diferenca": 0.0,
+      "cpm_saida_original": 0.004456757428571429,
+      "cpm_obtido": 0.004456757428571429,
+      "contagens_iguais_fora_excluidas": true,
+      "contagens_que_dependem_das_excluidas": {
+        "False positives": {
+          "pacote": "548420",
+          "obtido": "543159"
+        },
+        "Ignored candidates on excluded nodules": {
+          "pacote": "1294",
+          "obtido": "6555"
+        }
+      }
+    }
+  },
+  "previsoes": {
+    "cnn_lr_3e-4_teste": {
+      "exames": 176,
+      "previsoes": 150412,
+      "reproduz_resultado_gravado": true,
+      "nodulos_anotados": 223,
+      "candidatos_positivos_grupo": 339,
+      "rotulos": {
+        "falso_positivo": 148346,
+        "ignorado": 1727,
+        "acerto": 339
+      },
+      "oficial": {
+        "True positives": "218",
+        "False positives": "16072",
+        "False negatives": "5",
+        "Total number of candidates": "17600",
+        "Total number of nodules": "223",
+        "Ignored candidates on excluded nodules": "1193",
+        "Ignored candidates which were double detections on a nodule": "117"
+      },
+      "reamostras_grupo_validas": 1000
+    },
+    "cnn_lr_3e-4_validacao": {
+      "exames": 89,
+      "previsoes": 75063,
+      "reproduz_resultado_gravado": true,
+      "nodulos_anotados": 111,
+      "candidatos_positivos_grupo": 120,
+      "rotulos": {
+        "falso_positivo": 74197,
+        "ignorado": 746,
+        "acerto": 120
+      },
+      "oficial": {
+        "True positives": "107",
+        "False positives": "8235",
+        "False negatives": "4",
+        "Total number of candidates": "8900",
+        "Total number of nodules": "111",
+        "Ignored candidates on excluded nodules": "547",
+        "Ignored candidates which were double detections on a nodule": "11"
+      },
+      "reamostras_grupo_validas": 1000
+    },
+    "random_forest_centro_validacao": {
+      "exames": 89,
+      "previsoes": 75063,
+      "reproduz_resultado_gravado": true,
+      "nodulos_anotados": 111,
+      "candidatos_positivos_grupo": 120,
+      "rotulos": {
+        "falso_positivo": 74197,
+        "ignorado": 746,
+        "acerto": 120
+      },
+      "oficial": {
+        "True positives": "92",
+        "False positives": "8401",
+        "False negatives": "19",
+        "Total number of candidates": "8896",
+        "Total number of nodules": "111",
+        "Ignored candidates on excluded nodules": "397",
+        "Ignored candidates which were double detections on a nodule": "6"
+      },
+      "reamostras_grupo_validas": 1000
+    }
+  },
+  "entradas": {
+    "annotations.csv": "db9adb75b381f3e95b1f601d9b63f2e42bd6536ab5a06dc539c5ec8a4005cec7",
+    "annotations_excluded.csv": "73a5c139257294fe45a68620ed1b2cf383ba8b22af1501d2f498abbd6b802c25",
+    "sampleSubmission.csv": "10997aeaed5f6a59cde847388c0073fe7c54e5ffb6c808bb6ccfc1a73afcf43b"
+  }
+}
