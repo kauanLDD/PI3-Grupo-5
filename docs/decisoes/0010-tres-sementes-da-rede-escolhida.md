@@ -1,6 +1,6 @@
 # 0010: a rede escolhida repetida com mais duas sementes, só na validação
 
-**Estado:** decidido antes de treinar; treinos ainda não executados
+**Estado:** decidido antes de treinar; treinos executados em 26/10/2026
 **Data:** 26/10/2026
 
 ## Contexto
@@ -67,3 +67,11 @@ do bootstrap e desvio padrão são três coisas diferentes e aparecem separadas 
 `treinar_cnn_variante@*` do DVC. Como sem `--semente` o comportamento não muda, esses estágios
 devem ser registrados com `dvc commit -f` na máquina que tem os dados, em vez de reexecutados,
 como em `docs/11-experimentos-validacao.md`. Isso ainda não foi feito.
+
+## Resultado
+
+Executado pelo Kauan em 26/10/2026 na RTX 4050, cerca de 940 s de treino por semente. O script 28
+aceitou as três pastas sem diferença de configuração. CPM na validação: 0,752 (42), 0,790 (43) e
+0,790 (44); média 0,777, desvio padrão amostral 0,022, amplitude 0,039, menor que a largura do
+IC95% de cada semente. Detalhes e leitura em `docs/14-baseline-literatura-sementes-e-teste-rf.md`,
+seção 4.
