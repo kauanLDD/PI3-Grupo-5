@@ -6,7 +6,7 @@
 2. Previsões do projeto já avaliadas: reavalia com o oficial e confere contra o que está em modelos/.
 3. Cálculo do grupo (src/experimentos/froc_grupo.py) nas mesmas previsões, lado a lado com o oficial.
 
-Uso: python scripts/26_conferir_avaliador_oficial.py [--avaliador PASTA_evaluationScript]
+Uso: python scripts/30_conferir_avaliador_oficial.py [--avaliador PASTA_evaluationScript]
 """
 
 import argparse
@@ -32,6 +32,9 @@ AVALIACOES = {
 LINHAS_CONTAGEM = ("True positives", "False positives", "False negatives", "Total number of candidates",
                    "Total number of nodules", "Ignored candidates on excluded nodules",
                    "Ignored candidates which were double detections on a nodule")
+# A saída do pacote foi gerada com uma lista de excluídas mais antiga que a distribuída: estas duas
+# contagens mudam com ela e não medem erro da cópia do avaliador.
+DEPENDEM_DAS_EXCLUIDAS = ("False positives", "Ignored candidates on excluded nodules")
 
 
 def contagens(caminho):
@@ -46,25 +49,30 @@ def conferir_exemplo(pasta, intermediario, cfg, avaliacao):
     anotacoes, excluidas = pasta / "annotations/annotations.csv", pasta / "annotations/annotations_excluded.csv"
     esperado = pasta / "exampleFiles/evaluation"
     resultado = {}
-    for nome, limite in (("com_limite_100", 100), ("sem_limite", -1)):
+    for nome, limite, reamostras in (("com_limite_100", 100, avaliacao["bootstrap_reamostras"]),
+                                     ("sem_limite", -1, avaliacao["bootstrap_exemplo_sem_limite"])):
         destino = intermediario / f"exemplo_{nome}"
         metricas = avaliacao_oficial.avaliar(previsoes, exames, anotacoes, excluidas, destino, cfg["seed"],
-                                             avaliacao["bootstrap_reamostras"],
+                                             reamostras,
                                              avaliacao["intervalo_confianca"], max_marcas=limite)
         resultado[nome] = {"metricas": metricas, "contagens": contagens(destino / "CADAnalysis.txt"),
                            "pontos": pd.read_csv(destino / "pontos_operacao.csv")}
-    # A saída do pacote não tem limite; a curva não depende do sorteio, o bootstrap depende.
-    obtida = np.loadtxt(intermediario / "exemplo_sem_limite/froc_predicoes.txt", delimiter=",")
+    # A saída do pacote não tem limite. Comparamos os sete pontos e não a curva inteira: o
+    # scikit-learn atual descarta pontos intermediários da roc_curve, e a curva sai com menos linhas.
     original = np.loadtxt(esperado / "froc_sampleSubmission.txt", delimiter=",")
-    resultado["conferencia"] = {
-        "contagens_iguais": contagens(esperado / "CADAnalysis.txt") == resultado["sem_limite"]["contagens"],
-        "curva_mesmo_tamanho": obtida.shape == original.shape,
-        "curva_maior_diferenca": float(np.abs(obtida - original).max()) if obtida.shape == original.shape else None,
-    }
-    curva = pd.DataFrame(original[:, :2], columns=["fp_por_exame", "sensibilidade"])
     pontos = list(froc_grupo.PONTOS)
-    resultado["conferencia"]["cpm_saida_original"] = float(np.mean(np.interp(pontos, curva.fp_por_exame,
-                                                                             curva.sensibilidade)))
+    sens_original = np.interp(pontos, original[:, 0], original[:, 1])
+    sens_obtida = resultado["sem_limite"]["pontos"].sensibilidade.to_numpy()
+    do_pacote, nossa = contagens(esperado / "CADAnalysis.txt"), resultado["sem_limite"]["contagens"]
+    resultado["conferencia"] = {
+        "pontos_maior_diferenca": float(np.abs(sens_obtida - sens_original).max()),
+        "cpm_saida_original": float(sens_original.mean()),
+        "cpm_obtido": float(resultado["sem_limite"]["metricas"]["cpm"]),
+        "contagens_iguais_fora_excluidas": all(do_pacote[k] == nossa[k] for k in do_pacote
+                                               if k not in DEPENDEM_DAS_EXCLUIDAS),
+        "contagens_que_dependem_das_excluidas": {k: {"pacote": do_pacote[k], "obtido": nossa[k]}
+                                                 for k in DEPENDEM_DAS_EXCLUIDAS},
+    }
     return resultado
 
 
@@ -140,6 +148,7 @@ def main():
     pd.concat(tabelas).to_csv(saida / "oficial_vs_grupo.csv", index=False)
 
     registro = {"seed": cfg["seed"], "bootstrap": avaliacao["bootstrap_reamostras"],
+                "bootstrap_exemplo_sem_limite": avaliacao["bootstrap_exemplo_sem_limite"],
                 "confianca": avaliacao["intervalo_confianca"], "exemplo": exemplo, "previsoes": resumos,
                 "entradas": {"annotations.csv": sha256(anotacoes), "annotations_excluded.csv": sha256(excluidas),
                              "sampleSubmission.csv": sha256(pasta / "exampleFiles/submission/sampleSubmission.csv")}}

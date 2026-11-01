@@ -5,6 +5,15 @@ dizer se o CPM de 0,724 no teste (`docs/12-avaliacao-final-teste.md`) é bom.
 
 Os números abaixo foram copiados das tabelas dos artigos originais, não de tabelas de terceiros.
 
+A seção 1 de `docs/14-baseline-literatura-sementes-e-teste-rf.md` traz as referências completas de
+Li, Zheng e Setio e o que é comparável em cada uma. Este documento acrescenta os sete pontos de
+cada sistema do desafio e o trabalho de Dou et al. (2017).
+
+Em 01/11/2026 conferimos nos PDFs os sete pontos e o CPM de Setio et al. (2017, tabela 2, os
+cinco sistemas), de Dou et al. (2017, tabela II) e de Li et al. (2025), além das coberturas de
+0,983 e 0,944 das listas V2 e V1 (Setio, tabela 1). Os de Zheng et al. (2022) batem com a tabela
+de Li. O número de candidatos por exame do Zheng não foi conferido: o PDF dele não está com o grupo.
+
 ## Tabela
 
 | Trabalho | Base | Lista de candidatos | Divisão dos dados | Métrica | Valor |
@@ -63,7 +72,7 @@ positivos acima deles no topo do ranking de cada exame.
 **Por quê, em hipóteses.** Não medimos estas causas; são as diferenças de método que os artigos
 descrevem e nós não temos:
 
-1. **Uma escala só.** Nossa CNN vê um cubo de 34 mm. Dou et al. juntam três redes com
+1. **Uma escala só.** Nossa CNN vê um cubo de 32 mm, recortado do centro do cubo de 34 mm guardado em disco. Dou et al. juntam três redes com
    recortes de tamanhos diferentes. DIAG_CONVNET combina nove vistas 2D. Cada uma sozinha no
    artigo de Dou fica entre 0,46 e 0,55 a 0,125 FP; a fusão chega a 0,677.
 2. **Menos dados de treino.** Com 10 dobras, cada modelo do artigo treina em 9 subsets, cerca de

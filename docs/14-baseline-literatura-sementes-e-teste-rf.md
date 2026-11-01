@@ -11,13 +11,13 @@ Conferimos título, autores, DOI e tabelas no texto completo de cada artigo, em 
 
 ### 1.1 As duas referências citadas pelo grupo
 
-**Zheng et al. (2022) — confirmada.** Zheng S, Kong S, Huang Z, Pan L, Zeng T, Zheng B, Yang M,
+**Zheng et al. (2022): confirmada.** Zheng S, Kong S, Huang Z, Pan L, Zeng T, Zheng B, Yang M,
 Liu Z. *A Lower False Positive Pulmonary Nodule Detection Approach for Early Lung Cancer
 Screening*. Diagnostics, 12(11):2660, 2022. DOI
 [10.3390/diagnostics12112660](https://doi.org/10.3390/diagnostics12112660). É o mesmo trabalho
 que a decisão 0002 já cita pela dilatação da máscara com esfera de raio 6.
 
-**Li et al. (2025) — confirmada.** Li Y, Hui L, Wang X,
+**Li et al. (2025): confirmada.** Li Y, Hui L, Wang X,
 Zou L, Chua S. *Lung nodule detection using a multi-scale convolutional neural network and global
 channel spatial attention mechanisms*. Scientific Reports, 15:12313, 2025. DOI
 [10.1038/s41598-025-97187-w](https://doi.org/10.1038/s41598-025-97187-w). Foi o único artigo de
@@ -37,15 +37,15 @@ positivo por exame.
 |---|---:|---|---|---|---:|---:|---|
 | Li et al., Sci. Rep. 15:12313 | 2025 | Sistema completo: detector 3D Res2Net com atenção GCSAM e RPN (CNDNet) + rede de redução de FP em cubos de 32³ (FPRNet) | LUNA16, 888 exames, 1.186 nódulos; 754.975 candidatos para a redução de FP | Validação cruzada em 10 dobras (subsets oficiais); IC por bootstrap de 1.000; não diz se usou o script oficial | 0,929 | 0,971 | Sete pontos: 0,773 / 0,888 / 0,945 / 0,971 / 0,977 / 0,977 / 0,977. Só o detector: CPM 0,911. Gera os próprios candidatos. |
 | Zheng et al., Diagnostics 12:2660 | 2022 | Sistema completo: detector 3D multiescala tipo FPN com RPN (MSFD-Net) + classificador de candidatos em 32³ (CS-Net) | LUNA16, 888 exames, 1.186 nódulos; candidates V2 no treino da redução de FP | Validação cruzada em 10 dobras; métrica do desafio; não nomeia o script | 0,906 | 0,940 | Sete pontos: 0,771 / 0,849 / 0,905 / 0,940 / 0,957 / 0,960 / 0,960. Máscara de pulmão dilatada. |
-| Setio et al., Med. Image Anal. 42:1–13 ([10.1016/j.media.2017.06.015](https://doi.org/10.1016/j.media.2017.06.015)) | 2017 | Desafio LUNA16, trilha de redução de falsos positivos: CNNs sobre a lista de candidatos fornecida | LUNA16, 888 exames, 1.186 nódulos; 754.975 candidatos (V2) | Validação cruzada em 10 dobras; script oficial; até 100 marcas por exame; IC por bootstrap de 1.000 | 0,908 (melhor, CUMedVis) a 0,758 (pior, ZNET) | 0,972 a 0,793 | **Mesma tarefa e mesmo avaliador que os nossos.** Fora de 2022–2025, mas é a referência de protocolo. |
-| Ma et al. (TiCNet), J. Imaging Inform. Med. 37:196–208 ([10.1007/s10278-023-00904-y](https://doi.org/10.1007/s10278-023-00904-y)) | 2024 | Sistema completo: CNN 3D codificador-decodificador com transformer | LUNA16, 888 exames, 1.186 nódulos | 10 dobras; acerto por IoU 3D > 0,1, **não** pelo raio do nódulo do script oficial | 0,907 | 0,922 | Critério de acerto diferente do oficial. |
+| Setio et al., Med. Image Anal. 42:1 a 13 ([10.1016/j.media.2017.06.015](https://doi.org/10.1016/j.media.2017.06.015)) | 2017 | Desafio LUNA16, trilha de redução de falsos positivos: CNNs sobre a lista de candidatos fornecida | LUNA16, 888 exames, 1.186 nódulos; 754.975 candidatos (V2) | Validação cruzada em 10 dobras; script oficial; até 100 marcas por exame; IC por bootstrap de 1.000 | 0,908 (melhor, CUMedVis) a 0,758 (pior, ZNET) | 0,972 a 0,793 | **Mesma tarefa e mesmo avaliador que os nossos.** Fora de 2022 a 2025, mas é a referência de protocolo. |
+| Ma et al. (TiCNet), J. Imaging Inform. Med. 37:196 a 208 ([10.1007/s10278-023-00904-y](https://doi.org/10.1007/s10278-023-00904-y)) | 2024 | Sistema completo: CNN 3D codificador-decodificador com transformer | LUNA16, 888 exames, 1.186 nódulos | 10 dobras; acerto por IoU 3D > 0,1, **não** pelo raio do nódulo do script oficial | 0,907 | 0,922 | Critério de acerto diferente do oficial. |
 | Wang et al., Digital Health 12 ([10.1177/20552076261419238](https://doi.org/10.1177/20552076261419238)) | 2026 (submetido em 2025) | Sistema completo em dois estágios: detector 3D em U com atenção + rede multiescala de redução de FP | LUNA16, 888 exames, 1.186 nódulos | Validação cruzada em **6** dobras; não cita o script oficial | 0,878 | 0,939 | Mostra que mudar o número de dobras já muda a régua. |
 
 ### 1.3 O que é e o que não é comparável
 
 Nosso protocolo: redução de falsos positivos sobre a lista **candidates_V2 fornecida pelo
 desafio**, avaliador oficial do LUNA16 (`third_party/luna16`), até 100 marcas por exame, divisão
-fixa por paciente com treino nos subsets 0–6, validação no 7 e **teste nos subsets 8 e 9, 176
+fixa por paciente com treino nos subsets 0 a 6, validação no 7 e **teste nos subsets 8 e 9, 176
 exames e 223 nódulos**, uma única vez por modelo.
 
 - Li (2025), Zheng (2022), TiCNet e Wang são **sistemas completos**: geram os próprios
@@ -114,9 +114,9 @@ Sete pontos no teste, com IC95% do bootstrap por exame
 | FP por exame | 0,125 | 0,25 | 0,5 | 1 | 2 | 4 | 8 | CPM |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | CNN | 0,457 | 0,574 | 0,641 | 0,735 | 0,852 | 0,883 | 0,924 | 0,724 |
-| IC95% CNN | 0,364–0,555 | 0,479–0,640 | 0,561–0,728 | 0,659–0,819 | 0,801–0,896 | 0,843–0,929 | 0,883–0,962 | 0,670–0,778 |
+| IC95% CNN | 0,364 a 0,555 | 0,479 a 0,640 | 0,561 a 0,728 | 0,659 a 0,819 | 0,801 a 0,896 | 0,843 a 0,929 | 0,883 a 0,962 | 0,670 a 0,778 |
 | Random Forest centro | 0,283 | 0,332 | 0,354 | 0,381 | 0,480 | 0,520 | 0,587 | 0,420 |
-| IC95% RF | 0,209–0,355 | 0,258–0,407 | 0,285–0,431 | 0,314–0,460 | 0,401–0,556 | 0,442–0,603 | 0,504–0,667 | 0,349–0,490 |
+| IC95% RF | 0,209 a 0,355 | 0,258 a 0,407 | 0,285 a 0,431 | 0,314 a 0,460 | 0,401 a 0,556 | 0,442 a 0,603 | 0,504 a 0,667 | 0,349 a 0,490 |
 
 **Diferença pareada de CPM, CNN menos RF, no teste: 0,304 (IC95% 0,247 a 0,360)**, a CNN acima em
 100% das 1.000 reamostras. Na validação a diferença foi 0,342 (IC95% 0,252 a 0,437). Dentro dos

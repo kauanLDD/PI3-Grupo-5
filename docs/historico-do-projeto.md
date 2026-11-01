@@ -523,3 +523,11 @@ e nódulos encostados na parede do pulmão são perdidos com mais frequência (p
 falsos positivos de maior escore, o tipo mais frequente na nossa leitura visual é a marca ao lado
 de um nódulo verdadeiro. O registro está em `docs/15-analise-de-erros-cnn.md`.
 
+## Atualização de 01/11/2026: entregas da Sprint 5 juntadas e avaliador oficial conferido
+
+Juntamos na `main` as sementes 43 e 44 da rede escolhida (Lucas), a comparação com a literatura
+(Arthur, `docs/16-comparacao-literatura.md`) e a conferência do avaliador oficial (Náthaly). A
+conferência (`scripts/30_conferir_avaliador_oficial.py`) reproduz a saída de exemplo do pacote do
+LUNA16 nos sete pontos e no CPM e mostra que o cálculo de FROC que o grupo usava antes dá CPM
+0,611 no teste, contra 0,724 do oficial, porque conta candidato em vez de nódulo e não ignora as
+marcas sobre excluídas. O registro está em `docs/17-avaliador-oficial-contra-o-do-grupo.md`.
