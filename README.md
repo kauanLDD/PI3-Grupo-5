@@ -81,8 +81,13 @@ No Ubuntu, se o `venv` reclamar, instale antes: `sudo apt install python3.12-ven
 
 **2. Apontar para os dados**
 
-Abra `configuracao/config.yaml` e ajuste `caminhos.luna16` para onde o LUNA16 está na sua
-máquina. Todos os outros caminhos derivam dele. Nenhum caminho fica escrito dentro do código.
+Copie `configuracao/caminhos.exemplo.yaml` para `configuracao/caminhos.local.yaml` e troque
+`luna16` pela pasta onde o LUNA16 está na sua máquina: o HD ou a pasta `Dataset` do Drive do
+grupo, que tem a mesma estrutura. Os outros caminhos da base mudam junto. O
+`caminhos.local.yaml` fica fora do git e vale para todos os scripts, sem mexer no
+`config.yaml`. Nenhum caminho fica escrito dentro do código.
+
+O `dvc repro` lê os caminhos direto do `config.yaml` e não usa o arquivo local.
 
 O zip do desafio extrai com a pasta repetida, `subset0/subset0/`, e o código conta com isso.
 Os dez subsets são as dobras oficiais de validação cruzada, e é por isso que não inventamos
@@ -189,7 +194,7 @@ src/
   dataset/           leitura dos volumes do desafio
   visualization/     as figuras
   config.py          lê o config.yaml e fixa a semente
-configuracao/        config.yaml, único lugar com caminhos e parâmetros
+configuracao/        config.yaml, único lugar com caminhos e parâmetros, e o exemplo dos caminhos locais
 dados/               fora do git, é onde o pipeline escreve
 modelos/             a rede escolhida, o teste final e o Random Forest centro; o resto fica fora do git
 docs/                o que o grupo estabeleceu, incluindo os registros de decisão

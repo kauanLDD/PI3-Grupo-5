@@ -18,6 +18,9 @@ limpar-estrutura-em-ingles.sh
 copiar-material-do-professor.sh
 tmp/
 
+# Onde a base está em cada máquina. O exemplo versionado é configuracao/caminhos.exemplo.yaml.
+configuracao/caminhos.local.yaml
+
 # Dados. Nada de imagem médica ou anotação bruta no git.
 dados/bruto/*
 dados/intermediario/*

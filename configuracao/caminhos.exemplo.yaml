@@ -1,0 +1,15 @@
+# Copie para configuracao/caminhos.local.yaml e troque pela pasta Dataset desta máquina.
+# O caminhos.local.yaml fica fora do git e vale para todos os scripts.
+#
+# A pasta Dataset do Drive do grupo repete a estrutura do HD (subset0/subset0,
+# seg-lungs-LUNA16/seg-lungs-LUNA16, evaluationScript/evaluationScript), então basta a raiz:
+# os outros caminhos da base mudam junto. No Drive a pasta do grupo começa com um espaço.
+
+# Windows, com o Google Drive para computador:
+luna16: "G:/Meu Drive/ PI3-Grupo-5/Dataset"
+
+# Linux ou outro disco, por exemplo:
+# luna16: "/home/nome/Drive/PI3-Grupo-5/Dataset"
+
+# Qualquer outra chave de `caminhos` do config.yaml pode ser trocada aqui, uma a uma:
+# lidc_metadata: "D:/LIDC-IDRI/metadata/metadata.csv"
