@@ -80,6 +80,9 @@ caminhos:
   lista_propria_cnn: "relatorios/experimentos/lista_propria_cnn"
   # As avaliações completas, com as 1,4 milhão de marcas, ficam fora do git.
   lista_propria_cnn_completa: "dados/intermediario/lista_propria_cnn"
+  # Quem passa na frente dos nódulos na nossa lista, na validação.
+  intrusos_lista_propria: "relatorios/experimentos/intrusos_lista_propria"
+  intrusos_lista_propria_completa: "dados/intermediario/intrusos_lista_propria"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -311,3 +314,19 @@ lista_propria:
   exames_conferencia: 3
   tolerancia_conferencia: 1.0e-5
 
+intrusos:
+  # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na
+  # validação; não pontua nada de novo e não toca o teste.
+  probabilidades: dados/intermediario/lista_propria_cnn/probabilidades.csv
+  # A mesma rede na V2, nos mesmos exames, para comparar os intrusos das duas listas.
+  probabilidades_v2: modelos/cnn_lr_3e-4/probabilidades_validacao.csv
+  # Falsos positivos comuns (que não são intrusos) sorteados para comparação.
+  amostra_falsos_positivos: 2000
+  # O raio só tem cinco valores, um por escala do LoG (sigma 1 a 5, raio = sigma vezes raiz de 3).
+  # Os cortes caem entre eles.
+  faixas_raio: [0, 2.5, 4.5, 6, 8]
+  # Distância à borda em mm, positiva dentro do pulmão: fora, até 3 (o perto_da_borda da análise
+  # de erros), 3 a 10 e acima de 10.
+  faixas_borda: [0, 3, 10]
+  faixas_distancia_nodulo: [0, 10, 30]
+  intrusos_figura: 12

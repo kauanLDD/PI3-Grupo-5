@@ -1,0 +1,152 @@
+{
+  "exames": 89,
+  "nodulos": 111,
+  "listas": {
+    "propria": {
+      "marcas": 1407860,
+      "acertos": 169,
+      "falsos_positivos": 1405228,
+      "intrusos": 14251,
+      "exames_com_intruso": 27,
+      "nodulos_sem_candidato": 5,
+      "nodulos_com_intruso": 43,
+      "intrusos_por_nodulo_mediana": 0.0,
+      "falsos_positivos_nas_100": 8240,
+      "intrusos_nas_100": 699,
+      "acertos_nas_100": 117
+    },
+    "v2": {
+      "marcas": 75063,
+      "acertos": 120,
+      "falsos_positivos": 74197,
+      "intrusos": 763,
+      "exames_com_intruso": 16,
+      "nodulos_sem_candidato": 2,
+      "nodulos_com_intruso": 26,
+      "intrusos_por_nodulo_mediana": 0.0,
+      "falsos_positivos_nas_100": 8235,
+      "intrusos_nas_100": 321,
+      "acertos_nas_100": 118
+    }
+  },
+  "grupos": {
+    "intrusos_propria": {
+      "n": 14251,
+      "nota_mediana": 0.0118,
+      "raio_mediana": 1.7320508075688772,
+      "borda_mediana_mm": 1.27,
+      "nodulo_mais_proximo_mediana_mm": 112.69
+    },
+    "intrusos_nas_100_propria": {
+      "n": 699,
+      "nota_mediana": 0.9709,
+      "raio_mediana": 1.7320508075688772,
+      "borda_mediana_mm": 7.83,
+      "nodulo_mais_proximo_mediana_mm": 58.96
+    },
+    "intrusos_v2": {
+      "n": 763,
+      "nota_mediana": 0.0456,
+      "raio_mediana": null,
+      "borda_mediana_mm": 8.58,
+      "nodulo_mais_proximo_mediana_mm": 92.78
+    },
+    "intrusos_nas_100_v2": {
+      "n": 321,
+      "nota_mediana": 0.5864,
+      "raio_mediana": null,
+      "borda_mediana_mm": 5.5,
+      "nodulo_mais_proximo_mediana_mm": 101.27
+    },
+    "acertos_propria": {
+      "n": 169,
+      "nota_mediana": 0.9973,
+      "raio_mediana": 1.7320508075688772,
+      "borda_mediana_mm": 5.22,
+      "nodulo_mais_proximo_mediana_mm": 1.25
+    },
+    "comuns_propria": {
+      "n": 2000,
+      "nota_mediana": 0.0054,
+      "raio_mediana": 1.7320508075688772,
+      "borda_mediana_mm": 1.05,
+      "nodulo_mais_proximo_mediana_mm": 122.76
+    }
+  },
+  "mascaras_lidas": 89,
+  "sem_mascara": [],
+  "acrescentado_depois_da_primeira_execucao": [
+    "grupos intrusos_nas_100",
+    "melhor_acerto_centro_mm por nódulo",
+    "intrusos_por_exame",
+    "nodulo_dentro_do_cubo"
+  ],
+  "nodulo_dentro_do_cubo": {
+    "intrusos_propria": {
+      "ate_mm": 16.0,
+      "n": 431,
+      "de": 14251,
+      "nota_0_9_ou_mais": 322,
+      "de_nota_0_9_ou_mais": 630
+    },
+    "intrusos_nas_100_propria": {
+      "ate_mm": 16.0,
+      "n": 265,
+      "de": 699,
+      "nota_0_9_ou_mais": 262,
+      "de_nota_0_9_ou_mais": 509
+    },
+    "intrusos_v2": {
+      "ate_mm": 16.0,
+      "n": 25,
+      "de": 763,
+      "nota_0_9_ou_mais": 15,
+      "de_nota_0_9_ou_mais": 84
+    },
+    "intrusos_nas_100_v2": {
+      "ate_mm": 16.0,
+      "n": 23,
+      "de": 321,
+      "nota_0_9_ou_mais": 15,
+      "de_nota_0_9_ou_mais": 84
+    },
+    "acertos_propria": {
+      "ate_mm": 16.0,
+      "n": 169,
+      "de": 169,
+      "nota_0_9_ou_mais": 117,
+      "de_nota_0_9_ou_mais": 117
+    },
+    "comuns_propria": {
+      "ate_mm": 16.0,
+      "n": 3,
+      "de": 2000,
+      "nota_0_9_ou_mais": 2,
+      "de_nota_0_9_ou_mais": 9
+    }
+  },
+  "intrusos_por_exame": {
+    "propria": [
+      11221,
+      1133,
+      902,
+      510,
+      172
+    ],
+    "v2": [
+      329,
+      299,
+      48,
+      24,
+      23
+    ]
+  },
+  "amostra_comuns": {
+    "n": 2000,
+    "semente": 42,
+    "de": 1390977
+  },
+  "figuras": [
+    "intrusos.png"
+  ]
+}

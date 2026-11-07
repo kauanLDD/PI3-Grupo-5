@@ -1,0 +1,14 @@
+medida,faixa,intrusos_propria_n,intrusos_propria_proporcao,intrusos_nas_100_propria_n,intrusos_nas_100_propria_proporcao,intrusos_v2_n,intrusos_v2_proporcao,intrusos_nas_100_v2_n,intrusos_nas_100_v2_proporcao,acertos_propria_n,acertos_propria_proporcao,comuns_propria_n,comuns_propria_proporcao
+raio,0 a 2.5 mm,13791.0,0.968,637.0,0.911,,,,,94.0,0.556,1945.0,0.973
+raio,2.5 a 4.5 mm,373.0,0.026,52.0,0.074,,,,,55.0,0.325,48.0,0.024
+raio,4.5 a 6 mm,66.0,0.005,7.0,0.01,,,,,14.0,0.083,7.0,0.004
+raio,6 a 8 mm,17.0,0.001,3.0,0.004,,,,,1.0,0.006,0.0,0.0
+raio,acima de 8 mm,4.0,0.0,0.0,0.0,,,,,5.0,0.03,0.0,0.0
+distancia_borda_mm,fora do pulmão,0.0,0.0,0.0,0.0,90.0,0.118,35.0,0.109,0.0,0.0,0.0,0.0
+distancia_borda_mm,0 a 3 mm,9036.0,0.634,304.0,0.435,166.0,0.218,81.0,0.252,70.0,0.414,1277.0,0.638
+distancia_borda_mm,3 a 10 mm,1098.0,0.077,81.0,0.116,149.0,0.195,87.0,0.271,38.0,0.225,168.0,0.084
+distancia_borda_mm,acima de 10 mm,4117.0,0.289,314.0,0.449,358.0,0.469,118.0,0.368,61.0,0.361,555.0,0.278
+nodulo_mais_proximo_mm,0 a 10 mm,115.0,0.008,85.0,0.122,1.0,0.001,1.0,0.003,154.0,0.911,0.0,0.0
+nodulo_mais_proximo_mm,10 a 30 mm,563.0,0.04,222.0,0.318,49.0,0.064,29.0,0.09,15.0,0.089,31.0,0.015
+nodulo_mais_proximo_mm,acima de 30 mm,13573.0,0.952,392.0,0.561,713.0,0.934,291.0,0.907,0.0,0.0,1221.0,0.611
+nodulo_mais_proximo_mm,exame sem nódulo,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,748.0,0.374

@@ -77,8 +77,64 @@ exame; com a nossa, 100.
 Inferência, não medida: a rede aprendeu a separar nódulo de não nódulo entre os candidatos da V2,
 e a nossa lista traz cerca de 20 vezes mais candidatos, de tipos que a rede não viu no treino. Com
 16 mil candidatos por exame, basta uma fração pequena receber escore alto para empurrar o nódulo
-para baixo no ranking do exame. Não medimos quais candidatos da nossa lista recebem escore alto nem
-treinamos a rede com eles.
+para baixo no ranking do exame. Em 01/11 não tínhamos medido quais candidatos da nossa lista
+recebem escore alto; a seção 5 faz isso. A rede não foi treinada com eles.
 
 Os números são da validação, o mesmo conjunto em que a rede foi escolhida entre as variantes
 (`docs/11`), e de uma lista que a rede nunca viu.
+
+## 5. Quem passa na frente dos nódulos, medido em 07/11/2026
+
+Comando: `.venv-cnn-gpu/bin/python scripts/32_intrusos_lista_propria.py`. Lê as notas que o script 31
+gravou, sem pontuar nada de novo. Exames lidos 89, com erro 0, descartados 0; máscaras de pulmão do
+desafio lidas 89. Saídas em `relatorios/experimentos/intrusos_lista_propria/` (`intrusos_por_faixa.csv`,
+`nodulos.csv`, `resumo.json`, `intrusos.png`); a medida de cada ponto fica em
+`dados/intermediario/intrusos_lista_propria/`.
+
+Chamamos de intruso de um nódulo todo falso positivo do mesmo exame com nota maior que a do melhor
+candidato dentro do raio daquele nódulo. Um falso positivo conta uma vez só. Faixas e tamanho da
+amostra foram escritos no `config.yaml` (seção `intrusos`) antes da primeira execução. Depois dela
+acrescentamos, sem mudar a definição nem as faixas, o recorte dos intrusos que entram nas 100 marcas
+de maior nota de cada exame, a distância do melhor acerto ao centro do nódulo e a contagem de
+intrusos com nódulo dentro do cubo; o `resumo.json` lista esses acréscimos.
+
+| | Nossa lista | V2 |
+|---|---:|---:|
+| Intrusos | 14.251, em 27 exames | 763, em 16 exames |
+| Nódulos com ao menos um intruso | 43 | 26 |
+| Intrusos entre as 100 marcas de cada exame | 699 | 321 |
+| Intrusos nas 100 com nódulo a até 16 mm | 265 de 699 (0,379) | 23 de 321 (0,072) |
+| Intrusos nas 100 com nota 0,9 ou mais e nódulo a até 16 mm | 262 de 509 | 15 de 84 |
+
+Os intrusos se concentram em poucos nódulos: um nódulo de 4,96 mm responde por 11.221 dos 14.251,
+e três nódulos por 93%. Esse nódulo tem melhor candidato com nota 0,002 na nossa lista, a 2,3 mm do
+centro, e 0,823 na V2, a 1,1 mm. Somando todos os nódulos com candidato nas duas listas (105), a
+distância mediana do melhor candidato ao centro é a mesma, 0,65 mm na nossa e 0,66 mm na V2.
+
+Por faixa, proporção de cada grupo (contagens em `intrusos_por_faixa.csv`; a amostra de falsos
+positivos comuns tem 2.000 pontos sorteados com semente 42 entre os que não são intrusos):
+
+| Faixa | Intrusos | Intrusos nas 100 | Acertos | Falsos positivos comuns |
+|---|---:|---:|---:|---:|
+| Raio do LoG 1,7 (menor escala) | 0,968 | 0,911 | 0,556 | 0,973 |
+| Borda a até 3 mm | 0,634 | 0,435 | 0,414 | 0,638 |
+| Borda acima de 10 mm | 0,289 | 0,449 | 0,361 | 0,278 |
+| Nódulo a até 10 mm | 0,008 | 0,122 | 0,911 | 0 |
+| Nódulo de 10 a 30 mm | 0,040 | 0,318 | 0,089 | 0,015 |
+| Exame sem nódulo | 0 | 0 | 0 | 0,374 |
+
+Nenhum ponto da nossa lista cai fora da máscara de pulmão; na V2, 90 dos 763 intrusos caem.
+
+**O que a tabela mostra.** Pelo raio do LoG e pela distância à borda, o conjunto inteiro de intrusos
+tem o mesmo perfil dos falsos positivos comuns: 97% na menor escala e cerca de 63% a até 3 mm da
+parede. Quem difere são os acertos, com 44% fora da menor escala. Entre os intrusos que entram nas
+100 marcas, que são os que mexem na FROC, 38% têm um nódulo verdadeiro a até 16 mm, metade do lado do
+cubo de 32 mm que a rede vê, contra 7% na V2. Nos doze de maior nota (`intrusos.png`) o nódulo
+aparece dentro do recorte, ao lado da marca, a 8 a 14 mm dela.
+
+**O que a tabela não mostra.** Ela não diz por que a rede dá nota alta a esses pontos.
+Inferência, não medida: a rede responde à presença de um nódulo em qualquer lugar do cubo, e não só
+no centro, porque entre os candidatos da V2 do treino há poucos pontos a alguns milímetros de um
+nódulo sem estar sobre ele. A contagem de intrusos depende de poucos nódulos, então as proporções da
+primeira coluna descrevem sobretudo três exames. Os números são da validação, uma execução, e não
+foram conferidos no treino.
