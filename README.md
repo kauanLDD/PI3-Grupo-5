@@ -242,3 +242,5 @@ A comparação com a literatura, separando quem usa a lista oficial V2 de quem g
 candidatos, está em [comparação com a literatura](docs/16-comparacao-literatura.md).
 A conferência do avaliador oficial contra o cálculo de FROC que o grupo usava antes está em
 [avaliador oficial contra o do grupo](docs/17-avaliador-oficial-contra-o-do-grupo.md).
+A rede escolhida aplicada à nossa própria lista de candidatos, na validação, está em
+[rede na lista própria](docs/19-rede-na-lista-propria.md).

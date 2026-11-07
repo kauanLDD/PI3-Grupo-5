@@ -76,6 +76,10 @@ caminhos:
   analise_erros_cnn: "relatorios/experimentos/analise_erros_cnn"
   # Tipo de cada falso positivo de maior escore, classificado à mão olhando as figuras.
   classificacao_falsos_positivos: "relatorios/anotacoes/falsos_positivos_cnn_teste.csv"
+  # A rede escolhida, congelada, sobre a nossa lista de candidatos (LoG), na validação.
+  lista_propria_cnn: "relatorios/experimentos/lista_propria_cnn"
+  # As avaliações completas, com as 1,4 milhão de marcas, ficam fora do git.
+  lista_propria_cnn_completa: "dados/intermediario/lista_propria_cnn"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -290,3 +294,20 @@ analise_erros:
   distancia_borda_maxima: 30
   # Até quantos mm da borda um ponto conta como encostado na parede.
   perto_da_borda: 3
+
+lista_propria:
+  # A rede congelada (decisão 0008) sobre a lista do LoG, sem treinar de novo. Só validação: o
+  # teste já foi usado pela rede na V2 e não serve para escolher nada.
+  modelo: modelos/cnn_lr_3e-4
+  particao: validacao
+  # Fixado antes de rodar, não ajustado na validação. Os dois nódulos anotados mais próximos de um
+  # mesmo exame ficam a 5,92 mm (annotations.csv, medido em 01/11/2026): a supressão a 5 mm nunca
+  # junta dois nódulos verdadeiros.
+  raio_supressao_mm: 5.0
+  # Cubos recortados de uma vez: 4.096 cubos de 32³ em float32 ocupam 0,5 GB.
+  recortes_por_vez: 4096
+  # Exames da validação em que o recorte feito na hora, sobre a V2, é conferido contra as
+  # probabilidades já gravadas a partir dos cubos em disco.
+  exames_conferencia: 3
+  tolerancia_conferencia: 1.0e-5
+

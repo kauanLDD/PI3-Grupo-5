@@ -30,3 +30,18 @@ def extrair_patch(volume, centro_xyz, tamanho_xyz, preenchimento=0.0):
     destino_fatias = tuple(slice(a, b) for a, b in zip(destino_inicio, destino_limite))
     patch[destino_fatias] = volume[origem_fatias]
     return patch
+
+
+def recortar(imagem, volume, pontos_xyz, tamanho_xyz):
+    """Um cubo por ponto em mm no mundo, convertido pela origem, espaçamento e direção do exame.
+
+    `imagem` é o SimpleITK.Image de onde `volume` saiu. Mesmo arredondamento do recorte da lista V2
+    (`TransformPhysicalPointToIndex`), para os cubos das duas listas serem comparáveis.
+    """
+    recortes = np.empty((len(pontos_xyz), *tuple(tamanho_xyz)[::-1]), dtype=volume.dtype)
+    for i, ponto in enumerate(pontos_xyz):
+        centro = imagem.TransformPhysicalPointToIndex(tuple(float(v) for v in ponto))
+        if any(c < 0 or c >= n for c, n in zip(centro, imagem.GetSize())):
+            raise ValueError(f"ponto {i} fora do volume: índice {centro}")
+        recortes[i] = extrair_patch(volume, centro, tamanho_xyz)
+    return recortes
