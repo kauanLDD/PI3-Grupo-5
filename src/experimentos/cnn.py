@@ -156,12 +156,7 @@ def prever(modelo, candidatos, divisao, particao, pasta, parametros, device):
     saidas = []
     for uid in sorted(divisao.loc[divisao.particao.eq(particao), "seriesuid"]):
         cubos, grupo = ler_exame(pasta, uid, candidatos, parametros["patch_size"])
-        probabilidades = []
-        with torch.inference_mode():
-            for inicio in range(0, len(cubos), parametros["batch_size"]):
-                lote = torch.from_numpy(cubos[inicio:inicio+parametros["batch_size"]]).unsqueeze(1)
-                logits = modelo(lote.to(device))
-                probabilidades.extend(torch.softmax(logits, dim=1)[:, 1].cpu().numpy())
+        probabilidades = pontuar(modelo, cubos, parametros["batch_size"], device)
         saida = grupo[["seriesuid", "coordX", "coordY", "coordZ", "class"]].copy()
         saida.insert(0, "candidate_id", grupo.index)
         saida["probability"] = probabilidades
@@ -170,6 +165,18 @@ def prever(modelo, candidatos, divisao, particao, pasta, parametros, device):
     if not np.isfinite(resultado.probability).all() or not resultado.probability.between(0, 1).all():
         raise ValueError("probabilidades invalidas")
     return resultado
+
+
+def pontuar(modelo, cubos, lote, device):
+    """Probabilidade de nódulo de cada cubo, com o modelo em modo de avaliação."""
+    modelo.eval()
+    probabilidades = []
+    with torch.inference_mode():
+        for inicio in range(0, len(cubos), lote):
+            parte = torch.from_numpy(cubos[inicio:inicio+lote]).unsqueeze(1)
+            logits = modelo(parte.to(device))
+            probabilidades.extend(torch.softmax(logits, dim=1)[:, 1].cpu().numpy())
+    return probabilidades
 
 
 def hash_pesos(modelo):

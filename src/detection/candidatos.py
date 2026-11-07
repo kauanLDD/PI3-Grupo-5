@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+from scipy.spatial import cKDTree
 
 COLUNAS = ["coordX", "coordY", "coordZ"]
 
@@ -101,3 +102,21 @@ def rotular(candidatos: pd.DataFrame, nodulos: pd.DataFrame,
         rotulos[indices[ignorado]] = IGNORADO
 
     return rotulos
+
+
+def suprimir_vizinhos(previsoes: pd.DataFrame, raio_mm: float) -> pd.DataFrame:
+    """Em cada exame, do maior escore para o menor, descarta a marca a até `raio_mm` de uma mantida."""
+    mantidas = []
+    for _, exame in previsoes.groupby("seriesuid", sort=False):
+        exame = exame.sort_values("probability", ascending=False, kind="stable")
+        pontos = exame[COLUNAS].to_numpy(float)
+        vizinhos = cKDTree(pontos).query_ball_point(pontos, r=raio_mm)
+        suprimida = np.zeros(len(exame), dtype=bool)
+        fica = np.zeros(len(exame), dtype=bool)
+        for i in range(len(exame)):
+            if suprimida[i]:
+                continue
+            fica[i] = True
+            suprimida[vizinhos[i]] = True
+        mantidas.append(exame[fica])
+    return pd.concat(mantidas)

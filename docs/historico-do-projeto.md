@@ -531,3 +531,12 @@ conferência (`scripts/30_conferir_avaliador_oficial.py`) reproduz a saída de e
 LUNA16 nos sete pontos e no CPM e mostra que o cálculo de FROC que o grupo usava antes dá CPM
 0,611 no teste, contra 0,724 do oficial, porque conta candidato em vez de nódulo e não ignora as
 marcas sobre excluídas. O registro está em `docs/17-avaliador-oficial-contra-o-do-grupo.md`.
+
+## Atualização de 01/11/2026: a rede escolhida na nossa lista de candidatos
+
+Aplicamos a rede congelada, treinada na V2, aos 1.407.860 candidatos da nossa lista LoG nos 89
+exames de validação (`.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py`). O CPM
+foi 0,465 (IC95% 0,400 a 0,532) com a lista inteira e 0,481 (0,424 a 0,555) com supressão de
+vizinhos a 5 mm, contra 0,752 da mesma rede na V2. A cobertura da nossa lista nesses exames é de
+106 dos 111 nódulos, contra 109 da V2. O registro está em `docs/19-rede-na-lista-propria.md`.
+

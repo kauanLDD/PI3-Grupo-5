@@ -152,3 +152,24 @@ def test_rotular_preserva_a_ordem_com_exames_intercalados():
     pontos_ = pontos(("b", 0.0, 0.0, 0.0), ("a", 0.0, 0.0, 0.0), ("b", 99.0, 0.0, 0.0))
     rotulos = candidatos.rotular(pontos_, nodulo(uid="a"), nodulo(uid="b", diametro=-1))
     assert rotulos.tolist() == [candidatos.IGNORADO, candidatos.ACERTO, candidatos.FALSO_POSITIVO]
+
+
+def marcas(*linhas):
+    return pd.DataFrame([{"seriesuid": u, "coordX": x, "coordY": 0.0, "coordZ": 0.0, "probability": p}
+                         for u, x, p in linhas])
+
+
+def test_supressao_fica_com_a_marca_de_maior_escore_da_vizinhanca():
+    resto = candidatos.suprimir_vizinhos(marcas(("a", 0.0, 0.4), ("a", 3.0, 0.9), ("a", 20.0, 0.1)), 5.0)
+    assert sorted(resto.probability) == [0.1, 0.9]
+
+
+def test_supressao_nao_encadeia_vizinhos_de_marca_ja_descartada():
+    """0 descarta 4, mas 4 descartada não descarta 8: a 8 fica a 8 mm da única marca mantida perto."""
+    resto = candidatos.suprimir_vizinhos(marcas(("a", 0.0, 0.9), ("a", 4.0, 0.8), ("a", 8.0, 0.7)), 5.0)
+    assert sorted(resto.coordX) == [0.0, 8.0]
+
+
+def test_supressao_nao_mistura_exames():
+    resto = candidatos.suprimir_vizinhos(marcas(("a", 0.0, 0.9), ("b", 1.0, 0.8)), 5.0)
+    assert len(resto) == 2
