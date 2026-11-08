@@ -9,8 +9,8 @@ stages:
       size: 2229
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -46,8 +46,8 @@ stages:
       size: 4847
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -58,8 +58,8 @@ stages:
       size: 1140
     - path: src/visualization/fatias.py
       hash: md5
-      md5: e3e02409bf2ecd9307b9e626e859beb9
-      size: 4107
+      md5: dbdd0602e355376302dc34a4148d6ec0
+      size: 5556
     params:
       configuracao/config.yaml:
         pre_processamento.hu_max: 400
@@ -86,8 +86,8 @@ stages:
       size: 3071
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -98,8 +98,8 @@ stages:
       size: 1898
     - path: src/visualization/fatias.py
       hash: md5
-      md5: e3e02409bf2ecd9307b9e626e859beb9
-      size: 4107
+      md5: dbdd0602e355376302dc34a4148d6ec0
+      size: 5556
     params:
       configuracao/config.yaml:
         pre_processamento.espacamento_alvo:
@@ -131,8 +131,8 @@ stages:
       size: 2888
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -199,8 +199,8 @@ stages:
       size: 3988
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -255,8 +255,8 @@ stages:
       size: 3399
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -307,12 +307,12 @@ stages:
       size: 2183
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/candidatos.py
       hash: md5
-      md5: e027f4f5fd792b3a8a68e035d60ba01d
-      size: 4736
+      md5: 404a183795df1f3d8dda2a38ec39efef
+      size: 5567
     outs:
     - path: dados/intermediario/comparacao_candidatos.csv
       hash: md5
@@ -331,8 +331,8 @@ stages:
       size: 6514
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/volumes.py
       hash: md5
       md5: 9952b9664a55a6d10220a54f44d684ed
@@ -384,8 +384,8 @@ stages:
       size: 954
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/dataset/divisao.py
       hash: md5
       md5: 1658b25816c13361aa8a095ea818c7a6
@@ -460,24 +460,24 @@ stages:
       size: 12957
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/blobs.py
       hash: md5
       md5: b844f3872b72d1d46aeba905a641b6f8
       size: 2666
     - path: src/detection/candidatos.py
       hash: md5
-      md5: e027f4f5fd792b3a8a68e035d60ba01d
-      size: 4736
+      md5: 404a183795df1f3d8dda2a38ec39efef
+      size: 5567
     - path: src/detection/rodada.py
       hash: md5
       md5: b7a51c0166faec3ff835d1013fbdb1d0
       size: 5743
     - path: src/visualization/fatias.py
       hash: md5
-      md5: e3e02409bf2ecd9307b9e626e859beb9
-      size: 4107
+      md5: dbdd0602e355376302dc34a4148d6ec0
+      size: 5556
     params:
       configuracao/config.yaml:
         avaliacao:
@@ -494,6 +494,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         deteccao:
           blob_log:
             min_sigma: 1.0
@@ -550,8 +551,8 @@ stages:
       size: 9348
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/blobs.py
       hash: md5
       md5: b844f3872b72d1d46aeba905a641b6f8
@@ -562,8 +563,8 @@ stages:
       size: 4327
     - path: src/detection/candidatos.py
       hash: md5
-      md5: 6863cb34754b452f9a80f2666499e488
-      size: 1027
+      md5: 404a183795df1f3d8dda2a38ec39efef
+      size: 5567
     params:
       configuracao/config.yaml:
         avaliacao:
@@ -580,6 +581,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         calibracao_log:
           desenvolvimento:
           - 0
@@ -655,8 +657,8 @@ stages:
       size: 12364
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/features.py
       hash: md5
       md5: ff81969a56418ed5eff395a2a2e5ea5e
@@ -718,8 +720,8 @@ stages:
       size: 12364
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/features.py
       hash: md5
       md5: ff81969a56418ed5eff395a2a2e5ea5e
@@ -799,8 +801,8 @@ stages:
       size: 1345
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/features.py
       hash: md5
       md5: ff81969a56418ed5eff395a2a2e5ea5e
@@ -872,8 +874,8 @@ stages:
       size: 3345
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/features.py
       hash: md5
       md5: ff81969a56418ed5eff395a2a2e5ea5e
@@ -945,12 +947,12 @@ stages:
       size: 3655
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/candidatos.py
       hash: md5
-      md5: e027f4f5fd792b3a8a68e035d60ba01d
-      size: 4736
+      md5: 404a183795df1f3d8dda2a38ec39efef
+      size: 5567
     outs:
     - path: dados/intermediario/marcacoes_excluidas.csv
       hash: md5
@@ -979,8 +981,8 @@ stages:
       size: 9140
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/patches.py
       hash: md5
       md5: 1c214aac71fac81a40c221acaa20b193
@@ -1060,12 +1062,12 @@ stages:
       size: 9140
     - path: scripts/18_treinar_cnn.py
       hash: md5
-      md5: c385f609efff8f496340c9437a9826a8
-      size: 10698
+      md5: ee3fa55408858caba6953702282875fc
+      size: 14994
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/patches.py
       hash: md5
       md5: 1c214aac71fac81a40c221acaa20b193
@@ -1076,12 +1078,12 @@ stages:
       size: 685
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/cnn.py
       hash: md5
-      md5: 797a31aacc73307f1ea0141bb7a97b75
-      size: 9102
+      md5: e95ba834083329307e0e1018d3b157c3
+      size: 16223
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1107,6 +1109,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         caminhos.cnn_treino: modelos/cnn_v2
         cnn:
           patch_size: 32
@@ -1164,12 +1167,12 @@ stages:
       size: 4355
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1195,6 +1198,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         caminhos.random_forest_validacao: modelos/random_forest_v2_validacao
         rastreamento.experimento: PI3-Grupo-5
         seed: 42
@@ -1258,8 +1262,8 @@ stages:
       size: 7536
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     params:
       configuracao/config.yaml:
         avaliacao.intervalo_confianca: 0.95
@@ -1346,8 +1350,8 @@ stages:
       size: 2757
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/features.py
       hash: md5
       md5: ff81969a56418ed5eff395a2a2e5ea5e
@@ -1411,12 +1415,12 @@ stages:
       size: 9140
     - path: scripts/18_treinar_cnn.py
       hash: md5
-      md5: c385f609efff8f496340c9437a9826a8
-      size: 10698
+      md5: ee3fa55408858caba6953702282875fc
+      size: 14994
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/patches.py
       hash: md5
       md5: 1c214aac71fac81a40c221acaa20b193
@@ -1427,12 +1431,12 @@ stages:
       size: 685
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/cnn.py
       hash: md5
-      md5: 797a31aacc73307f1ea0141bb7a97b75
-      size: 9102
+      md5: e95ba834083329307e0e1018d3b157c3
+      size: 16223
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1458,6 +1462,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         cnn:
           patch_size: 32
           batch_size: 32
@@ -1526,12 +1531,12 @@ stages:
       size: 9140
     - path: scripts/18_treinar_cnn.py
       hash: md5
-      md5: c385f609efff8f496340c9437a9826a8
-      size: 10698
+      md5: ee3fa55408858caba6953702282875fc
+      size: 14994
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/patches.py
       hash: md5
       md5: 1c214aac71fac81a40c221acaa20b193
@@ -1542,12 +1547,12 @@ stages:
       size: 685
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/cnn.py
       hash: md5
-      md5: 797a31aacc73307f1ea0141bb7a97b75
-      size: 9102
+      md5: e95ba834083329307e0e1018d3b157c3
+      size: 16223
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1573,6 +1578,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         cnn:
           patch_size: 32
           batch_size: 32
@@ -1642,12 +1648,12 @@ stages:
       size: 9140
     - path: scripts/18_treinar_cnn.py
       hash: md5
-      md5: c385f609efff8f496340c9437a9826a8
-      size: 10698
+      md5: ee3fa55408858caba6953702282875fc
+      size: 14994
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/patches.py
       hash: md5
       md5: 1c214aac71fac81a40c221acaa20b193
@@ -1658,12 +1664,12 @@ stages:
       size: 685
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/cnn.py
       hash: md5
-      md5: 797a31aacc73307f1ea0141bb7a97b75
-      size: 9102
+      md5: e95ba834083329307e0e1018d3b157c3
+      size: 16223
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1689,6 +1695,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         cnn:
           patch_size: 32
           batch_size: 32
@@ -1749,16 +1756,16 @@ stages:
       size: 5636
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/features.py
       hash: md5
       md5: ff81969a56418ed5eff395a2a2e5ea5e
       size: 6288
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1784,6 +1791,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         caminhos.caracteristicas_centro: 
           dados/intermediario/caracteristicas_centro
         caminhos.random_forest_centro: modelos/random_forest_centro
@@ -1861,12 +1869,12 @@ stages:
       size: 9140
     - path: scripts/18_treinar_cnn.py
       hash: md5
-      md5: c385f609efff8f496340c9437a9826a8
-      size: 10698
+      md5: ee3fa55408858caba6953702282875fc
+      size: 14994
     - path: src/config.py
       hash: md5
-      md5: 8167e0210942c88a2baaec8b50216f0f
-      size: 1306
+      md5: 1601f5f57e75312ab27aa6bf5dafbbaa
+      size: 2562
     - path: src/detection/patches.py
       hash: md5
       md5: 1c214aac71fac81a40c221acaa20b193
@@ -1877,12 +1885,12 @@ stages:
       size: 685
     - path: src/experimentos/avaliacao_oficial.py
       hash: md5
-      md5: 3a29c75b3f2ea6da17a78eeece81c2af
-      size: 6667
+      md5: 77a361b22e5b019d86e404b281a38760
+      size: 7545
     - path: src/experimentos/cnn.py
       hash: md5
-      md5: 797a31aacc73307f1ea0141bb7a97b75
-      size: 9102
+      md5: e95ba834083329307e0e1018d3b157c3
+      size: 16223
     - path: src/experimentos/rastreamento.py
       hash: md5
       md5: 72b8755426f29772941e630fbd758134
@@ -1908,6 +1916,7 @@ stages:
           - 4
           bootstrap_reamostras: 1000
           intervalo_confianca: 0.95
+          bootstrap_exemplo_sem_limite: 10
         cnn:
           patch_size: 32
           batch_size: 32
