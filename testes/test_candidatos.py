@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from detection import candidatos
@@ -173,3 +174,20 @@ def test_supressao_nao_encadeia_vizinhos_de_marca_ja_descartada():
 def test_supressao_nao_mistura_exames():
     resto = candidatos.suprimir_vizinhos(marcas(("a", 0.0, 0.9), ("b", 1.0, 0.8)), 5.0)
     assert len(resto) == 2
+
+
+def test_supressao_suave_rebaixa_o_vizinho_pela_distancia_sem_descartar():
+    resto = candidatos.suprimir_suave(marcas(("a", 0.0, 0.9), ("a", 8.0, 0.8), ("a", 30.0, 0.1)), 16.0, "linear", 100)
+    assert resto.probability.tolist() == pytest.approx([0.9, 0.4, 0.1])
+
+
+def test_supressao_suave_gaussiana_mantem_nodulo_vizinho_de_nota_alta_acima_de_ponto_fraco():
+    """Um segundo nódulo a 5,92 mm cai para 0,99 x exp(-0,63²/0,5), ainda acima de um ponto isolado de 0,3."""
+    resto = candidatos.suprimir_suave(marcas(("a", 0.0, 0.99), ("a", 5.92, 0.99), ("a", 40.0, 0.3)),
+                                      16.0, "gaussiana", 100)
+    assert resto.coordX.tolist() == [0.0, 5.92, 40.0]
+
+
+def test_supressao_suave_para_no_numero_de_marcas_por_exame():
+    resto = candidatos.suprimir_suave(marcas(("a", 0.0, 0.9), ("a", 50.0, 0.8), ("b", 0.0, 0.7)), 16.0, "linear", 1)
+    assert sorted(resto.probability) == [0.7, 0.9]

@@ -47,3 +47,8 @@ Na nossa lista, reportamos a rede com a supressão a 16 mm. Na validação, nenh
 um mesmo exame fica a menos de 19,46 mm. No conjunto todo há um par a 5,92 mm, que essa supressão
 junta em uma marca só. Com a semente 42, 98 dos 111 nódulos ficam entre as 100 marcas de cada
 exame, contra 100 da lista inteira. A supressão não foi aplicada à V2.
+
+**Atualização de 08/11/2026.** Pela regra da `docs/19`, seção 10, a supressão a 16 mm passou da
+forma dura para a suave linear: o vizinho tem a nota rebaixada em vez de descartado. Na validação o
+CPM médio fica em 0,766, contra 0,769 da dura, e nos exames de treino com par de nódulos próximos
+ficam 25 de 37 nódulos entre as 100 marcas, contra 23 da dura.

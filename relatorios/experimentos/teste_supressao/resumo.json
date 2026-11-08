@@ -1,0 +1,12 @@
+{
+  "conjunto": "teste",
+  "teste_utilizado": true,
+  "decisao": "0013",
+  "exames": 176,
+  "modelo": "modelos/cnn_lr_3e-4",
+  "forma": "linear",
+  "raio_mm": 16,
+  "conferencia_recorte": 2.9712676985482744e-08,
+  "pontos_lista_propria": 2802479,
+  "segundos_pontuacao": 921
+}

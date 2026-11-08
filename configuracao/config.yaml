@@ -90,6 +90,12 @@ caminhos:
   # A mesma supressão a 16 mm aplicada à V2, só para comparar as duas listas.
   supressao_v2: "relatorios/experimentos/supressao_v2"
   supressao_v2_completa: "dados/intermediario/supressao_v2"
+  # Supressão suave contra a dura a 16 mm: validação e pares de nódulos próximos do treino.
+  supressao_suave: "relatorios/experimentos/supressao_suave"
+  supressao_suave_completa: "dados/intermediario/supressao_suave"
+  # Terceiro uso do teste (decisão 0013): supressão suave linear nas duas listas.
+  teste_supressao: "relatorios/experimentos/teste_supressao"
+  teste_supressao_completa: "dados/intermediario/teste_supressao"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -413,6 +419,38 @@ supressao_v2:
     43: modelos/cnn_lr_3e-4_semente_43
     44: modelos/cnn_lr_3e-4_semente_44
   raio_mm: 16
+
+supressao_suave:
+  # Fixado em 08/11/2026, antes de rodar (docs/19, seção 10). Em vez de descartar o vizinho a até
+  # 16 mm de uma marca mantida, rebaixa a nota dele. Sobreposição 1 - d/16; a gaussiana multiplica
+  # a nota por exp(-sobreposição²/0,5) e a linear por 1 - sobreposição. O 0,5 é o valor do artigo
+  # original do Soft-NMS [FONTE?: conferir no PDF].
+  raio_mm: 16
+  formas: [gaussiana, linear]
+  sigma: 0.5
+  # O avaliador oficial lê só as 100 marcas de maior nota de cada exame.
+  marcas_por_exame: 100
+  # Os pares de nódulos a até 16 mm de um mesmo exame. Na validação não há nenhum e o teste não
+  # entra, então contamos nos exames de treino, pontuados pela rede antiga com a semente 42. A
+  # rede viu esses exames no treino e dá nota otimista aos nódulos deles: ali só contamos nódulos
+  # mantidos entre as 100 marcas, sem CPM.
+  modelo_pares: modelos/cnn_lr_3e-4
+  distancia_pares_mm: 16
+  # Regra fixada antes de rodar. Uma forma suave substitui a dura se (1) nos pares do treino
+  # mantiver mais nódulos que a dura e (2) na validação a média de CPM das três sementes não cair
+  # mais que 0,022 em relação à dura. Se as duas passarem, fica a de maior média.
+  queda_maxima_cpm: 0.022
+
+teste_supressao:
+  # Decisão 0013, fixada em 08/11/2026 antes de rodar. A rede congelada da decisão 0008 sobre a
+  # nossa lista nos exames de teste, e a supressão escolhida na validação (docs/19, seção 10) nas
+  # duas listas. Uma execução só; o resultado não escolhe nada.
+  modelo: modelos/cnn_lr_3e-4
+  avaliacao_v2: modelos/cnn_lr_3e-4_teste_final
+  forma: linear
+  # A nossa lista é pontuada na GPU, como na validação. As notas da V2 no teste (13/10/2026) saíram
+  # da CPU, e entre os dois aparelhos a nota muda até 1,5e-03: a conferência do recorte roda na CPU.
+  dispositivo_conferencia: cpu
 
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na

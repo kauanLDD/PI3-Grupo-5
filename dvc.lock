@@ -311,8 +311,8 @@ stages:
       size: 2562
     - path: src/detection/candidatos.py
       hash: md5
-      md5: 404a183795df1f3d8dda2a38ec39efef
-      size: 5567
+      md5: f98e06abc28f7131f2efbf982eba8a35
+      size: 7128
     outs:
     - path: dados/intermediario/comparacao_candidatos.csv
       hash: md5
@@ -468,8 +468,8 @@ stages:
       size: 2666
     - path: src/detection/candidatos.py
       hash: md5
-      md5: 404a183795df1f3d8dda2a38ec39efef
-      size: 5567
+      md5: f98e06abc28f7131f2efbf982eba8a35
+      size: 7128
     - path: src/detection/rodada.py
       hash: md5
       md5: b7a51c0166faec3ff835d1013fbdb1d0
@@ -951,8 +951,8 @@ stages:
       size: 2562
     - path: src/detection/candidatos.py
       hash: md5
-      md5: 404a183795df1f3d8dda2a38ec39efef
-      size: 5567
+      md5: f98e06abc28f7131f2efbf982eba8a35
+      size: 7128
     outs:
     - path: dados/intermediario/marcacoes_excluidas.csv
       hash: md5
