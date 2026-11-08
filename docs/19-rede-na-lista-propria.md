@@ -400,3 +400,49 @@ ficam fora do git, em `dados/intermediario/supressao_lista_propria/`.
 **O que os números não mostram.** Os dois raios foram fixados antes de rodar, mas foram medidos só
 na validação, onde nenhum par de nódulos fica a menos de 19,46 mm. No conjunto todo há um par a
 5,92 mm, que a supressão a 16 mm juntaria. A supressão não foi aplicada à V2 nesta fase.
+
+## 9. A supressão a 16 mm também na V2, desenho fixado em 08/11/2026
+
+Medição para comparar as duas listas com o mesmo processamento depois da rede, sem regra de adoção.
+Aplicamos a supressão da decisão 0012 (16 mm, `suprimir_vizinhos`) às notas que a rede antiga, com as
+sementes 42, 43 e 44, deu à V2 na validação (`probabilidades_validacao.csv` de cada modelo), e
+avaliamos com o avaliador oficial. Para cada semente, duas diferenças pareadas: a V2 com supressão
+contra a V2 como sai da rede, e a nossa lista com supressão (seção 8) contra a V2 com supressão.
+Configuração em `config.yaml`, seção `supressao_v2`. O teste não entra.
+
+### 9.1 Resultado, medido em 08/11/2026
+
+Medido com:
+
+```bash
+.venv-cnn-gpu/bin/python scripts/35_supressao_v2.py
+```
+
+Exames lidos 89 por semente, com erro 0, descartados 0. A V2 tem 75.063 marcas na validação e fica
+com cerca de 30,9 mil depois da supressão. Validação, 111 nódulos, avaliador oficial, 1.000
+reamostras por exame com semente 42. O teste não foi usado.
+
+| Lista | Semente 42 | Semente 43 | Semente 44 | Média ± desvio |
+|---|---:|---:|---:|---:|
+| V2 como sai da rede | 0,752 | 0,790 | 0,790 | 0,777 ± 0,022 |
+| V2 com supressão a 16 mm | 0,798 | 0,846 | 0,847 | 0,830 ± 0,028 |
+| Nossa lista com supressão a 16 mm | 0,745 | 0,750 | 0,811 | 0,769 ± 0,037 |
+
+Diferenças pareadas de CPM (IC95%):
+
+| Comparação | Semente 42 | Semente 43 | Semente 44 |
+|---|---:|---:|---:|
+| V2 com supressão contra V2 | +0,046 (-0,007 a +0,089) | +0,055 (+0,009 a +0,092) | +0,057 (+0,016 a +0,088) |
+| Nossa lista contra V2, as duas com supressão | -0,053 (-0,109 a +0,002) | -0,095 (-0,153 a -0,040) | -0,036 (-0,082 a +0,003) |
+
+As tabelas estão em `relatorios/experimentos/supressao_v2/` (`listas.csv`,
+`diferencas_pareadas.csv`, `resumo.json`); as avaliações completas, em
+`dados/intermediario/supressao_v2/`.
+
+**O que os números mostram.** A supressão também sobe a V2, de 0,777 para 0,830 de média. Com o
+mesmo processamento nas duas listas, a nossa fica abaixo da V2 nas três sementes, de 0,036 a 0,095;
+o IC95% fica inteiro abaixo de zero na semente 43 e encosta no zero nas outras duas.
+
+**O que os números não mostram.** Na validação nenhum par de nódulos fica a menos de 19,46 mm, então
+esta medição não diz quanto a supressão a 16 mm perde quando dois nódulos estão próximos. No conjunto
+todo há 16 pares a até 16 mm um do outro, 11 no treino e 5 no teste.

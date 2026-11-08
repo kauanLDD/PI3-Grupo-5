@@ -87,6 +87,9 @@ caminhos:
   # Supressão de vizinhos com raio maior e média das sementes, sem treino, na validação.
   supressao_lista_propria: "relatorios/experimentos/supressao_lista_propria"
   supressao_lista_propria_completa: "dados/intermediario/supressao_lista_propria"
+  # A mesma supressão a 16 mm aplicada à V2, só para comparar as duas listas.
+  supressao_v2: "relatorios/experimentos/supressao_v2"
+  supressao_v2_completa: "dados/intermediario/supressao_v2"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -400,6 +403,16 @@ supressao_lista_propria:
   # média da lista inteira e a diferença pareada contra a lista inteira for positiva nas três
   # sementes. Se as duas passarem, fica a de maior média. A média das sementes fica se o CPM dela
   # passar a média das três sementes e a diferença pareada contra cada semente for positiva.
+
+supressao_v2:
+  # Fixado em 08/11/2026, antes de rodar (docs/19, seção 9). Medição para comparar, sem regra de
+  # adoção: a supressão da decisão 0012 aplicada às notas que a rede antiga deu à V2 na validação,
+  # com as mesmas três sementes. O teste não entra.
+  modelos:
+    42: modelos/cnn_lr_3e-4
+    43: modelos/cnn_lr_3e-4_semente_43
+    44: modelos/cnn_lr_3e-4_semente_44
+  raio_mm: 16
 
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na
