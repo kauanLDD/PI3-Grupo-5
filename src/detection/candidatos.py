@@ -120,3 +120,32 @@ def suprimir_vizinhos(previsoes: pd.DataFrame, raio_mm: float) -> pd.DataFrame:
             suprimida[vizinhos[i]] = True
         mantidas.append(exame[fica])
     return pd.concat(mantidas)
+
+
+def suprimir_suave(previsoes: pd.DataFrame, raio_mm: float, forma: str, marcas: int,
+                   sigma: float = 0.5) -> pd.DataFrame:
+    """Em vez de descartar o vizinho de uma marca mantida, rebaixa a nota dele conforme a distância.
+
+    A sobreposição entre duas marcas é 1 - d/raio, zero a partir do raio. A gaussiana multiplica a
+    nota por exp(-sobreposição²/sigma) e a linear por 1 - sobreposição. Só as `marcas` primeiras de
+    cada exame são escolhidas, porque o avaliador oficial lê só as 100 de maior nota.
+    """
+    mantidas = []
+    for _, exame in previsoes.groupby("seriesuid", sort=False):
+        pontos = exame[COLUNAS].to_numpy(float)
+        notas = exame.probability.to_numpy(float).copy()
+        arvore = cKDTree(pontos)
+        livre = np.ones(len(exame), dtype=bool)
+        escolhidas, finais = [], []
+        for _ in range(min(marcas, len(exame))):
+            i = int(np.argmax(np.where(livre, notas, -np.inf)))
+            escolhidas.append(i)
+            finais.append(notas[i])
+            livre[i] = False
+            vizinhos = np.array([j for j in arvore.query_ball_point(pontos[i], r=raio_mm) if livre[j]], dtype=int)
+            if len(vizinhos):
+                sobreposicao = 1 - np.linalg.norm(pontos[vizinhos] - pontos[i], axis=1) / raio_mm
+                fator = np.exp(-sobreposicao ** 2 / sigma) if forma == "gaussiana" else 1 - sobreposicao
+                notas[vizinhos] *= fator
+        mantidas.append(exame.iloc[escolhidas].assign(probability=finais))
+    return pd.concat(mantidas)

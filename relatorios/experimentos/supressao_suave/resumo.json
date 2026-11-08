@@ -1,0 +1,22 @@
+{
+  "teste_utilizado": false,
+  "exames_treino_com_par": 9,
+  "cpm_media": {
+    "dura_16": 0.7687687689999999,
+    "gaussiana": 0.7584727587142858,
+    "linear": 0.7661947664285714
+  },
+  "nodulos_mantidos_nos_pares_do_treino": {
+    "dura_16": 23,
+    "gaussiana": 26,
+    "linear": 25
+  },
+  "nodulos_nos_exames_com_par": 37,
+  "queda_maxima_cpm": 0.022,
+  "passaram": [
+    "gaussiana",
+    "linear"
+  ],
+  "adotada": "linear",
+  "nodulos_mantidos_sem_supressao": 33
+}

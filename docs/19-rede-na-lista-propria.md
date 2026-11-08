@@ -446,3 +446,112 @@ o IC95% fica inteiro abaixo de zero na semente 43 e encosta no zero nas outras d
 **O que os números não mostram.** Na validação nenhum par de nódulos fica a menos de 19,46 mm, então
 esta medição não diz quanto a supressão a 16 mm perde quando dois nódulos estão próximos. No conjunto
 todo há 16 pares a até 16 mm um do outro, 11 no treino e 5 no teste.
+
+## 10. Supressão suave contra a supressão dura a 16 mm, desenho fixado em 08/11/2026
+
+A supressão dura da decisão 0012 descarta qualquer marca a até 16 mm de uma marca mantida. No
+conjunto todo há 16 pares de nódulos a até 16 mm um do outro (11 no treino, 5 no teste, nenhum na
+validação), e em cada par a supressão dura tende a deixar só um nódulo.
+
+A supressão suave não descarta: em cada exame, escolhe a marca de maior nota, rebaixa a nota dos
+vizinhos conforme a distância e repete, até 100 marcas (`suprimir_suave` em
+`src/detection/candidatos.py`). A sobreposição entre duas marcas é 1 - d/16, zero a partir de
+16 mm. Duas formas, fixadas em `config.yaml` (seção `supressao_suave`) antes de rodar:
+
+- **Gaussiana**: a nota do vizinho é multiplicada por exp(-sobreposição²/0,5). O fator vale 0,14
+  em cima da marca, 0,45 a 5,92 mm e 0,75 a 10 mm.
+- **Linear**: a nota do vizinho é multiplicada por 1 - sobreposição.
+
+Duas medições:
+
+- **Validação**, nossa lista, rede antiga com as sementes 42, 43 e 44: CPM de cada forma, pareado
+  contra a supressão dura da mesma semente.
+- **Pares do treino**: pontuamos a nossa lista nos exames de treino que têm um par de nódulos a até
+  16 mm, com a rede antiga e a semente 42, e contamos quantos nódulos desses exames ficam entre as
+  100 marcas sem supressão, com a dura e com cada forma suave. A rede viu esses exames no treino e
+  dá nota otimista aos nódulos deles; por isso ali só contamos nódulos, sem CPM.
+
+**A regra.** Uma forma suave substitui a dura se (1) nos pares do treino mantiver mais nódulos que a
+dura e (2) na validação a média de CPM das três sementes não cair mais que 0,022 em relação à dura.
+Se as duas passarem, fica a de maior média.
+
+### 10.1 Resultado, medido em 08/11/2026
+
+Medido com:
+
+```bash
+.venv-cnn-gpu/bin/python scripts/36_supressao_suave.py
+```
+
+**Validação** (89 exames, 111 nódulos, avaliador oficial, 1.000 reamostras por exame com semente 42):
+
+| Variante | Semente 42 | Semente 43 | Semente 44 | Média |
+|---|---:|---:|---:|---:|
+| Dura a 16 mm | 0,745 | 0,750 | 0,811 | 0,769 |
+| Suave gaussiana | 0,743 | 0,731 | 0,802 | 0,758 |
+| Suave linear | 0,745 | 0,744 | 0,810 | 0,766 |
+
+Diferença pareada contra a dura (IC95%): gaussiana -0,003 (-0,016 a +0,000), -0,019 (-0,035 a
+-0,007) e -0,009 (-0,017 a -0,001); linear +0,000 (-0,003 a +0,000), -0,006 (-0,014 a +0,000) e
+-0,001 (-0,006 a +0,000), nas sementes 42, 43 e 44.
+
+**Pares do treino.** Exames de treino com um par de nódulos a até 16 mm lidos 9, com erro 0,
+descartados 0; 37 nódulos; 144.442 pontos pontuados pela rede antiga, semente 42. Nódulos que ficam
+entre as 100 marcas de cada exame: 33 sem supressão, 23 com a dura, 26 com a gaussiana e 25 com a
+linear. Os nódulos que a forma suave recupera e a dura perde têm 4,0, 8,0 e 15,1 mm de diâmetro
+(`pares_treino.csv`).
+
+**A regra aplicada.** As duas formas suaves mantêm mais nódulos que a dura nos pares e ficam dentro
+da queda de 0,022 na validação. Fica a linear, de maior média.
+
+As tabelas estão em `relatorios/experimentos/supressao_suave/` (`validacao.csv`,
+`diferencas_pareadas.csv`, `pares_treino.csv`, `resumo.json`).
+
+**O que os números não mostram.** A diferença nos pares é de 2 nódulos em 37, em exames que a rede
+viu no treino. Mesmo a forma suave perde 8 dos 33 nódulos que ficariam entre as 100 marcas sem
+supressão nesses exames.
+
+## 11. O teste, medido em 08/11/2026 (decisão 0013)
+
+Terceiro uso do teste, uma execução só, com o processamento congelado antes de rodar: a rede
+`cnn_lr_3e-4` da decisão 0008 e a supressão suave linear a 16 mm da seção 10, nas duas listas.
+Medido com:
+
+```bash
+.venv-cnn-gpu/bin/python scripts/37_teste_supressao.py
+```
+
+Exames lidos 176, com erro 0, descartados 0; 223 nódulos; 2.802.479 pontos da nossa lista
+pontuados na GPU em 921 s. A conferência do recorte, na CPU contra as notas da V2 gravadas em
+13/10/2026, deu diferença máxima de 2,97e-08. Avaliador oficial, 1.000 reamostras por exame com
+semente 42.
+
+| Lista | CPM (IC95%) | Sens. a 1 FP (IC95%) | Sens. a 4 FP (IC95%) | Nódulos entre as 100 marcas |
+|---|---:|---:|---:|---:|
+| Nossa, sem supressão | 0,489 (0,438 a 0,546) | 0,480 (0,412 a 0,565) | 0,686 (0,623 a 0,758) | 213 de 223 |
+| Nossa, supressão suave | 0,691 (0,633 a 0,754) | 0,717 (0,645 a 0,793) | 0,807 (0,758 a 0,868) | 195 de 223 |
+| V2, sem supressão (13/10) | 0,724 (0,670 a 0,778) | 0,735 (0,659 a 0,819) | 0,883 (0,843 a 0,929) | 218 de 223 |
+| V2, supressão suave | 0,758 (0,709 a 0,806) | 0,812 (0,756 a 0,861) | 0,865 (0,817 a 0,913) | 218 de 223 |
+
+Diferenças pareadas de CPM (IC95%):
+
+| Comparação | Diferença |
+|---|---:|
+| Nossa com supressão contra nossa sem | +0,202 (+0,153 a +0,252) |
+| V2 com supressão contra V2 sem | +0,035 (+0,001 a +0,065) |
+| Nossa contra V2, as duas com supressão | -0,067 (-0,112 a -0,026) |
+| Nossa contra V2, as duas sem supressão | -0,235 (-0,271 a -0,196) |
+
+As tabelas estão em `relatorios/experimentos/teste_supressao/` (`listas.csv`,
+`diferencas_pareadas.csv`, `resumo.json`, e uma figura FROC por lista contra a V2 sem supressão). As
+notas e as avaliações completas ficam fora do git, em `dados/intermediario/teste_supressao/`.
+
+**O que os números mostram.** No teste, a supressão sobe a nossa lista em 0,202 de CPM e a V2 em
+0,035. A distância entre as duas listas cai de 0,235 para 0,067, e a V2 continua acima. A
+sensibilidade da nossa lista a 4 FP por exame fica em 0,807, acima da meta de 0,80 no valor medido,
+com o IC95% de 0,758 a 0,868.
+
+**O que os números não mostram.** Com a supressão, a nossa lista deixa 28 nódulos fora das 100 marcas
+de cada exame, contra 10 sem ela; na validação a diferença tinha sido de 2 nódulos com a supressão
+dura. Não medimos aqui quais nódulos são esses nem por quê. O teste fica usado e não escolhe nada
+(decisão 0013).
