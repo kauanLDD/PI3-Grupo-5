@@ -84,6 +84,9 @@ caminhos:
   # Quem passa na frente dos nódulos na nossa lista, na validação.
   intrusos_lista_propria: "relatorios/experimentos/intrusos_lista_propria"
   intrusos_lista_propria_completa: "dados/intermediario/intrusos_lista_propria"
+  # Supressão de vizinhos com raio maior e média das sementes, sem treino, na validação.
+  supressao_lista_propria: "relatorios/experimentos/supressao_lista_propria"
+  supressao_lista_propria_completa: "dados/intermediario/supressao_lista_propria"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -375,6 +378,28 @@ sementes_lista_propria:
   # semente, é positiva nas três; e (2) a média de CPM na V2 não cai mais que 0,022 em relação à
   # média da rede antiga (o desvio entre as sementes da rede antiga, decisão 0010).
   queda_maxima_cpm_v2: 0.022
+
+supressao_lista_propria:
+  # Fixado em 08/11/2026, antes de rodar (docs/19, seção 8). Não treina nada: lê as notas que o
+  # script 31 gravou para a rede antiga com as sementes 42, 43 e 44 na nossa lista inteira, na
+  # validação. O teste não entra.
+  sementes:
+    42: dados/intermediario/lista_propria_cnn
+    43: dados/intermediario/lista_propria_cnn_semente_43
+    44: dados/intermediario/lista_propria_cnn_semente_44
+  # Duas supressões com raio fixo, cada uma medida nas três sementes. Descartamos suprimir pelo raio
+  # do LoG: 97,6% dos pontos da validação têm o mesmo raio, 1,73 mm, e o raio de supressão ficaria
+  # perto de 3,5 mm, abaixo dos 5 mm já medidos. 16 mm é a faixa dos intrusos da Fase 1 e a
+  # distância de supressão da literatura para um nódulo de 20 mm; 10 mm fica no meio. Na validação,
+  # os dois nódulos anotados mais próximos de um mesmo exame estão a 19,46 mm (medido em
+  # 08/11/2026), então nenhum dos dois raios junta dois nódulos verdadeiros ali. No conjunto todo há
+  # um par a 5,92 mm, que os dois raios juntariam.
+  raios_mm: [10, 16]
+  # A terceira variante: a média das notas das três sementes, ponto a ponto, sem supressão nova.
+  # Regra fixada antes de rodar. Uma supressão fica se a média de CPM das três sementes passar a
+  # média da lista inteira e a diferença pareada contra a lista inteira for positiva nas três
+  # sementes. Se as duas passarem, fica a de maior média. A média das sementes fica se o CPM dela
+  # passar a média das três sementes e a diferença pareada contra cada semente for positiva.
 
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na

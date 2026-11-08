@@ -25,3 +25,4 @@ memória na hora.
 | [0009](0009-segundo-uso-do-teste-para-o-random-forest.md) | o segundo uso do teste, só para o Random Forest centro congelado |
 | [0010](0010-tres-sementes-da-rede-escolhida.md) | a rede escolhida repetida com mais duas sementes, só na validação |
 | [0011](0011-rede-treinada-com-a-nossa-lista-nao-substitui-a-escolhida.md) | a rede treinada também com a nossa lista não substitui a rede escolhida |
+| [0012](0012-supressao-a-16-mm-na-nossa-lista.md) | na nossa lista de candidatos, suprimimos vizinhos a 16 mm depois da rede |

@@ -1,0 +1,33 @@
+{
+  "conjunto": "validacao",
+  "teste_utilizado": false,
+  "exames": 89,
+  "sementes": {
+    "42": "dados/intermediario/lista_propria_cnn",
+    "43": "dados/intermediario/lista_propria_cnn_semente_43",
+    "44": "dados/intermediario/lista_propria_cnn_semente_44"
+  },
+  "raios_mm": [
+    10,
+    16
+  ],
+  "cpm_lista_inteira_media_sementes": 0.4963534963809524,
+  "supressao": {
+    "raio_10": {
+      "cpm_media": 0.5881595882380952,
+      "pareadas_positivas_nas_tres": true,
+      "passou": true
+    },
+    "raio_16": {
+      "cpm_media": 0.7687687689999999,
+      "pareadas_positivas_nas_tres": true,
+      "passou": true
+    }
+  },
+  "supressao_adotada": "raio_16",
+  "media_sementes": {
+    "cpm": 0.5250965251428571,
+    "pareadas_positivas_contra_cada_semente": false,
+    "passou": false
+  }
+}
