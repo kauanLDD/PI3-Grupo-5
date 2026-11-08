@@ -1,0 +1,58 @@
+{
+  "conjunto": "validacao",
+  "teste_utilizado": false,
+  "redes": {
+    "antiga": {
+      "42": [
+        "modelos/cnn_lr_3e-4",
+        "dados/intermediario/lista_propria_cnn"
+      ],
+      "43": [
+        "modelos/cnn_lr_3e-4_semente_43",
+        "dados/intermediario/lista_propria_cnn_semente_43"
+      ],
+      "44": [
+        "modelos/cnn_lr_3e-4_semente_44",
+        "dados/intermediario/lista_propria_cnn_semente_44"
+      ]
+    },
+    "uniforme": {
+      "42": [
+        "modelos/cnn_lr_3e-4_lista_propria_uniforme",
+        "dados/intermediario/lista_propria_cnn_uniforme"
+      ],
+      "43": [
+        "modelos/cnn_lr_3e-4_lista_propria_uniforme_semente_43",
+        "dados/intermediario/lista_propria_cnn_uniforme_semente_43"
+      ],
+      "44": [
+        "modelos/cnn_lr_3e-4_lista_propria_uniforme_semente_44",
+        "dados/intermediario/lista_propria_cnn_uniforme_semente_44"
+      ]
+    }
+  },
+  "media_desvio": {
+    "antiga_propria": {
+      "media": 0.4963534963809524,
+      "desvio_padrao_amostral": 0.0473982381552909
+    },
+    "antiga_v2": {
+      "media": 0.7773487775714286,
+      "desvio_padrao_amostral": 0.022291516162636135
+    },
+    "uniforme_propria": {
+      "media": 0.5125750749934577,
+      "desvio_padrao_amostral": 0.024908693099945763
+    },
+    "uniforme_v2": {
+      "media": 0.7528957531428571,
+      "desvio_padrao_amostral": 0.024655397736822182
+    }
+  },
+  "condicao_1_media_nossa_lista_sobe": true,
+  "condicao_1_pareadas_positivas_nas_tres": false,
+  "queda_media_cpm_v2": 0.024453024428571557,
+  "queda_maxima_cpm_v2": 0.022,
+  "condicao_2_v2_dentro_do_limite": false,
+  "confirmada": false
+}

@@ -24,3 +24,4 @@ memória na hora.
 | [0008](0008-modelo-congelado-para-o-teste.md) | o modelo congelado para a avaliação final no teste |
 | [0009](0009-segundo-uso-do-teste-para-o-random-forest.md) | o segundo uso do teste, só para o Random Forest centro congelado |
 | [0010](0010-tres-sementes-da-rede-escolhida.md) | a rede escolhida repetida com mais duas sementes, só na validação |
+| [0011](0011-rede-treinada-com-a-nossa-lista-nao-substitui-a-escolhida.md) | a rede treinada também com a nossa lista não substitui a rede escolhida |
