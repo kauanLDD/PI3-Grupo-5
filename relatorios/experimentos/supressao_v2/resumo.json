@@ -1,0 +1,19 @@
+{
+  "conjunto": "validacao",
+  "teste_utilizado": false,
+  "raio_mm": 16,
+  "cpm_media_desvio": {
+    "propria_suprimida": {
+      "media": 0.7687687689999999,
+      "desvio_padrao_amostral": 0.03650034877758073
+    },
+    "v2": {
+      "media": 0.7773487775714286,
+      "desvio_padrao_amostral": 0.022291516162636135
+    },
+    "v2_suprimida": {
+      "media": 0.8301158302857142,
+      "desvio_padrao_amostral": 0.027871824718212698
+    }
+  }
+}
