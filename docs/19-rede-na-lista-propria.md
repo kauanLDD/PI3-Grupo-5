@@ -322,3 +322,81 @@ variação.
 variante B não foi repetida com outras sementes; o ganho dela na nossa lista (0,210 com a semente
 42) é maior que a amplitude entre sementes da rede antiga, mas isso vem de uma execução só e não
 foi testado. Nada desta seção usou o teste.
+
+## 8. Supressão com raio maior e média das sementes, desenho fixado em 08/11/2026
+
+Sem treino novo. Partimos das notas que a rede antiga, com as sementes 42, 43 e 44, já deu a cada
+ponto da nossa lista inteira na validação (script 31), e mudamos só o que acontece depois da rede.
+Três variantes, fixadas em `config.yaml` (seção `supressao_lista_propria`) antes de rodar:
+
+- **Supressão a 10 mm** e **supressão a 16 mm**: em cada exame, do maior escore para o menor, a
+  marca a até esse raio de uma marca mantida sai (`suprimir_vizinhos`, a mesma função dos 5 mm da
+  seção 1). Cada uma é medida nas três sementes.
+- **Média das sementes**: a nota de cada ponto passa a ser a média das notas das três sementes,
+  sem supressão nova.
+
+Os detectores publicados de 2020 em diante suprimem marcas repetidas com sobreposição baixa entre
+caixas (IoU de 0,1 a 0,22), o que equivale a algo da ordem do diâmetro do nódulo; 16 mm é também a
+faixa em que a seção 5 mediu os intrusos. Pensamos em suprimir pelo raio que o LoG estima para
+cada ponto e descartamos: 97,6% dos pontos da validação têm o mesmo raio, 1,73 mm (a menor escala),
+e o raio de supressão ficaria perto de 3,5 mm, abaixo dos 5 mm já medidos.
+
+Na validação, os dois nódulos anotados mais próximos de um mesmo exame estão a 19,46 mm (medido em
+08/11/2026), e nenhum dos dois raios junta dois nódulos verdadeiros ali. No conjunto todo há um par
+a 5,92 mm, que os dois raios juntariam.
+
+**A comparação pareada.** O avaliador oficial sorteia os exames de cada reamostra só a partir da
+lista de exames e da semente (`generateBootstrapSet` em `third_party/luna16`), sem olhar as marcas.
+Com os mesmos 89 exames e a semente 42, a reamostra *k* é a mesma nas duas avaliações, e a
+diferença de CPM réplica a réplica é pareada por exame mesmo quando as marcas diferem. O script 27
+recusava esse caso porque confere também os candidatos; o script 34 confere só exames e protocolo.
+
+**A regra.** Uma supressão fica se a média de CPM das três sementes passar a média da lista inteira
+(0,496, seção 7) e a diferença pareada contra a lista inteira for positiva nas três sementes. Se as
+duas passarem, fica a de maior média. A média das sementes fica se o CPM dela passar 0,496 e a
+diferença pareada contra cada semente for positiva.
+
+### 8.1 Resultado, medido em 08/11/2026
+
+Medido com:
+
+```bash
+.venv-cnn-gpu/bin/python scripts/34_supressao_lista_propria.py
+```
+
+Exames lidos 89, com erro 0, descartados 0; 1.407.860 pontos por semente. Validação, 111 nódulos,
+avaliador oficial, 1.000 reamostras por exame com semente 42. O teste não foi usado. Na primeira
+execução o script calculou e gravou as duas tabelas e parou ao gravar o `resumo.json`, por um tipo
+booleano do NumPy que o `json` não aceita. Corrigimos a conversão e geramos o `resumo.json` e a
+figura a partir das tabelas já gravadas, com as mesmas funções do script.
+
+| Variante | Semente 42 | Semente 43 | Semente 44 | Média ± desvio | Marcas por semente |
+|---|---:|---:|---:|---:|---:|
+| Lista inteira | 0,465 | 0,474 | 0,551 | 0,496 ± 0,047 | 1.407.860 |
+| Supressão 10 mm | 0,553 | 0,564 | 0,647 | 0,588 ± 0,052 | cerca de 243 mil |
+| Supressão 16 mm | 0,745 | 0,750 | 0,811 | 0,769 ± 0,037 | cerca de 86 mil |
+| Média das sementes | | | | 0,525 | 1.407.860 |
+
+Diferença pareada de CPM contra a lista inteira da mesma semente (IC95%):
+
+| Variante | Semente 42 | Semente 43 | Semente 44 |
+|---|---:|---:|---:|
+| Supressão 10 mm | +0,089 (+0,057 a +0,130) | +0,090 (+0,057 a +0,118) | +0,097 (+0,076 a +0,132) |
+| Supressão 16 mm | +0,281 (+0,210 a +0,342) | +0,277 (+0,186 a +0,351) | +0,260 (+0,188 a +0,328) |
+| Média das sementes | +0,060 (+0,023 a +0,097) | +0,051 (+0,015 a +0,070) | -0,026 (-0,064 a +0,004) |
+
+**A regra aplicada.** As duas supressões passam: a média sobe e a diferença pareada é positiva nas
+três sementes, com o IC95% inteiro acima de zero em todas. Fica a de 16 mm, de maior média. A média
+das sementes não passa: o CPM dela (0,525) fica acima de 0,496, mas a diferença contra a semente 44
+é negativa.
+
+Entre as 100 marcas de cada exame, a supressão a 16 mm com a semente 42 acha 98 dos 111 nódulos,
+contra 100 da lista inteira (`CADAnalysis.txt` de cada avaliação).
+
+As tabelas estão em `relatorios/experimentos/supressao_lista_propria/` (`variantes.csv`,
+`diferencas_pareadas.csv`, `resumo.json` e a figura `cpm_por_variante.png`). As avaliações completas
+ficam fora do git, em `dados/intermediario/supressao_lista_propria/`.
+
+**O que os números não mostram.** Os dois raios foram fixados antes de rodar, mas foram medidos só
+na validação, onde nenhum par de nódulos fica a menos de 19,46 mm. No conjunto todo há um par a
+5,92 mm, que a supressão a 16 mm juntaria. A supressão não foi aplicada à V2 nesta fase.
