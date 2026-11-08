@@ -29,6 +29,8 @@ def argumentos():
     parser.add_argument("--variante", help="nome em experimentos_cnn do YAML; sobrescreve chaves de cnn")
     parser.add_argument("--semente", type=int,
                         help="semente de treino no lugar de seed do YAML; o bootstrap da avaliação mantém seed (decisão 0010)")
+    parser.add_argument("--lista-propria",
+                        help="nome em treino_lista_propria.variantes do YAML; treina também com pontos da nossa lista")
     return parser.parse_args()
 
 
@@ -43,6 +45,36 @@ def aplicar_variante(cfg, nome):
     if desconhecidas:
         raise ValueError(f"chaves desconhecidas na variante {nome}: {sorted(desconhecidas)}")
     return {**parametros, **mudancas}
+
+
+def treinar_misto(cfg, nome, candidatos, divisao, pasta, entrada, parametros, semente, device, registrar):
+    """Treino com cubos da V2 e da nossa lista (docs/19, seção 6)."""
+    misto, volumes, lado = cfg["treino_lista_propria"], cfg["caminhos"]["volumes"], parametros["patch_size"]
+    treino = sorted(divisao.loc[divisao.particao.eq("treino"), "seriesuid"])
+    diferenca = cnn.conferir_recorte(candidatos, treino[:misto["exames_conferencia"]], pasta, volumes, lado,
+                                     misto["tolerancia_conferencia"])
+    print(f"conferência do recorte na V2, {misto['exames_conferencia']} exames de treino: "
+          f"maior diferença {diferenca:.2e}", flush=True)
+    blocos = pd.read_csv(entrada["candidatos_proprios"], chunksize=misto["linhas_por_bloco"])
+    selecionados, contagem = cnn.selecionar_misto(
+        candidatos, blocos, divisao, pd.read_csv(entrada["anotacoes"]), pd.read_csv(entrada["excluidas"]),
+        parametros["negativos_por_positivo"], misto["fracao_negativos_propria"],
+        misto["variantes"][nome]["vizinhos"], semente)
+    grupos = selecionados.groupby(["origem", "grupo"]).size().to_dict()
+    print(f"nossa lista nos exames de treino: {contagem}", flush=True)
+    print(f"treino: {len(selecionados)} cubos, {grupos}", flush=True)
+    if len(selecionados) > misto["maximo_cubos"]:
+        raise ValueError(f"{len(selecionados)} cubos passam do máximo de {misto['maximo_cubos']}")
+    inicio = perf_counter()
+    cubos = cnn.montar_cubos(selecionados, candidatos, pasta, volumes, lado)
+    exames, montagem = selecionados.seriesuid.nunique(), perf_counter() - inicio
+    print(f"cubos montados de {exames} exames, com erro 0, descartados 0; {montagem:.0f} s", flush=True)
+    modelo, historico = cnn.treinar_cubos(cubos, selecionados["class"].to_numpy(np.int64), parametros,
+                                          semente, device, registrar)
+    extras = {"conferencia_recorte": diferenca, "lista_propria_treino": contagem,
+              "treino_grupos": {f"{o}_{g}": int(n) for (o, g), n in grupos.items()},
+              "treino_exames": int(exames), "montagem_cubos_segundos": montagem}
+    return modelo, selecionados, historico, extras
 
 
 def conferir_reproducao(anterior, destino, recibo):
@@ -72,6 +104,12 @@ def main():
         raise ValueError(f"preserve a execução existente e escolha uma pasta nova: {destino}")
     if args.reproduzir_de and not (args.reproduzir_de / "execucao.json").is_file():
         raise ValueError("execucao anterior ausente")
+    if args.lista_propria:
+        misto = cfg["treino_lista_propria"]
+        if args.lista_propria not in misto["variantes"]:
+            raise ValueError(f"variante inexistente em treino_lista_propria: {args.lista_propria}")
+        if args.variante != misto["variante_rede"] or args.dados:
+            raise ValueError(f"--lista-propria usa --variante {misto['variante_rede']} e os dados do config")
     caminhos = cfg["caminhos"]
     if args.dados:
         dados = args.dados.resolve()
@@ -101,6 +139,8 @@ def main():
     origem = config.RAIZ / "notebooks/curvafroc_pesquisa.ipynb"
     entrada["pesquisa_cnn"] = origem
     entrada["configuracao_execucao"] = args.config or config.CAMINHO
+    if args.lista_propria:
+        entrada["candidatos_proprios"] = caminhos["candidatos_proprios"]
     for caminho in entrada.values():
         if not caminho.is_file():
             raise FileNotFoundError(caminho)
@@ -125,9 +165,15 @@ def main():
                 "sampler": "WeightedRandomSampler_replacement", "max_marcas_oficial": 100}
     if args.semente is not None:
         registro["seed_avaliacao"] = cfg["seed"]
+    if args.lista_propria:
+        registro["lista_propria"] = args.lista_propria
+        registro["treino_lista_propria"] = json.dumps({
+            "fracao_negativos_propria": cfg["treino_lista_propria"]["fracao_negativos_propria"],
+            **cfg["treino_lista_propria"]["variantes"][args.lista_propria]})
     versao_dados = hashlib.sha256(json.dumps({
         nome: rastreamento.sha256(p) for nome, p in entrada.items()
-        if nome in ("divisao", "candidatos", "anotacoes", "excluidas") or nome.startswith("patches/")
+        if nome in ("divisao", "candidatos", "anotacoes", "excluidas", "candidatos_proprios")
+        or nome.startswith("patches/")
     }, sort_keys=True).encode()).hexdigest()
     registro["dados_sha256"] = versao_dados
     destino.mkdir(parents=True)
@@ -146,8 +192,14 @@ def main():
                 cliente.log_metric(run_id, nome, linha[nome], step=linha["epoch"])
 
         inicio = perf_counter()
-        modelo, selecionados, historico = cnn.treinar(candidatos, divisao, pasta, parametros,
-                                                     semente, device, registrar)
+        extras = {}
+        if args.lista_propria:
+            modelo, selecionados, historico, extras = treinar_misto(
+                cfg, args.lista_propria, candidatos, divisao, pasta, entrada, parametros, semente, device,
+                registrar)
+        else:
+            modelo, selecionados, historico = cnn.treinar(candidatos, divisao, pasta, parametros,
+                                                         semente, device, registrar)
         metricas = {"treino_segundos": perf_counter() - inicio,
                     "treino_candidatos": len(selecionados),
                     "treino_positivos": int(selecionados["class"].sum())}
@@ -155,7 +207,10 @@ def main():
         torch.save({"state_dict": modelo.cpu().state_dict(), "parametros": parametros,
                     "seed": semente, "dados_sha256": versao_dados,
                     "run_id": run_id, "divisao_sha256": rastreamento.sha256(entrada["divisao"]),
-                    "candidatos_sha256": rastreamento.sha256(entrada["candidatos"])}, destino / "modelo.pt")
+                    "candidatos_sha256": rastreamento.sha256(entrada["candidatos"]),
+                    **({"candidatos_proprios_sha256": rastreamento.sha256(entrada["candidatos_proprios"]),
+                        "lista_propria": args.lista_propria} if args.lista_propria else {})},
+                   destino / "modelo.pt")
         restaurado = cnn.CNN3D(parametros["dropout_rate"])
         restaurado.load_state_dict(torch.load(destino / "modelo.pt", map_location="cpu",
                                              weights_only=True)["state_dict"])
@@ -181,6 +236,8 @@ def main():
                   "pesos_sha256": peso_hash, "metricas": metricas, "teste_utilizado": False,
                   "avaliacao_froc": "oficial", "escopo": args.escopo,
                   "entrada_teste_usada_no_treino": False}
+        if extras:
+            recibo["treino_lista_propria"] = extras
         if args.reproduzir_de:
             recibo["reproducao"] = conferir_reproducao(args.reproduzir_de, destino, recibo)
             cliente.log_metric(run_id, "reproducao_identica", 1)

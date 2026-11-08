@@ -27,7 +27,7 @@ def test_treino_nao_exige_recortes_de_teste(tmp_path, monkeypatch):
                       tmp_path / "candidates_V2.csv", index=False)
     monkeypatch.setattr(script, "argumentos", lambda: argparse.Namespace(
         config=None, dados=tmp_path, saida=tmp_path / "modelo", reproduzir_de=None,
-        variante=None, semente=None))
+        variante=None, semente=None, lista_propria=None))
     monkeypatch.setattr(script.config, "carregar", lambda _: {
         "cnn": {"epochs": 1, "negativos_por_positivo": 1}, "caminhos": {"volumes": tmp_path},
     })
@@ -70,3 +70,22 @@ def test_variante_sobrescreve_cnn_e_recusa_chave_desconhecida():
         script.aplicar_variante(cfg, "errada")
     with pytest.raises(ValueError, match="inexistente"):
         script.aplicar_variante(cfg, "outra")
+
+
+@pytest.mark.parametrize("variante, lista, mensagem", [
+    ("lr_3e-4", "inexistente", "variante inexistente"),
+    ("aumento", "vizinhos", "usa --variante lr_3e-4"),
+])
+def test_lista_propria_recusa_variante_errada_antes_de_ler_dados(tmp_path, monkeypatch, variante, lista, mensagem):
+    script = carregar("18_treinar_cnn.py")
+    monkeypatch.setattr(script, "argumentos", lambda: argparse.Namespace(
+        config=None, dados=None, saida=tmp_path / "modelo", reproduzir_de=None,
+        variante=variante, semente=None, lista_propria=lista))
+    monkeypatch.setattr(script.config, "carregar", lambda _: {
+        "cnn": {"epochs": 1, "negativos_por_positivo": 1},
+        "experimentos_cnn": {"lr_3e-4": {"epochs": 40}, "aumento": {"epochs": 40}},
+        "treino_lista_propria": {"variante_rede": "lr_3e-4", "variantes": {"vizinhos": {}}},
+        "caminhos": {}})
+    with pytest.raises(ValueError, match=mensagem):
+        script.main()
+    assert not (tmp_path / "modelo").exists()
