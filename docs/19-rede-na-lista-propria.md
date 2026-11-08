@@ -256,7 +256,69 @@ Tempo de treino, incluindo a montagem dos cubos: 1.199 s na A (439 s de montagem
   limite de 0,022). Não passa.
 
 Pela regra fixada antes de rodar, fica a rede A, `cnn_lr_3e-4_lista_propria_uniforme`.
+A seção 7 repete a A com as sementes 43 e 44; ela não se confirmou (decisão 0011).
 
 **O que os números não mostram.** Cada variante rodou uma vez, com uma semente; a variação entre
 sementes da rede antiga foi de 0,022 no CPM da V2. Os números são da validação. A queda da B na V2
 tem IC que encosta em zero (-0,158 a +0,005).
+
+## 7. A rede A repetida com as sementes 43 e 44, medido em 07/11/2026
+
+Regra fixada antes de rodar, no `config.yaml` (seção `sementes_lista_propria`): a A fica
+confirmada se a média de CPM das três sementes na nossa lista inteira ficar acima da média da rede
+antiga, com diferença pareada positiva semente a semente, e se a média na V2 não cair mais que
+0,022. A rede antiga das sementes 43 e 44 já existia (decisão 0010), mas nunca tinha sido medida na
+nossa lista.
+
+Comandos:
+
+```bash
+.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py --modelo modelos/cnn_lr_3e-4_semente_43 \
+    --saida relatorios/experimentos/lista_propria_cnn_semente_43 --completa dados/intermediario/lista_propria_cnn_semente_43
+.venv-cnn-gpu/bin/python scripts/18_treinar_cnn.py --variante lr_3e-4 --lista-propria uniforme --semente 43 \
+    --saida modelos/cnn_lr_3e-4_lista_propria_uniforme_semente_43
+.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py --modelo modelos/cnn_lr_3e-4_lista_propria_uniforme_semente_43 \
+    --saida relatorios/experimentos/lista_propria_cnn_uniforme_semente_43 \
+    --completa dados/intermediario/lista_propria_cnn_uniforme_semente_43
+.venv-cnn-gpu/bin/python scripts/33_sementes_lista_propria.py
+```
+
+e os mesmos com 44. Cada pontuação da nossa lista leu 89 exames, com erro 0, descartados 0, e
+conferiu o recorte na hora contra a V2 (maior diferença de probabilidade 2,97e-08). Cada treino
+montou cubos de 623 exames, com erro 0, descartados 0, e levou 1.175 s (semente 43) e 1.160 s
+(semente 44), montagem incluída. O script 33 conferiu que, dentro de cada rede, as três sementes
+só diferem na semente e usaram os mesmos dados.
+
+CPM na validação (89 exames, 111 nódulos), com IC95%:
+
+| Semente | Nossa lista, antiga | Nossa lista, A | V2, antiga | V2, A |
+|---:|---:|---:|---:|---:|
+| 42 | 0,465 (0,400 a 0,532) | 0,514 (0,451 a 0,588) | 0,752 (0,681 a 0,819) | 0,764 (0,690 a 0,823) |
+| 43 | 0,474 (0,399 a 0,571) | 0,537 (0,478 a 0,612) | 0,790 (0,725 a 0,862) | 0,770 (0,695 a 0,830) |
+| 44 | 0,551 (0,472 a 0,632) | 0,487 (0,402 a 0,571) | 0,790 (0,728 a 0,858) | 0,725 (0,646 a 0,796) |
+| Média ± desvio | 0,496 ± 0,047 | 0,513 ± 0,025 | 0,777 ± 0,022 | 0,753 ± 0,025 |
+
+Diferença pareada A menos antiga, mesma semente, mesmas reamostras:
+
+| Semente | Nossa lista (IC95%) | V2 (IC95%) |
+|---:|---:|---:|
+| 42 | +0,049 (+0,016 a +0,092) | +0,013 (-0,023 a +0,043) |
+| 43 | +0,063 (-0,005 a +0,123) | -0,021 (-0,062 a +0,003) |
+| 44 | -0,064 (-0,106 a -0,021) | -0,066 (-0,115 a -0,028) |
+
+**A regra aplicada.** Na nossa lista a média sobe 0,016, mas a diferença pareada é negativa na
+semente 44: a condição 1 não vale. Na V2 a média cai 0,024, acima de 0,022: a condição 2 não vale.
+A A não se confirmou, e a rede do projeto continua a `cnn_lr_3e-4` (decisão 0011).
+
+As sete sensibilidades de cada rede e semente estão em
+`relatorios/experimentos/sementes_lista_propria/sementes.csv`, as diferenças em
+`diferencas_pareadas.csv`, a regra em `resumo.json` e a figura em `cpm_por_semente.png`.
+
+**O que os números mostram.** Na nossa lista, a rede antiga varia de 0,465 a 0,551 só trocando a
+semente, uma amplitude de 0,086. O ganho da A medido com a semente 42 (0,049) cabe dentro dessa
+variação.
+
+**O que os números não mostram.** Três sementes dão uma estimativa grosseira da variação. A
+variante B não foi repetida com outras sementes; o ganho dela na nossa lista (0,210 com a semente
+42) é maior que a amplitude entre sementes da rede antiga, mas isso vem de uma execução só e não
+foi testado. Nada desta seção usou o teste.

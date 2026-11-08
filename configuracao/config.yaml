@@ -72,6 +72,7 @@ caminhos:
   random_forest_centro_teste: "modelos/random_forest_centro_teste_final"
   comparacao_teste: "relatorios/experimentos/comparacao_teste"
   sementes_cnn: "relatorios/experimentos/sementes_cnn"
+  sementes_lista_propria: "relatorios/experimentos/sementes_lista_propria"
   # Onde a rede escolhida erra no teste: nódulos perdidos e falsos positivos, com figuras.
   analise_erros_cnn: "relatorios/experimentos/analise_erros_cnn"
   # Tipo de cada falso positivo de maior escore, classificado à mão olhando as figuras.
@@ -352,6 +353,28 @@ treino_lista_propria:
     cpm_lista_propria_antiga: 0.465
     cpm_v2_antiga: 0.752
     queda_maxima_cpm_v2: 0.022
+
+sementes_lista_propria:
+  # Fase 4, fixada em 07/11/2026 antes de treinar: a rede A (treino_lista_propria, variante
+  # uniforme) e a rede antiga, cada uma com as sementes 42, 43 e 44 da decisão 0010, só na
+  # validação. Para cada rede e semente: a pasta do modelo (avaliação na V2) e a pasta, fora do
+  # git, da avaliação na nossa lista inteira feita pelo script 31.
+  redes:
+    antiga:
+      42: [modelos/cnn_lr_3e-4, dados/intermediario/lista_propria_cnn]
+      43: [modelos/cnn_lr_3e-4_semente_43, dados/intermediario/lista_propria_cnn_semente_43]
+      44: [modelos/cnn_lr_3e-4_semente_44, dados/intermediario/lista_propria_cnn_semente_44]
+    uniforme:
+      42: [modelos/cnn_lr_3e-4_lista_propria_uniforme, dados/intermediario/lista_propria_cnn_uniforme]
+      43: [modelos/cnn_lr_3e-4_lista_propria_uniforme_semente_43,
+           dados/intermediario/lista_propria_cnn_uniforme_semente_43]
+      44: [modelos/cnn_lr_3e-4_lista_propria_uniforme_semente_44,
+           dados/intermediario/lista_propria_cnn_uniforme_semente_44]
+  # Regra fixada antes de rodar. A rede A fica confirmada se (1) a média de CPM das três sementes
+  # na nossa lista inteira fica acima da média da rede antiga e a diferença pareada, semente com
+  # semente, é positiva nas três; e (2) a média de CPM na V2 não cai mais que 0,022 em relação à
+  # média da rede antiga (o desvio entre as sementes da rede antiga, decisão 0010).
+  queda_maxima_cpm_v2: 0.022
 
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na

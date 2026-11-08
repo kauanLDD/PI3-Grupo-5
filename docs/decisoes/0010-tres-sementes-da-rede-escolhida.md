@@ -66,7 +66,8 @@ do bootstrap e desvio padrão são três coisas diferentes e aparecem separadas 
 `scripts/18_treinar_cnn.py` é dependência dos estágios `treinar_cnn` e
 `treinar_cnn_variante@*` do DVC. Como sem `--semente` o comportamento não muda, esses estágios
 devem ser registrados com `dvc commit -f` na máquina que tem os dados, em vez de reexecutados,
-como em `docs/11-experimentos-validacao.md`. Isso ainda não foi feito.
+como em `docs/11-experimentos-validacao.md`. Feito em 07/11/2026, junto com as outras mudanças de
+código sem efeito nas saídas (`dvc commit -f`, PR #13).
 
 ## Resultado
 
