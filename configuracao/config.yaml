@@ -314,6 +314,45 @@ lista_propria:
   exames_conferencia: 3
   tolerancia_conferencia: 1.0e-5
 
+treino_lista_propria:
+  # Fixado em 07/11/2026, antes de treinar (docs/19, seção 6). A rede lr_3e-4 treinada de novo com
+  # os mesmos hiperparâmetros; só muda o conjunto de treino. Só validação, o teste não entra.
+  variante_rede: lr_3e-4
+  # Os negativos continuam 20 por positivo da V2. Esta fração deles sai da nossa lista e o resto
+  # da V2. Os acertos da nossa lista entram como positivos e não aumentam o número de negativos.
+  fracao_negativos_propria: 0.5
+  # A nossa lista tem 10 milhões de linhas nos exames de treino e é lida em blocos.
+  linhas_por_bloco: 2000000
+  # Acima disso o script para antes de carregar os cubos (24.400 previstos, 3,2 GB em float32).
+  maximo_cubos: 30000
+  # Exames de treino em que o cubo da V2 recortado na hora é comparado com o cubo em disco.
+  exames_conferencia: 3
+  tolerancia_conferencia: 1.0e-5
+  variantes:
+    # A: negativos da nossa lista por sorteio uniforme entre os falsos positivos.
+    uniforme:
+      vizinhos: null
+    # B: metade dos negativos da nossa lista sai dos falsos positivos com um nódulo a até 16 mm,
+    # metade do lado do cubo de 32 mm, ou seja, com o nódulo dentro do recorte. Por sorteio
+    # uniforme seriam uns 31 pontos (28.723 de 10.079.848 nos exames de treino, medido em
+    # 07/11/2026). Ficam fora do treino os falsos positivos a menos de um diâmetro do centro de um
+    # nódulo: o nódulo ainda está quase no centro do cubo, e chamá-los de negativo ensinaria a
+    # rede a ignorar nódulo.
+    vizinhos:
+      vizinhos:
+        fracao: 0.5
+        distancia_maxima_mm: 16
+        distancia_minima_diametros: 1.0
+  # Regra de decisão fixada antes de rodar. A rede nova fica se o CPM na nossa lista inteira subir
+  # em relação à rede antiga, com o IC95% da diferença pareada acima de zero, e se o CPM na V2 não
+  # cair mais que o desvio padrão entre as três sementes da rede antiga
+  # (relatorios/experimentos/sementes_cnn/resumo.json). Se as duas variantes passarem, fica a de
+  # maior CPM na nossa lista inteira.
+  regra:
+    cpm_lista_propria_antiga: 0.465
+    cpm_v2_antiga: 0.752
+    queda_maxima_cpm_v2: 0.022
+
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na
   # validação; não pontua nada de novo e não toca o teste.

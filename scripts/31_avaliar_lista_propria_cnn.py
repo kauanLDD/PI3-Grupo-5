@@ -7,6 +7,7 @@ própria, o recorte feito na hora é conferido contra as probabilidades da V2 j�
 Duas versões, fixadas antes de rodar: a lista inteira e a lista com supressão de vizinhos.
 """
 
+import argparse
 import importlib.util
 import json
 from pathlib import Path
@@ -22,7 +23,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import config
 from detection import candidatos as det
-from detection import patches
+from detection import recorte
 from experimentos import avaliacao_oficial, cnn, rastreamento
 
 # O que sai da pasta completa para a versionada: tudo menos as marcas e a curva de cada uma.
@@ -43,7 +44,7 @@ def pontuar_exame(modelo, imagem, pontos, parametros, por_vez, device):
     lado = (parametros["patch_size"],) * 3
     probabilidades = []
     for inicio in range(0, len(pontos), por_vez):
-        cubos = patches.recortar(imagem, volume, pontos[inicio:inicio + por_vez], lado)
+        cubos = recorte.recortar(imagem, volume, pontos[inicio:inicio + por_vez], lado)
         probabilidades.extend(cnn.pontuar(modelo, cubos, parametros["batch_size"], device))
     return np.asarray(probabilidades)
 
@@ -67,15 +68,26 @@ def ler_lista_propria(caminho, uids):
     return pd.concat(partes, ignore_index=True)
 
 
+def argumentos(cfg):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--modelo", default=cfg["lista_propria"]["modelo"], help="pasta da rede em modelos/")
+    parser.add_argument("--saida", type=Path, default=cfg["caminhos"]["lista_propria_cnn"],
+                        help="pasta nova para as saídas versionadas")
+    parser.add_argument("--completa", type=Path, default=cfg["caminhos"]["lista_propria_cnn_completa"],
+                        help="pasta nova, fora do git, para as marcas e as avaliações completas")
+    return parser.parse_args()
+
+
 def main():
     cfg = config.carregar()
     config.fixar_semente(cfg["seed"])
     caminhos, lista, avaliacao = cfg["caminhos"], cfg["lista_propria"], cfg["avaliacao"]
-    saida, completa = caminhos["lista_propria_cnn"], caminhos["lista_propria_cnn_completa"]
+    args = argumentos(cfg)
+    saida, completa = config.RAIZ / args.saida, config.RAIZ / args.completa
     if saida.exists() or completa.exists():
         raise ValueError(f"preserve a avaliação anterior e apague-a à mão: {saida} / {completa}")
 
-    pasta_modelo = config.RAIZ / lista["modelo"]
+    pasta_modelo = config.RAIZ / args.modelo
     pacote = torch.load(pasta_modelo / "modelo.pt", map_location="cpu", weights_only=True)
     for chave, arquivo in (("divisao_sha256", "divisao"), ("candidatos_sha256", "luna16_candidatos")):
         if pacote.get(chave) != rastreamento.sha256(caminhos[arquivo]):
@@ -139,7 +151,7 @@ def main():
 
     comparar = script_27()
     dados_v2 = comparar.carregar(referencia)
-    resumo = {"modelo": lista["modelo"], "particao": lista["particao"], "exames": len(uids),
+    resumo = {"modelo": args.modelo, "particao": lista["particao"], "exames": len(uids),
               "nodulos": len(nodulos), "device": device, "segundos_pontuacao": round(segundos),
               "conferencia_recorte": {"exames": lista["exames_conferencia"], "maior_diferenca": diferenca},
               "raio_supressao_mm": lista["raio_supressao_mm"],

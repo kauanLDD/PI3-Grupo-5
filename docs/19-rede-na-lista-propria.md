@@ -23,7 +23,7 @@ o mesmo md5 do `dvc.lock`, porque o HD estava desligado.
 A nossa lista tem mediana de 15.625 candidatos por exame na validação, contra 763 da V2. Os cubos
 dela não estão em disco: o script recorta cada cubo de 32 mm na hora, do volume pré-processado,
 convertendo a coordenada em mm pela origem e pelo espaçamento de cada exame
-(`src/detection/patches.py`, função `recortar`, com testes em `testes/test_patches.py`).
+(`src/detection/recorte.py`, função `recortar`, com testes em `testes/test_patches.py`).
 
 Antes de pontuar a nossa lista, o script recorta na hora os candidatos da V2 de 3 exames e compara
 com as probabilidades já gravadas a partir dos cubos em disco. A maior diferença foi 3,0e-08, e o
@@ -138,3 +138,125 @@ no centro, porque entre os candidatos da V2 do treino há poucos pontos a alguns
 nódulo sem estar sobre ele. A contagem de intrusos depende de poucos nódulos, então as proporções da
 primeira coluna descrevem sobretudo três exames. Os números são da validação, uma execução, e não
 foram conferidos no treino.
+
+## 6. A rede treinada também com pontos da nossa lista, desenho fixado em 07/11/2026
+
+Escrito antes de treinar. A configuração está no `config.yaml`, seção `treino_lista_propria`.
+
+Treinamos de novo a variante `lr_3e-4`, com os mesmos hiperparâmetros (cubo de 32, lote 32, 40
+épocas, Adam a 0,0003, dropout 0,3, aumento ligado, semente 42). Só muda o conjunto de treino, montado
+nos 623 exames de treino:
+
+- **Positivos:** os 1.098 da V2 e os 1.368 pontos da nossa lista que `rotular` marca como acerto.
+- **Negativos:** 20 por positivo da V2, 21.960. Metade sai da V2 (10.980, sorteio com semente 42) e
+  metade da nossa lista (10.980). Os acertos da nossa lista não aumentam o número de negativos.
+- **Fora do treino:** os 18.487 pontos da nossa lista que caem em achado excluído (ignorados).
+
+Testamos duas variantes, fixadas juntas antes de treinar qualquer uma:
+
+- **A, `uniforme`:** os 10.980 negativos da nossa lista saem por sorteio uniforme entre os
+  10.079.848 falsos positivos.
+- **B, `vizinhos`:** metade deles (5.490) sai dos falsos positivos com um nódulo a até 16 mm, metade
+  do lado do cubo, e a outra metade do resto. Criamos a B porque, na seção 5, 38% dos intrusos que
+  entram nas 100 marcas têm um nódulo a até 16 mm, e no treino esses pontos são 28.723 dos 10.079.848
+  falsos positivos: por sorteio uniforme a A traria uns 31 deles. Na B tiramos do treino os falsos
+  positivos a menos de um diâmetro do centro de um nódulo, porque o nódulo ainda fica quase no centro
+  do cubo e chamar esse ponto de negativo ensinaria a rede a ignorar nódulo.
+
+Contagem conferida em 07/11/2026 nos dados reais, sem treinar (função `selecionar_misto` de
+`src/experimentos/cnn.py`): 10.099.703 candidatos da nossa lista nos 623 exames de treino, 1.368
+acertos, 18.487 ignorados, 10.079.848 falsos positivos. Na B, 23.957 vizinhos disponíveis para as
+5.490 vagas e 7.694 pontos colados fora do treino. As duas variantes somam 24.426 cubos. O cubo da V2
+recortado na hora do volume ficou igual ao cubo em disco em 3 exames de treino (maior diferença 0).
+
+Os cubos da V2 vêm do disco; os da nossa lista são recortados na hora com `recortar`. A nossa lista
+é lida em blocos de 2 milhões de linhas: cada falso positivo recebe uma chave aleatória e ficam os de
+menor chave, o que dá o mesmo sorteio qualquer que seja o tamanho do bloco (teste em
+`testes/test_treino_misto.py`).
+
+Avaliamos só na validação, com o avaliador oficial e as mesmas 1.000 reamostras por exame, na nossa
+lista inteira, na nossa lista com supressão a 5 mm e na V2. A diferença pareada contra a rede antiga
+sai do script 27.
+
+**Regra de decisão, fixada antes de rodar.** A rede nova fica se valerem as duas condições:
+
+1. o CPM na nossa lista inteira sobe em relação aos 0,465 da rede antiga, com o IC95% da diferença
+   pareada acima de zero;
+2. o CPM na V2 não cai mais que 0,022 em relação aos 0,752 da rede antiga. 0,022 é o desvio padrão
+   entre as três sementes da rede antiga (`relatorios/experimentos/sementes_cnn/resumo.json`).
+
+Se as duas variantes passarem, fica a de maior CPM na nossa lista inteira. O teste não é usado nesta
+etapa.
+
+### 6.1 Resultado, medido em 07/11/2026
+
+Comandos, para cada variante (`uniforme` e `vizinhos`):
+
+```bash
+.venv-cnn-gpu/bin/python scripts/18_treinar_cnn.py --variante lr_3e-4 --lista-propria uniforme \
+    --saida modelos/cnn_lr_3e-4_lista_propria_uniforme
+.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py --modelo modelos/cnn_lr_3e-4_lista_propria_uniforme \
+    --saida relatorios/experimentos/lista_propria_cnn_uniforme --completa dados/intermediario/lista_propria_cnn_uniforme
+.venv-cnn-gpu/bin/python scripts/27_comparar_froc.py \
+    --avaliacao "Rede nova=dados/intermediario/lista_propria_cnn_uniforme/sem_supressao" \
+    --avaliacao "Rede antiga=dados/intermediario/lista_propria_cnn/sem_supressao" \
+    --titulo "Validação, nossa lista inteira" --saida relatorios/experimentos/rede_lista_propria_uniforme/lista_inteira
+.venv-cnn-gpu/bin/python scripts/27_comparar_froc.py \
+    --avaliacao "Rede nova=modelos/cnn_lr_3e-4_lista_propria_uniforme/avaliacao_validacao" \
+    --avaliacao "Rede antiga=modelos/cnn_lr_3e-4/avaliacao_validacao" \
+    --titulo "Validação, lista V2" --saida relatorios/experimentos/rede_lista_propria_uniforme/v2
+```
+
+Uma execução por variante, semente 42, RTX 4050. Validação: 89 exames, 111 nódulos, o teste não foi
+usado. Montagem dos cubos: 623 exames lidos, com erro 0, descartados 0. Pontuação da nossa lista:
+89 exames lidos, com erro 0, descartados 0, 1.407.860 candidatos. A conferência do recorte deu
+diferença 0 nos cubos de treino e 2,96e-08 nas probabilidades da validação.
+
+CPM com IC95% (1.000 reamostras por exame, avaliador oficial):
+
+| Lista | Rede antiga | A, uniforme | B, vizinhos |
+|---|---:|---:|---:|
+| Nossa, inteira | 0,465 (0,400 a 0,532) | 0,514 (0,451 a 0,588) | 0,674 (0,574 a 0,773) |
+| Nossa, com supressão | 0,481 (0,424 a 0,555) | 0,534 (0,470 a 0,604) | 0,685 (0,581 a 0,779) |
+| V2 | 0,752 (0,681 a 0,819) | 0,764 (0,690 a 0,823) | 0,680 (0,570 a 0,778) |
+
+Diferença pareada de CPM contra a rede antiga, nas mesmas reamostras (script 27):
+
+| Lista | A, uniforme | B, vizinhos |
+|---|---:|---:|
+| Nossa, inteira | +0,049 (+0,016 a +0,092); nova acima em 99,8% das reamostras | +0,210 (+0,107 a +0,304); acima em 100% |
+| V2 | +0,013 (-0,023 a +0,043); acima em 71,9% | -0,072 (-0,158 a +0,005); acima em 3,5% |
+
+Na lista com supressão não há diferença pareada: a supressão guarda a marca de maior nota em cada
+vizinhança, então cada rede fica com um conjunto diferente de marcas (733.034 marcas com a A,
+731.745 com a rede antiga), e o script 27 recusa comparar avaliações com candidatos diferentes.
+Para essa lista reportamos o CPM de cada rede com o seu próprio intervalo. A regra de decisão não
+usa essa lista.
+
+Sensibilidade por ponto de operação (os IC95% estão nos `pontos_operacao.csv` de
+`relatorios/experimentos/rede_lista_propria_<variante>/`, com a figura em `froc.png`):
+
+| FP por exame | 0,125 | 0,25 | 0,5 | 1 | 2 | 4 | 8 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Nossa lista, rede antiga | 0,144 | 0,225 | 0,369 | 0,441 | 0,550 | 0,712 | 0,811 |
+| Nossa lista, A | 0,171 | 0,369 | 0,414 | 0,486 | 0,613 | 0,739 | 0,802 |
+| Nossa lista, B | 0,477 | 0,514 | 0,586 | 0,703 | 0,793 | 0,811 | 0,838 |
+| V2, rede antiga | 0,505 | 0,631 | 0,730 | 0,784 | 0,838 | 0,883 | 0,892 |
+| V2, A | 0,604 | 0,649 | 0,712 | 0,766 | 0,829 | 0,892 | 0,901 |
+| V2, B | 0,396 | 0,568 | 0,622 | 0,730 | 0,784 | 0,820 | 0,838 |
+
+Tempo de treino, incluindo a montagem dos cubos: 1.199 s na A (439 s de montagem) e 1.188 s na B
+(428 s). Os dois treinos usaram 24.426 cubos, 2.466 deles positivos.
+
+**A regra aplicada.**
+
+- A, uniforme: condição 1 vale (IC da diferença na nossa lista de +0,016 a +0,092, acima de zero);
+  condição 2 vale (a V2 subiu 0,013, não caiu). Passa.
+- B, vizinhos: condição 1 vale (+0,107 a +0,304); condição 2 não vale (a V2 caiu 0,072, acima do
+  limite de 0,022). Não passa.
+
+Pela regra fixada antes de rodar, fica a rede A, `cnn_lr_3e-4_lista_propria_uniforme`.
+
+**O que os números não mostram.** Cada variante rodou uma vez, com uma semente; a variação entre
+sementes da rede antiga foi de 0,022 no CPM da V2. Os números são da validação. A queda da B na V2
+tem IC que encosta em zero (-0,158 a +0,005).
