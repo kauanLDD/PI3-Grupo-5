@@ -555,3 +555,53 @@ com o IC95% de 0,758 a 0,868.
 de cada exame, contra 10 sem ela; na validação a diferença tinha sido de 2 nódulos com a supressão
 dura. Não medimos aqui quais nódulos são esses nem por quê. O teste fica usado e não escolhe nada
 (decisão 0013).
+
+## 12. Quais nódulos a supressão tirou das 100 marcas no teste, desenho fixado em 09/11/2026
+
+A seção 11 deixou uma pergunta aberta: com a supressão suave, a nossa lista deixa 28 nódulos do
+teste fora das 100 marcas de cada exame, contra 10 sem ela. Esta seção diz quais são os 18 a mais e
+o que os rebaixou (T30).
+
+**É o teste já usado (decisão 0013).** A análise só lê o que o script 37 gravou em
+`dados/intermediario/teste_supressao/`; não pontua, não avalia de novo e não muda raio nem forma da
+supressão. Descreve, não escolhe.
+
+**Como medimos** (`scripts/39_supressao_perdidos_teste.py`, seção `supressao_perdidos` do
+`config.yaml`):
+
+1. Comparamos o `nodulesWithoutCandidate_predicoes.txt` de `propria/` com o de `propria_suave/`, pelo
+   exame e pelo centro do nódulo, e separamos os nódulos que só a versão com supressão perde. O
+   script avisa se a conta não der 18, e conta também os que só a versão sem supressão perde (a
+   supressão só abaixa notas, então esperamos 0).
+2. Para cada exame com nódulo perdido, refazemos a `suprimir_suave` sobre as notas de
+   `probabilidades.csv`, guardando a nota final de cada ponto e cada rebaixamento. A repetição tem de
+   dar as mesmas 100 marcas e notas que o script 37 entregou ao avaliador
+   (`propria_suave/predicoes.csv`); se não der, o script para.
+3. Para cada nódulo perdido: o ponto mais perto do centro e a nota dele; o ponto que contava como
+   acerto sem a supressão, que é o de maior nota dentro do raio do nódulo (o critério do avaliador);
+   a nota dele antes e depois da supressão, e a nota da 100ª marca do exame; e, entre as marcas
+   mantidas que rebaixaram esse ponto, a que mais rebaixou (menor fator). Medimos a distância entre o
+   ponto e esse vizinho e classificamos o vizinho pela regra do avaliador: outro nódulo anotado, achado
+   excluído ou falso alarme.
+4. Uma figura com 4 casos, dois em que o vizinho é outro nódulo e dois em que não é, os de maior
+   diâmetro primeiro: corte axial no z do nódulo, com o nódulo circulado e o vizinho marcado. A
+   conversão de mm para voxel é a do `TransformPhysicalPointToIndex`, a mesma de
+   `src/detection/recorte.py`.
+
+O ponto do nódulo é o de maior nota dentro do raio, e não simplesmente o mais perto do centro,
+porque é ele que punha o nódulo entre as 100 marcas sem a supressão. O mais perto do centro fica na
+tabela também (`ponto_mais_perto_mm`, `nota_ponto_mais_perto`).
+
+Saídas em `relatorios/experimentos/supressao_perdidos/`: `nodulos.csv` (um nódulo perdido por
+linha), `por_causa.csv`, `casos.png` e `resumo.json`.
+
+### 12.1 Resultado
+
+Ainda não medido. A pasta `dados/intermediario/teste_supressao/` (643 MB) e os volumes
+pré-processados não estavam na máquina em que o script foi escrito; o script foi conferido com
+`testes/test_supressao_perdidos.py`, que compara a supressão repetida com a `suprimir_suave` e roda o
+script de ponta a ponta num exame sintético. Comando para medir:
+
+```bash
+.venv/bin/python scripts/39_supressao_perdidos_teste.py
+```

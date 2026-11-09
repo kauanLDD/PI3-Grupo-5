@@ -96,6 +96,8 @@ caminhos:
   # Terceiro uso do teste (decisão 0013): supressão suave linear nas duas listas.
   teste_supressao: "relatorios/experimentos/teste_supressao"
   teste_supressao_completa: "dados/intermediario/teste_supressao"
+  # Quais nódulos a supressão suave tirou das 100 marcas no teste, e quem os rebaixou (T30).
+  supressao_perdidos: "relatorios/experimentos/supressao_perdidos"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -451,6 +453,16 @@ teste_supressao:
   # A nossa lista é pontuada na GPU, como na validação. As notas da V2 no teste (13/10/2026) saíram
   # da CPU, e entre os dois aparelhos a nota muda até 1,5e-03: a conferência do recorte roda na CPU.
   dispositivo_conferencia: cpu
+
+supressao_perdidos:
+  # Fixado em 09/11/2026, antes de rodar (docs/19, seção 12). Descreve o que o script 37 gravou no
+  # teste já usado (decisão 0013): não avalia de novo e não ajusta raio nem forma da supressão.
+  # Com a supressão a nossa lista deixa 28 nódulos sem marca, contra 10 sem ela (docs/19, seção 11).
+  perdidos_esperados: 18
+  # Metade dos casos com vizinho que é outro nódulo e metade com falso alarme, maior diâmetro primeiro.
+  casos_figura: 4
+  # Lado do corte de cada caso, em mm: cabe o nódulo e um vizinho a até 16 mm.
+  lado_figura_mm: 64
 
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na
