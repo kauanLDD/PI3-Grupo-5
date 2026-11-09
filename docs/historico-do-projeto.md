@@ -540,3 +540,12 @@ foi 0,465 (IC95% 0,400 a 0,532) com a lista inteira e 0,481 (0,424 a 0,555) com 
 vizinhos a 5 mm, contra 0,752 da mesma rede na V2. A cobertura da nossa lista nesses exames é de
 106 dos 111 nódulos, contra 109 da V2. O registro está em `docs/19-rede-na-lista-propria.md`.
 
+## Atualização de 09/11/2026: a rede e o Random Forest usam os mesmos candidatos
+
+Respondemos à pergunta da Sprint 4 lendo só o que já estava gravado
+(`.venv/bin/python scripts/38_conferir_mesmo_conjunto.py`). Na validação os dois modelos dão nota
+aos mesmos 75.063 candidatos de 89 exames, e no teste aos mesmos 150.412 de 176 exames, sem nenhum
+ponto de diferença. No treino, não: o Random Forest usa os 529.500 candidatos V2 e a rede os mesmos
+1.098 positivos com 20 negativos por positivo, 23.058. Na divisão, 0 pacientes aparecem em mais de
+um conjunto; o único paciente com duas séries tem as duas no treino. O registro está em
+`docs/20-mesmo-conjunto-dos-dois-modelos.md`.

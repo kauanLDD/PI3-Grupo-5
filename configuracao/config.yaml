@@ -96,6 +96,8 @@ caminhos:
   # Terceiro uso do teste (decisão 0013): supressão suave linear nas duas listas.
   teste_supressao: "relatorios/experimentos/teste_supressao"
   teste_supressao_completa: "dados/intermediario/teste_supressao"
+  # A rede e o Random Forest usam os mesmos candidatos? Contagens por conjunto e por modelo (T21).
+  mesmo_conjunto: "relatorios/experimentos/mesmo_conjunto"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -451,6 +453,15 @@ teste_supressao:
   # A nossa lista é pontuada na GPU, como na validação. As notas da V2 no teste (13/10/2026) saíram
   # da CPU, e entre os dois aparelhos a nota muda até 1,5e-03: a conferência do recorte roda na CPU.
   dispositivo_conferencia: cpu
+
+mesmo_conjunto:
+  # Pergunta da Sprint 4 (T21). Só lê o que já está gravado: a divisão congelada junto da rede e as
+  # listas que cada modelo usou. Não treina, não pontua e não avalia de novo; o teste não é reusado.
+  divisao: modelos/cnn_lr_3e-4/divisao.csv
+  rede: modelos/cnn_lr_3e-4
+  random_forest: modelos/random_forest_centro
+  teste_rede: modelos/cnn_lr_3e-4_teste_final
+  teste_random_forest: modelos/random_forest_centro_teste_final
 
 intrusos:
   # Fixado em 07/11/2026, antes de ver qualquer tabela. Lê as notas que o script 31 já gravou na

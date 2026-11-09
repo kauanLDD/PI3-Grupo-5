@@ -1,0 +1,4 @@
+conjunto,chave,so_na_rede,so_no_random_forest,nos_dois
+validacao,candidate_id,0,0,75063
+validacao,seriesuid+coordX+coordY+coordZ,0,0,75063
+teste,seriesuid+coordX+coordY+coordZ,0,0,150412

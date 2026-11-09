@@ -1,0 +1,7 @@
+conjunto,modelo,exames,pacientes,candidatos,positivos,negativos,fonte
+treino,rede,623,622,23058,1098,21960,modelos/cnn_lr_3e-4/candidatos_treino.csv
+treino,random_forest,623,622,529500,1098,528402,modelos/random_forest_centro/execucao.json
+validacao,rede,89,89,75063,120,74943,modelos/cnn_lr_3e-4/probabilidades_validacao.csv
+validacao,random_forest,89,89,75063,120,74943,modelos/random_forest_centro/probabilidades_validacao.csv
+teste,rede,176,176,150412,,,modelos/cnn_lr_3e-4_teste_final/predicoes.csv
+teste,random_forest,176,176,150412,,,modelos/random_forest_centro_teste_final/probabilidades_teste.csv
