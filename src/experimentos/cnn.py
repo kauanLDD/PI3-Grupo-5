@@ -78,10 +78,11 @@ def ler_exame(pasta, uid, candidatos, tamanho):
         if (cubos.shape != (len(esperado), 34, 34, 34) or cubos.dtype != np.float32
                 or not np.isfinite(cubos).all() or cubos.min() < 0 or cubos.max() > 1):
             raise ValueError(f"recortes invalidos: {uid}")
-    if tamanho not in (32, 34):
-        raise ValueError("entrada da CNN precisa ser 32 ou 34 voxels")
+    # 16 é a rede de conferência: mesmo recorte de 34 do disco, só o miolo, sem o vizinho.
+    if tamanho not in (16, 32, 34):
+        raise ValueError("entrada da CNN precisa ser 16, 32 ou 34 voxels")
     margem = (34 - tamanho) // 2
-    # Centro 17 do recorte original passa a 16 no cubo de 32.
+    # Centro 17 do recorte original passa a 16 no cubo de 32 e a 8 no de 16.
     cubos = cubos[:, margem:margem+tamanho, margem:margem+tamanho, margem:margem+tamanho]
     return np.ascontiguousarray(cubos), esperado
 

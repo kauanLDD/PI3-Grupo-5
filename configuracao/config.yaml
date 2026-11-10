@@ -239,6 +239,14 @@ experimentos_cnn:
     aumento: true
     negativos_por_positivo: 20
     learning_rate: 0.0003
+  # Rede de conferência do Sprint 5 Review: igual à lr_3e-4, mas olha só o cubo de 16 do centro,
+  # onde o nódulo vizinho do falso alarme mais comum não aparece. Ver docs/15-analise-de-erros-cnn.md.
+  centro_16:
+    epochs: 40
+    aumento: true
+    negativos_por_positivo: 20
+    learning_rate: 0.0003
+    patch_size: 16
 
 # A rede escolhida repetida com outras sementes de treino, só na validação. As sementes foram
 # fixadas antes de treinar e não mudam depois de ver o resultado. Ver decisão 0010.
