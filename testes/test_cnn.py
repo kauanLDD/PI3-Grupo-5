@@ -62,6 +62,31 @@ def test_inferencia_cobre_todos_candidatos_e_preserva_coordenadas(tmp_path):
         cnn.ler_exame(tmp_path, "c", corrompidos, 32)
 
 
+def test_recorte_de_16_e_o_centro_do_cubo_de_34(tmp_path):
+    """A rede de conferência lê os mesmos recortes de 34 do disco e fica só com os 16 do meio."""
+    candidatos = pd.DataFrame({"seriesuid": ["c"] * 2, "coordX": [1., 2.], "coordY": [3., 4.],
+                               "coordZ": [5., 6.], "class": [1, 0]}, index=[20, 21])
+    cubos = np.random.default_rng(0).random((2, 34, 34, 34), dtype=np.float32)
+    np.savez_compressed(tmp_path / "c.npz", patches=cubos,
+                        candidate_id=candidatos.index.to_numpy(),
+                        coordX=candidatos.coordX.to_numpy(dtype=np.float32),
+                        coordY=candidatos.coordY.to_numpy(dtype=np.float32),
+                        coordZ=candidatos.coordZ.to_numpy(dtype=np.float32),
+                        classe_luna16=candidatos["class"].to_numpy(dtype=np.int8))
+    recortes, grupo = cnn.ler_exame(tmp_path, "c", candidatos, 16)
+    assert recortes.shape == (2, 16, 16, 16) and recortes.flags.c_contiguous
+    # Margem de 9 voxels em cada lado: índices 9 a 24 do cubo de 34.
+    np.testing.assert_array_equal(recortes, cubos[:, 9:25, 9:25, 9:25])
+    # O voxel central 17 do cubo de 34 cai no 8 do cubo de 16, como cai no 16 do cubo de 32.
+    np.testing.assert_array_equal(recortes[:, 8, 8, 8], cubos[:, 17, 17, 17])
+    np.testing.assert_array_equal(recortes, cnn.ler_exame(tmp_path, "c", candidatos, 32)[0][:, 8:24, 8:24, 8:24])
+    assert grupo.index.tolist() == [20, 21]
+    with torch.inference_mode():
+        assert cnn.CNN3D()(torch.from_numpy(recortes).unsqueeze(1)).shape == (2, 2)
+    with pytest.raises(ValueError, match="16, 32 ou 34"):
+        cnn.ler_exame(tmp_path, "c", candidatos, 24)
+
+
 def test_checkpoint_restaurado_preserva_logits(tmp_path):
     cnn.fixar_determinismo(42, 1)
     modelo = cnn.CNN3D().eval()
