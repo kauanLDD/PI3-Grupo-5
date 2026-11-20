@@ -50,6 +50,9 @@ modelos/*
 !modelos/cnn_lr_3e-4_semente_43/modelo.pt
 !modelos/cnn_lr_3e-4_semente_44/
 !modelos/cnn_lr_3e-4_semente_44/modelo.pt
+# A rede de conferência do Sprint 5 Review, cubo de 16, medida só na validação.
+!modelos/cnn_centro_16/
+!modelos/cnn_centro_16/modelo.pt
 
 # Dados locais de rastreamento (metadados e artefatos permanecem fora do Git).
 mlflow.db
