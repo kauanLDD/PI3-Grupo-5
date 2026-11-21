@@ -98,6 +98,9 @@ caminhos:
   teste_supressao_completa: "dados/intermediario/teste_supressao"
   # Quais nódulos a supressão suave tirou das 100 marcas no teste, e quem os rebaixou (T30).
   supressao_perdidos: "relatorios/experimentos/supressao_perdidos"
+  # Média das notas da rede de 32 e da de 16 (T26), só na validação.
+  combinacao_redes: "relatorios/experimentos/combinacao_redes"
+  combinacao_redes_completa: "dados/intermediario/combinacao_redes"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -488,3 +491,16 @@ intrusos:
   faixas_borda: [0, 3, 10]
   faixas_distancia_nodulo: [0, 10, 30]
   intrusos_figura: 12
+
+combinacao_redes:
+  # Regra fixada no cartão T26 antes de qualquer resultado: média simples das duas notas, sem peso.
+  # Lê as notas de validação que o script 18 gravou; não treina e não toca o teste.
+  # Cada par é avaliado em uma subpasta com o nome dele.
+  pares:
+    r32_r16: [modelos/cnn_lr_3e-4, modelos/cnn_centro_16]
+    # Controle fixado em 21/11/2026, depois de ver o r32_r16 e antes de ver qualquer par abaixo:
+    # os três pares possíveis da rede de 32 com sementes diferentes, para separar o ganho do cubo
+    # de 16 do ganho de juntar duas redes.
+    r32_s42_s43: [modelos/cnn_lr_3e-4, modelos/cnn_lr_3e-4_semente_43]
+    r32_s42_s44: [modelos/cnn_lr_3e-4, modelos/cnn_lr_3e-4_semente_44]
+    r32_s43_s44: [modelos/cnn_lr_3e-4_semente_43, modelos/cnn_lr_3e-4_semente_44]

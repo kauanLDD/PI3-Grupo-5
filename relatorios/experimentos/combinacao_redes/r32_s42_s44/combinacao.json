@@ -1,0 +1,38 @@
+{
+  "regra": "media_simples",
+  "redes": [
+    "cnn_lr_3e-4",
+    "cnn_lr_3e-4_semente_44"
+  ],
+  "runs": [
+    "2f8b0a3c57c84d9e8f51dea2eab94b7f",
+    "8464203ec1054b54b9d44c56340c5e76"
+  ],
+  "teste_utilizado": false,
+  "metricas": {
+    "cpm": 0.8005148007142856,
+    "cpm_ic_inferior": 0.7315931593159316,
+    "cpm_ic_superior": 0.8547288359788359,
+    "sensibilidade_0_125fp": 0.594594595,
+    "sensibilidade_0_125fp_ic_inferior": 0.453846157,
+    "sensibilidade_0_125fp_ic_superior": 0.712962985,
+    "sensibilidade_0_25fp": 0.711711712,
+    "sensibilidade_0_25fp_ic_inferior": 0.595959604,
+    "sensibilidade_0_25fp_ic_superior": 0.802197814,
+    "sensibilidade_0_5fp": 0.774774775,
+    "sensibilidade_0_5fp_ic_inferior": 0.683760703,
+    "sensibilidade_0_5fp_ic_superior": 0.859813094,
+    "sensibilidade_1fp": 0.828828829,
+    "sensibilidade_1fp_ic_inferior": 0.74000001,
+    "sensibilidade_1fp_ic_superior": 0.902255654,
+    "sensibilidade_2fp": 0.864864865,
+    "sensibilidade_2fp_ic_inferior": 0.7933070058449299,
+    "sensibilidade_2fp_ic_superior": 0.92920351,
+    "sensibilidade_4fp": 0.900900901,
+    "sensibilidade_4fp_ic_inferior": 0.836363614,
+    "sensibilidade_4fp_ic_superior": 0.954128444,
+    "sensibilidade_8fp": 0.927927928,
+    "sensibilidade_8fp_ic_inferior": 0.879629612,
+    "sensibilidade_8fp_ic_superior": 0.971428573
+  }
+}
