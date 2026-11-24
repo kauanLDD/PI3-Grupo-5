@@ -32,8 +32,7 @@ def adaptar(nome, texto):
             "for f, s in zip(fps_lists, sens_lists)])\n"
             "    return all_fps, sens_mean, sens_lb, sens_up",
         )
-        # sklearn retorna TPR NaN quando não há positivos detectados.
-        # O denominador oficial ainda inclui os nódulos sem candidato: sensibilidade = 0.
+        # Sem positivo detectado o sklearn dá TPR NaN; a sensibilidade oficial é 0.
         texto = texto.replace(
             "sens = (tpr * numberOfDetectedLesions) / totalNumberOfLesions",
             "sens = np.zeros(len(tpr)) if numberOfDetectedLesions == 0 else (tpr * numberOfDetectedLesions) / totalNumberOfLesions",

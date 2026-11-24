@@ -2,9 +2,14 @@
 
 import argparse
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+import config
 
 
 def argumentos():
@@ -19,6 +24,7 @@ def argumentos():
 
 def main():
     args = argumentos()
+    config.fixar_semente()
     with np.load(args.npz, allow_pickle=False) as dados:
         classes = dados["classe_luna16"]
         indice = args.indice

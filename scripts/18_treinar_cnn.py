@@ -149,8 +149,7 @@ def main():
         device = "cuda" if torch.cuda.is_available() else "cpu"
     if device == "cuda" and not torch.cuda.is_available():
         raise ValueError("CUDA solicitada, mas indisponivel")
-    # A semente de treino muda amostra de negativos, sorteio do sampler, aumento e pesos iniciais.
-    # A da avaliação fica em seed, para todas as sementes usarem as mesmas reamostras por exame.
+    # Só a semente do treino troca; o bootstrap da avaliação fica em seed (decisão 0010).
     semente = cfg["seed"] if args.semente is None else args.semente
     config.fixar_semente(semente)
     cnn.fixar_determinismo(semente, parametros["threads"], device)

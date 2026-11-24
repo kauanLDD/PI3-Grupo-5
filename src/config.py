@@ -30,11 +30,7 @@ def carregar(caminho=None, local=LOCAL):
 
 
 def trocar_caminhos(caminhos: dict, trocas: dict) -> dict:
-    """Aplica os caminhos desta máquina por cima dos do config.yaml.
-
-    Trocar `luna16` troca também todo caminho que começa com a raiz antiga, porque a cópia do
-    Drive repete a estrutura de pastas do HD. As outras chaves são trocadas uma a uma.
-    """
+    """Aplica os caminhos desta máquina por cima dos do config.yaml."""
     desconhecidas = set(trocas) - set(caminhos)
     if desconhecidas:
         raise KeyError(f"caminhos.local.yaml com chaves que o config.yaml não tem: {sorted(desconhecidas)}")

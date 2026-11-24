@@ -74,10 +74,7 @@ def test_cobertura_tudo_alcancado_nao_tem_intervalo_aberto():
 
 
 def test_cobertura_reamostra_por_exame_e_nao_por_nodulo():
-    """Dez nódulos num exame só são uma unidade: o intervalo tem que ir de 0 a 1.
-
-    Reamostrando nódulo solto, a mesma tabela daria um intervalo estreito em volta de 50%.
-    """
+    """Dez nódulos num exame só são uma unidade: o intervalo tem que ir de 0 a 1."""
     exames = ["a"] * 10 + ["b"] * 10
     medida = candidatos.cobertura(nodulos_em(*exames), [True] * 10 + [False] * 10,
                                   reamostras=500)
@@ -98,10 +95,7 @@ def test_cobertura_sem_nodulo_nenhum():
 
 
 def test_candidato_em_achado_excluido_nao_vira_falso_positivo():
-    """O caso pequeno do card S3-T5: um nódulo, um achado excluído e três candidatos.
-
-    Sem a regra, o candidato em cima do achado excluído contaria como alarme falso.
-    """
+    """O caso pequeno do card S3-T5: um nódulo, um achado excluído e três candidatos."""
     nodulos = nodulo(x=0.0, diametro=10.0)
     excluidos = nodulo(x=50.0, diametro=6.0)
     pontos_ = pontos(("a", 1.0, 0.0, 0.0), ("a", 51.0, 0.0, 0.0), ("a", 100.0, 0.0, 0.0))
@@ -119,10 +113,7 @@ def test_sem_a_lista_de_excluidos_o_mesmo_candidato_vira_falso_positivo():
 
 
 def test_achado_excluido_sem_diametro_vale_raio_de_5_mm():
-    """30.513 dos 35.192 excluídos vêm com diameter_mm = -1, e o avaliador usa 10 mm no lugar.
-
-    Tratar o -1 como raio negativo faria nenhum desses achados casar com candidato nenhum.
-    """
+    """30.513 dos 35.192 excluídos vêm com diameter_mm = -1, e o avaliador usa 10 mm no lugar."""
     excluidos = nodulo(x=0.0, diametro=-1)
     rotulos = candidatos.rotular(pontos(("a", 4.9, 0.0, 0.0), ("a", 5.1, 0.0, 0.0)),
                                  nodulo(x=500.0), excluidos)

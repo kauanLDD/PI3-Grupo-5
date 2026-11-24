@@ -12,10 +12,7 @@ DIAMETRO_DESCONHECIDO = 10.0
 
 
 def marcas_por_exame(previsoes: pd.DataFrame, maximo: int = 100) -> pd.DataFrame:
-    """As marcas que o avaliador guarda: só as de escore estritamente maior que o 101º do exame.
-
-    Com empate o exame fica com menos de `maximo` marcas, como no programa oficial.
-    """
+    """As marcas que o avaliador guarda: só as de escore estritamente maior que o 101º do exame."""
     partes = []
     for _, exame in previsoes.groupby("seriesuid", sort=False):
         if len(exame) > maximo:
@@ -26,12 +23,7 @@ def marcas_por_exame(previsoes: pd.DataFrame, maximo: int = 100) -> pd.DataFrame
 
 
 def casar(marcas: pd.DataFrame, nodulos: pd.DataFrame, excluidas: pd.DataFrame):
-    """Devolve as marcas com `tipo` e `nodulo`, e os nódulos com o maior escore que os alcançou.
-
-    `tipo` é acerto, falso_positivo ou excluida. A marca sobre um achado excluído some da conta,
-    e a segunda marca sobre o mesmo nódulo também (fica como acerto, mas só a maior entra na FROC).
-    Distância estritamente menor que o raio, como no programa oficial.
-    """
+    """Devolve as marcas com `tipo` e `nodulo`, e os nódulos com o maior escore que os alcançou."""
     marcas = marcas.reset_index(drop=True).assign(tipo="falso_positivo", nodulo=-1)
     nodulos = nodulos.reset_index(drop=True).assign(escore=np.nan, marcas=0)
     for uid, indices in marcas.groupby("seriesuid").groups.items():

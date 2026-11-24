@@ -181,11 +181,7 @@ def separar_vizinhos(falsos, nodulos, vizinhos):
 
 
 def sortear_propria(blocos, uids, nodulos, excluidos, negativos, vizinhos, semente):
-    """Acertos e negativos da nossa lista nos exames `uids`, lida em blocos.
-
-    Cada falso positivo recebe uma chave aleatória e ficam os de menor chave em cada grupo, o que
-    dá um sorteio uniforme sem carregar o arquivo inteiro. Ignorados e colados não entram.
-    """
+    """Acertos e negativos da nossa lista nos exames `uids`, lida em blocos."""
     cotas = {"comum": negativos}
     if vizinhos is not None:
         cotas = {"vizinho": round(negativos * vizinhos["fracao"])}
@@ -224,11 +220,7 @@ def sortear_propria(blocos, uids, nodulos, excluidos, negativos, vizinhos, semen
 
 
 def selecionar_misto(v2, blocos, divisao, nodulos, excluidos, proporcao, fracao, vizinhos, semente):
-    """Treino com a V2 e a nossa lista: positivos das duas, negativos 20 por positivo da V2.
-
-    Os negativos se dividem entre as listas pela `fracao`; os acertos da nossa lista não
-    aumentam o número de negativos.
-    """
+    """Treino com a V2 e a nossa lista: positivos das duas, negativos 20 por positivo da V2."""
     uids = set(divisao.loc[divisao.particao.eq("treino"), "seriesuid"])
     dados = v2.loc[v2.seriesuid.isin(uids)]
     positivos = dados.loc[dados["class"].eq(1)]

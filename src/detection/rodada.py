@@ -26,12 +26,7 @@ PENDENTE = "pendente"
 
 
 def preparar_pasta(pasta: Path, parametros: dict) -> bool:
-    """Cria a pasta da rodada ou confere que ela é da mesma configuração.
-
-    Devolve True quando está retomando uma rodada anterior. Levanta ValueError quando a pasta
-    foi gerada com outros parâmetros: misturar as duas daria uma lista em que cada exame foi
-    buscado de um jeito, sem erro nenhum.
-    """
+    """Cria a pasta da rodada ou confere que ela é da mesma configuração."""
     pasta.mkdir(parents=True, exist_ok=True)
     arquivo = pasta / ARQUIVO_PARAMETROS
 
@@ -81,10 +76,7 @@ def ler_exame(caminho, seriesuid):
 
 
 def gravar_exame(pasta: Path, seriesuid: str, candidatos: pd.DataFrame) -> None:
-    """Grava num temporário e renomeia, para uma queda no meio não deixar exame pela metade.
-
-    Arquivo pela metade seria contado como concluído na próxima rodada e nunca refeito.
-    """
+    """Grava num temporário e renomeia, para uma queda no meio não deixar exame pela metade."""
     destino = caminho_do_exame(pasta, seriesuid)
     temporario = destino.with_suffix(".csv.tmp")
     candidatos.to_csv(temporario, index=False)
@@ -101,11 +93,7 @@ def registrar(pasta: Path, seriesuid: str, status: str, candidatos=0, segundos=f
 
 
 def situacao(pasta: Path, seriesuids) -> pd.DataFrame:
-    """Uma linha por exame pedido: concluído, sem candidato, falha ou pendente.
-
-    O que manda é o arquivo do exame na pasta. O registro só traz o tempo e a mensagem de erro,
-    e quando um exame aparece mais de uma vez nele vale a última tentativa.
-    """
+    """Uma linha por exame pedido: concluído, sem candidato, falha ou pendente."""
     arquivo = pasta / ARQUIVO_REGISTRO
     registro = (pd.read_csv(arquivo, keep_default_na=False, na_values=[""])
                 if arquivo.exists() else pd.DataFrame(columns=COLUNAS_REGISTRO))

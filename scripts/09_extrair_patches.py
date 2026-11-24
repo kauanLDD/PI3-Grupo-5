@@ -94,6 +94,7 @@ def salvar(destino, grupo, recortes, tamanho, origem=None):
 def main():
     args = argumentos()
     cfg = config.carregar()
+    config.fixar_semente(cfg["seed"])
     tamanho = tuple(cfg["candidatos"]["patch"])
     if tamanho != (34, 34, 34):
         sys.exit(f"esperado cubo 34 x 34 x 34; configurado {tamanho}")

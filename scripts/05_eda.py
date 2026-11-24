@@ -71,7 +71,6 @@ for f in feitas:
 for f in faltando:
     print(f"  falta {f}")
 
-# Sair com zero gerando menos de cinco engana quem chama: o dvc repro apaga as figuras antes de
-# rodar o estágio, e elas são cache false, então não voltam do cache.
+# Falha se gerar menos de cinco figuras: o dvc repro apaga as antigas antes de rodar.
 if faltando:
     sys.exit(1)

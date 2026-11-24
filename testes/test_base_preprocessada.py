@@ -10,9 +10,7 @@ import config
 
 LIMITE_LITROS = 8.0
 
-# Medido em 08/09/2026: a máscara do desafio vaza para o ar em volta do paciente nestes exames,
-# marcando mais de 8 litros de pulmão. Guardados pelos oito últimos dígitos, que são únicos entre
-# os 888. Comparar o conjunto e não a contagem: troca de um por outro mantém o total em 37.
+# Exames em que a máscara do desafio vaza para o ar (medido em 08/09/2026), pelos oito últimos dígitos.
 MASCARAS_LARGAS = {
     "03668137", "05017227", "06266464", "09623059", "10079250", "13903329",
     "14831537", "20209778", "20864961", "33453512", "36913951", "39120843",

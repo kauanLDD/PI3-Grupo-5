@@ -12,19 +12,13 @@ from skimage.feature import blob_log
 
 COLUNAS = ["seriesuid", "coordX", "coordY", "coordZ", "raio"]
 
-# sigma -> raio: o LoG responde no máximo quando o raio do blob é sigma * sqrt(ndim).
-# Ver skimage.feature.blob_log, seção "Laplacian of Gaussian" da documentação.
+# Raio do blob = sigma * sqrt(ndim), como na documentação do skimage.feature.blob_log.
 FATOR_RAIO_3D = np.sqrt(3)
 
 
 def detectar(volume: np.ndarray, min_sigma=1.0, max_sigma=5.0, num_sigma=5,
              threshold=0.1) -> np.ndarray:
-    """Roda blob_log 3D sobre o volume normalizado em [0, 1].
-
-    `volume` em ordem (z, y, x), do jeito que `sitk.GetArrayFromImage` devolve. Cada linha do
-    retorno é um blob: `z, y, x, sigma`, com z/y/x em índice de voxel e sigma no desvio padrão
-    do gaussiano que deu a resposta máxima naquele ponto.
-    """
+    """Roda blob_log 3D no volume (z, y, x) normalizado; cada linha é z, y, x e sigma, em voxel."""
     if volume.ndim != 3:
         raise ValueError("volume precisa ter tres dimensoes: z, y, x")
 
@@ -38,13 +32,7 @@ def raio_mm(sigma_voxel, espacamento_mm: float) -> np.ndarray:
 
 
 def candidatos_do_exame(seriesuid: str, imagem, blobs: np.ndarray) -> pd.DataFrame:
-    """Converte blobs (z, y, x, sigma), em índice de voxel, para candidatos em mm no mundo.
-
-    `imagem` é o `sitk.Image` já lido do .mha pré-processado: ele carrega a origem, o
-    espaçamento e a direção, então a conversão usa a própria geometria do arquivo em vez de
-    remontá-la a mão (a mesma relação que `src/preprocessing/coordenadas.py` formaliza para os
-    volumes originais, não reamostrados).
-    """
+    """Converte blobs (z, y, x, sigma) em voxel para candidatos em mm, pela geometria do próprio `imagem`."""
     espacamento = imagem.GetSpacing()[0]  # isotrópico: um valor só vale para os três eixos.
 
     linhas = []

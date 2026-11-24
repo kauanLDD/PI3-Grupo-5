@@ -1,12 +1,7 @@
-"""Roda o exemplo do LUNA16 e compara a FROC oficial com a calculada pelo grupo no notebook.
+"""Confere a cópia Python 3 do avaliador oficial no exemplo do LUNA16 e compara com a FROC do grupo.
 
-1. Exemplo do pacote `evaluationScript`: com o limite de 100 marcas do programa distribuído e sem
-   limite, para conferir a cópia Python 3 contra a saída que o pacote traz em exampleFiles/evaluation,
-   gerada antes de o limite existir.
-2. Previsões do projeto já avaliadas: reavalia com o oficial e confere contra o que está em modelos/.
-3. Cálculo do grupo (src/experimentos/froc_grupo.py) nas mesmas previsões, lado a lado com o oficial.
-
-Uso: python scripts/30_conferir_avaliador_oficial.py [--avaliador PASTA_evaluationScript]
+Roda o exemplo com e sem o limite de 100 marcas, reavalia as previsões de modelos/ e põe o
+cálculo do grupo lado a lado com o oficial. Ver docs/17.
 """
 
 import argparse
@@ -32,8 +27,7 @@ AVALIACOES = {
 LINHAS_CONTAGEM = ("True positives", "False positives", "False negatives", "Total number of candidates",
                    "Total number of nodules", "Ignored candidates on excluded nodules",
                    "Ignored candidates which were double detections on a nodule")
-# A saída do pacote foi gerada com uma lista de excluídas mais antiga que a distribuída: estas duas
-# contagens mudam com ela e não medem erro da cópia do avaliador.
+# Contagens que dependem da lista de excluídas e não medem erro da cópia do avaliador (docs/17).
 DEPENDEM_DAS_EXCLUIDAS = ("False positives", "Ignored candidates on excluded nodules")
 
 
@@ -57,8 +51,7 @@ def conferir_exemplo(pasta, intermediario, cfg, avaliacao):
                                              avaliacao["intervalo_confianca"], max_marcas=limite)
         resultado[nome] = {"metricas": metricas, "contagens": contagens(destino / "CADAnalysis.txt"),
                            "pontos": pd.read_csv(destino / "pontos_operacao.csv")}
-    # A saída do pacote não tem limite. Comparamos os sete pontos e não a curva inteira: o
-    # scikit-learn atual descarta pontos intermediários da roc_curve, e a curva sai com menos linhas.
+    # Compara os sete pontos: o scikit-learn atual descarta pontos intermediários da curva.
     original = np.loadtxt(esperado / "froc_sampleSubmission.txt", delimiter=",")
     pontos = list(froc_grupo.PONTOS)
     sens_original = np.interp(pontos, original[:, 0], original[:, 1])

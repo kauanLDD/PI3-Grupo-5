@@ -17,8 +17,7 @@ ALVO = [1.0, 1.0, 1.0]
 ESPACAMENTO = (0.7, 0.7, 2.5)
 ORIGEM = (-100.0, -50.0, -200.0)
 
-# A caixa da máscara sintética, em (z, y, x). As duas fixtures leem daqui para o tecido colado
-# na borda cair exatamente no limite da máscara.
+# Caixa da máscara sintética, em (z, y, x), usada pelas duas fixtures.
 CAIXA = (slice(6, 14), slice(20, 44), slice(20, 44))
 
 
@@ -31,8 +30,7 @@ def sintetico(valor_fundo=-1000, valor_cubo=100, parede=200, borda=100):
     """Volume com um cubo denso no meio, tecido colado na borda da máscara, e parede fora dela."""
     arr = np.full((20, 64, 64), valor_fundo, dtype=np.int16)
     arr[8:12, 28:36, 28:36] = valor_cubo
-    # Colado por dentro da máscara: mascarar antes de reamostrar espalha este valor para fora
-    # dela na interpolação, e é o que separa as duas ordens sem precisar de exame de verdade.
+    # Valor colado por dentro da máscara, que separa as duas ordens de mascarar e reamostrar.
     z, y, x = CAIXA
     arr[z, y.start:y.start + 2, x] = borda
     arr[z, y.stop - 2:y.stop, x] = borda
@@ -154,11 +152,7 @@ def test_fora_do_pulmao_vira_ar_e_nao_agua():
 
 
 def test_a_mascara_nao_encolhe_na_reamostragem():
-    """Vizinho mais próximo preserva o volume do pulmão; interpolação linear encolhe.
-
-    Medido em 30/08/2026 nesta fixture: vizinho mais próximo desvia 2,4%, que é discretização
-    da grade, e linear desvia 7,8%. Num exame real a separação é maior, 0,03% contra 3,6%.
-    """
+    """Vizinho mais próximo preserva o volume do pulmão; interpolação linear encolhe."""
     original = pre.binarizar(mascara_sintetica())
     iso = pre.reamostrar(original, ALVO, sitk.sitkNearestNeighbor)
 
@@ -300,11 +294,7 @@ def um_volume_com_mascara():
 
 @pytest.mark.parametrize("caminho,caminho_mascara", um_volume_com_mascara())
 def test_a_janela_vem_antes_da_reamostragem(caminho, caminho_mascara):
-    """Cortar depois de interpolar empilha voxels no piso da janela.
-
-    Medido em 30/08/2026: na ordem certa 509 voxels do pulmão ficam exatamente em -1000, e
-    invertendo a ordem sobem para 12.768, vinte e cinco vezes mais.
-    """
+    """Cortar depois de interpolar empilha voxels no piso da janela."""
     volume = sitk.ReadImage(str(caminho))
     processado, mascara = pre.preprocessar(volume, sitk.ReadImage(str(caminho_mascara)), HU, ALVO)
 
@@ -320,11 +310,7 @@ def test_a_janela_vem_antes_da_reamostragem(caminho, caminho_mascara):
 
 @pytest.mark.parametrize("caminho,caminho_mascara", um_volume_com_mascara())
 def test_a_mascara_atravessa_o_preprocessamento_sem_encolher(caminho, caminho_mascara):
-    """Interpolar a máscara com linear em vez de vizinho mais próximo come a borda do pulmão.
-
-    Medido em 30/08/2026 neste exame: com vizinho mais próximo o pulmão fica em 6.769 cm3,
-    igual ao original, e com linear cai para 6.521 cm3.
-    """
+    """Interpolar a máscara com linear em vez de vizinho mais próximo come a borda do pulmão."""
     bruta = sitk.ReadImage(str(caminho_mascara))
     _, iso = pre.preprocessar(sitk.ReadImage(str(caminho)), bruta, HU, ALVO)
 

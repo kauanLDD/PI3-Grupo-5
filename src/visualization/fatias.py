@@ -37,11 +37,7 @@ def fatia_com_nodulo(volume, indice, raio_px: float, hu, titulo: str, saida: Pat
 
 def fatia_com_candidatos(volume, faixa, indice_nodulo, raio_nodulo_px: float, candidatos_px,
                           titulo: str, saida: Path, zoom: float = 4.0):
-    """Fatia no z do nódulo anotado (verde), com os candidatos do blob_log por cima (vermelho).
-
-    `volume` em (z, y, x), já normalizado, por isso recebe `faixa` de intensidade em vez de HU.
-    `candidatos_px` é uma lista de `(x, y, raio)` em voxel, já filtrada para a fatia desenhada.
-    """
+    """Fatia no z do nódulo anotado (verde), com os candidatos do blob_log por cima (vermelho)."""
     x, y, z = (int(round(v)) for v in indice_nodulo)
     fatia = volume[z]
     margem = max(20, raio_nodulo_px * zoom)
@@ -67,11 +63,7 @@ def fatia_com_candidatos(volume, faixa, indice_nodulo, raio_nodulo_px: float, ca
 
 
 def antes_e_depois(antes, depois, ponto_mundo, raio_mm: float, faixas, titulo: str, saida: Path):
-    """A mesma posição física nos dois volumes. A fatia é escolhida pelo ponto no mundo.
-
-    `faixas` traz o intervalo de cinza de cada painel. O original está em HU e o pré-processado
-    já saiu normalizado em [0, 1], então desenhar os dois na mesma escala apaga um dos lados.
-    """
+    """A mesma posição física nos dois volumes. A fatia é escolhida pelo ponto no mundo."""
     figura, eixos = plt.subplots(1, 2, figsize=(9.5, 5.2))
     for eixo, imagem, faixa, nome in zip(eixos, (antes, depois), faixas, ("antes", "depois")):
         x, y, z = imagem.TransformPhysicalPointToIndex(ponto_mundo)
@@ -96,11 +88,7 @@ def antes_e_depois(antes, depois, ponto_mundo, raio_mm: float, faixas, titulo: s
 
 
 def tres_planos(eixos, volume, centro_zyx, meio_lado: int, raio: float | None = None):
-    """Axial, coronal e sagital passando pelo centro, num recorte de 2 * meio_lado voxels.
-
-    `volume` isotrópico em (z, y, x) e já normalizado em [0, 1]. O círculo marca o raio do nódulo
-    anotado quando `raio` vem preenchido; sem ele, uma cruz marca o centro da marca do modelo.
-    """
+    """Axial, coronal e sagital passando pelo centro, num recorte de 2 * meio_lado voxels."""
     z, y, x = (int(round(v)) for v in centro_zyx)
     fundo = np.zeros((2 * meio_lado,) * 3, dtype=np.float32)
     inicio = np.array([z, y, x]) - meio_lado

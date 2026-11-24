@@ -57,6 +57,7 @@ def test_seriesuid_e_retomada_recriam_arquivo_invalido(tmp_path, monkeypatch):
     saida = tmp_path / "patches"
     relatorios = tmp_path / "relatorios"
     monkeypatch.setattr(script.config, "carregar", lambda: {
+        "seed": 42,
         "candidatos": {"patch": [34, 34, 34]},
         "caminhos": {"luna16_candidatos": lista, "volumes": volumes,
                      "processado": tmp_path, "intermediario": relatorios},

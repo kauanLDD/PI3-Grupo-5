@@ -82,11 +82,7 @@ def test_candidatos_do_exame_sem_blob_devolve_tabela_vazia():
 
 
 def volumes_de_teste():
-    """Exames reais, nos extremos de espaçamento em z do original, mais um de direção invertida.
-
-    O recorte roda sobre o volume já reamostrado, que é sempre isotrópico de 1 mm, então o que
-    muda de exame para exame aqui é a origem e a direção.
-    """
+    """Exames reais, nos extremos de espaçamento em z do original, mais um de direção invertida."""
     cfg = config.carregar()
     inventario = cfg["caminhos"]["intermediario"] / "inventario_volumes.csv"
     if not inventario.exists():
@@ -126,10 +122,7 @@ def geometria_do_mha(caminho):
 
 @com_volume
 def test_candidatos_do_exame_concorda_com_a_formula_do_projeto(seriesuid, caminho):
-    """blobs.py abre um segundo caminho de conversão, e ele tem que dar o mesmo que coordenadas.py.
-
-    Sem isto, uma divergência entre os dois desloca o candidato sem levantar erro nenhum.
-    """
+    """blobs.py abre um segundo caminho de conversão, e ele tem que dar o mesmo que coordenadas.py."""
     imagem = geometria_do_mha(caminho)
     origem, espacamento, direcao = imagem.GetOrigin(), imagem.GetSpacing(), imagem.GetDirection()
     achados = np.array([[10.0, 20.0, 30.0, 1.5], [0.0, 0.0, 0.0, 2.0], [7.0, 3.0, 11.0, 1.0]])

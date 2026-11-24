@@ -110,6 +110,7 @@ def desenhar(tabela, resumo, destino):
 
 def main():
     cfg = config.carregar()
+    config.fixar_semente(cfg["seed"])
     sementes = [cfg["sementes_cnn"]["original"], *cfg["sementes_cnn"]["extras"]]
     pastas = [pasta_da_semente(cfg, s) for s in sementes]
     faltando = [str(p.relative_to(config.RAIZ)) for p in pastas if not (p / "execucao.json").is_file()]

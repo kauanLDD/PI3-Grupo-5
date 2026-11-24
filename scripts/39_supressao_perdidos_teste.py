@@ -42,12 +42,7 @@ def so_em(a, b):
 
 
 def rastrear_suave(exame, raio_mm, forma, marcas, sigma):
-    """A `det.suprimir_suave` de um exame, guardando a nota final de cada ponto e quem a rebaixou.
-
-    Devolve as posições escolhidas, na ordem, a nota de todos os pontos ao fim das `marcas` escolhas
-    e, para cada escolha, os vizinhos rebaixados e o fator aplicado. O teste confere que as escolhas
-    e as notas são as mesmas da função original.
-    """
+    """A `det.suprimir_suave` de um exame, guardando a nota final de cada ponto e quem a rebaixou."""
     pontos = exame[det.COLUNAS].to_numpy(float)
     notas = exame.probability.to_numpy(float).copy()
     arvore = cKDTree(pontos)

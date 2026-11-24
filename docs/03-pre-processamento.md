@@ -63,6 +63,14 @@ exige que ele continue na mesma posição em milímetro. Existe também o teste 
 prova que a fórmula sem a geometria nova cai em outro voxel: sem ele, o primeiro passaria
 mesmo com o código errado.
 
+Os testes de `testes/test_preprocessamento.py` prendem três medidas feitas em 30/08/2026:
+
+- Janela de HU antes da reamostragem: na ordem certa, 509 voxels do pulmão ficam exatamente em
+  -1000; invertendo a ordem, sobem para 12.768.
+- Máscara reamostrada por vizinho mais próximo: num exame real o pulmão fica em 6.769 cm³, igual
+  ao original; com interpolação linear cai para 6.521 cm³.
+- Na máscara sintética da fixture, vizinho mais próximo desvia 2,4% do volume e linear, 7,8%.
+
 ## A máscara de pulmão
 
 Usamos a máscara que o desafio entrega, sem dilatar. A justificativa e a medição que a

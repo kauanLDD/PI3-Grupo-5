@@ -72,11 +72,7 @@ def faixas(diametros, cortes):
 
 
 def distancia_da_borda(uid, pontos, mascaras: Path, limite: float):
-    """Distância em mm até fora da máscara de pulmão: positiva dentro, negativa fora.
-
-    Calcula só numa caixa de `limite` mm em volta de cada ponto. No volume inteiro levava cerca de
-    100 s por exame; o que interessa é separar o que encosta na parede, e acima do limite vale o limite.
-    """
+    """Distância em mm até fora da máscara de pulmão: positiva dentro, negativa fora."""
     mascara = sitk.ReadImage(str(mascaras / f"{uid}.mhd"))
     # Mesmo critério do pré-processamento (decisão 0002): tudo acima de zero é pulmão.
     pulmao = sitk.GetArrayFromImage(mascara) > 0

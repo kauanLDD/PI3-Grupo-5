@@ -1,11 +1,6 @@
 """Põe duas avaliações oficiais do mesmo conjunto no mesmo gráfico FROC, com IC95% e diferença pareada de CPM.
 
-Não avalia nada: lê as pastas que o avaliador oficial já gravou. Uso no teste (decisão 0009):
-
-    python scripts/27_comparar_froc.py \
-        --avaliacao "CNN3D=modelos/cnn_lr_3e-4_teste_final" \
-        --avaliacao "Random Forest centro=modelos/random_forest_centro_teste_final" \
-        --titulo "Teste" --saida relatorios/experimentos/comparacao_teste
+Só lê as pastas que o avaliador oficial já gravou. Exemplo de uso em docs/14.
 """
 
 import argparse
@@ -27,8 +22,7 @@ import config
 
 PONTOS = [0.125, 0.25, 0.5, 1, 2, 4, 8]
 ROTULOS = ["0,125", "0,25", "0,5", "1", "2", "4", "8"]
-# Paleta conferida com o validador de cores: separação acima de ΔE 20 também para daltonismo.
-# Marcador e traço diferentes repetem a identidade sem depender só da cor.
+# Paleta legível para daltonismo; marcador e traço também distinguem as duas curvas.
 ESTILOS = ({"cor": "#1764a8", "marcador": "o", "traco": "-"},
            {"cor": "#b5651d", "marcador": "s", "traco": "--"})
 TINTA, TINTA_SECUNDARIA = "#1f1f1f", "#5c5c5c"
@@ -140,6 +134,7 @@ def main():
     parser.add_argument("--titulo", required=True, help="conjunto avaliado, por exemplo Teste ou Validação")
     parser.add_argument("--saida", type=Path, required=True)
     args = parser.parse_args()
+    config.fixar_semente()
     if len(args.avaliacao) != 2:
         raise ValueError("informe exatamente duas avaliacoes")
     rotulos, pastas = zip(*(item.split("=", 1) for item in args.avaliacao))

@@ -19,6 +19,7 @@ def main():
     parser.add_argument("--saida", type=Path, required=True)
     args = parser.parse_args()
     cfg = config.carregar()
+    config.fixar_semente(cfg["seed"])
     destino = args.saida.resolve()
     if destino.exists():
         raise ValueError("escolha uma pasta nova para a verificacao tecnica")

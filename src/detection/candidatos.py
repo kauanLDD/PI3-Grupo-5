@@ -10,17 +10,12 @@ ACERTO = "acerto"
 IGNORADO = "ignorado"
 FALSO_POSITIVO = "falso_positivo"
 
-# O annotations_excluded.csv traz diameter_mm = -1 em 30.513 dos 35.192 achados, os que não são
-# nódulo. O avaliador oficial troca esse -1 por 10 mm, então o raio vale 5 mm.
+# Achado excluído com diâmetro -1 vale 10 mm, como no avaliador oficial.
 DIAMETRO_SEM_MEDIDA_MM = 10.0
 
 
 def alcancados(nodulos: pd.DataFrame, candidatos: pd.DataFrame) -> np.ndarray:
-    """Quais nódulos têm ao menos um candidato dentro do raio deles.
-
-    O critério é o da página de avaliação do LUNA16: acerto é candidato a menos de R do centro,
-    com R igual ao diâmetro dividido por dois. Ver docs/decisoes/0002.
-    """
+    """Quais nódulos têm ao menos um candidato a menos de um raio do centro, como no LUNA16."""
     por_exame = {uid: g[COLUNAS].to_numpy(float) for uid, g in candidatos.groupby("seriesuid")}
     alcancado = np.zeros(len(nodulos), dtype=bool)
 
@@ -37,13 +32,7 @@ def alcancados(nodulos: pd.DataFrame, candidatos: pd.DataFrame) -> np.ndarray:
 
 def cobertura(nodulos: pd.DataFrame, alcancado: np.ndarray, reamostras: int,
               confianca: float = 0.95, semente: int = 0) -> dict:
-    """Fração de nódulos alcançados, com intervalo de confiança por bootstrap de exame.
-
-    A reamostra é por exame e não por nódulo: os nódulos de um mesmo exame são buscados pela
-    mesma rodada no mesmo volume, então não são independentes, e reamostrar nódulo solto
-    estreita o intervalo sem motivo. Isto é teto de sensibilidade da lista, não ponto de FROC:
-    não há escore nem contagem de falso positivo aqui.
-    """
+    """Fração de nódulos alcançados, com intervalo de confiança por bootstrap de exame."""
     alcancado = np.asarray(alcancado, dtype=bool)
     if len(nodulos) == 0:
         return {"alcancados": 0, "nodulos": 0, "cobertura": float("nan"),
@@ -81,13 +70,7 @@ def _dentro(pontos: np.ndarray, achados: pd.DataFrame) -> np.ndarray:
 
 def rotular(candidatos: pd.DataFrame, nodulos: pd.DataFrame,
             excluidos: pd.DataFrame) -> np.ndarray:
-    """Acerto, ignorado ou falso positivo, para cada candidato, pela regra do avaliador oficial.
-
-    Reproduz `noduleCADEvaluationLUNA16.py`: o candidato que cai em cima de um nódulo de
-    `annotations.csv` é acerto; senão, se cai em cima de um achado de `annotations_excluded.csv`,
-    sai da conta, sem ser acerto nem falso positivo; o resto é falso positivo. O nódulo vem antes
-    do achado excluído, então candidato em cima dos dois é acerto.
-    """
+    """Acerto, ignorado ou falso positivo, para cada candidato, pela regra do avaliador oficial."""
     rotulos = np.full(len(candidatos), FALSO_POSITIVO, dtype=object)
     nodulos_por_exame = dict(tuple(nodulos.groupby("seriesuid")))
     excluidos_por_exame = dict(tuple(excluidos.groupby("seriesuid")))
@@ -124,12 +107,7 @@ def suprimir_vizinhos(previsoes: pd.DataFrame, raio_mm: float) -> pd.DataFrame:
 
 def suprimir_suave(previsoes: pd.DataFrame, raio_mm: float, forma: str, marcas: int,
                    sigma: float = 0.5) -> pd.DataFrame:
-    """Em vez de descartar o vizinho de uma marca mantida, rebaixa a nota dele conforme a distância.
-
-    A sobreposição entre duas marcas é 1 - d/raio, zero a partir do raio. A gaussiana multiplica a
-    nota por exp(-sobreposição²/sigma) e a linear por 1 - sobreposição. Só as `marcas` primeiras de
-    cada exame são escolhidas, porque o avaliador oficial lê só as 100 de maior nota.
-    """
+    """Em vez de descartar o vizinho de uma marca mantida, rebaixa a nota dele conforme a distância."""
     mantidas = []
     for _, exame in previsoes.groupby("seriesuid", sort=False):
         pontos = exame[COLUNAS].to_numpy(float)

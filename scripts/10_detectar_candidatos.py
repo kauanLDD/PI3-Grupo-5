@@ -1,16 +1,6 @@
-"""Geração de candidatos por blob detection 3D, o produto central do grupo (Sprint 3).
+"""Gera candidatos por blob detection 3D: figura num exame de referência, depois os 888 exames com cobertura.
 
-Faz as duas partes do card em sequência:
-
-1. Roda num exame só, com nódulo grande e conhecido, e desenha o resultado numa figura para
-   olhar antes de soltar nos 888 (passos 1 a 4 do card).
-2. Roda nos 888 exames pré-processados e grava `candidatos.csv`, e mede quantos dos 1.186
-   nódulos anotados os candidatos alcançam, pelo critério de `src/detection/candidatos.py`
-   (passo 5, e os dois últimos itens do checklist).
-
-Recebe opcionalmente quantos exames rodar no passo 2, para medir o custo antes de soltar os 888.
-Guarda uma saída atômica por exame para permitir retomada e monta o CSV final somente quando
-todo o lote termina.
+Aceita um número de exames para uma rodada curta e retoma pelos arquivos já gravados por exame.
 """
 
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -258,7 +248,7 @@ else:
     print("\nrode scripts/08_comparar_candidatos.py para ter o teto das listas prontas ao lado")
 
 
-# Relatorios de cobertura da rodada completa, sem selecionar parametros pelo teste.
+# Relatórios de cobertura da rodada completa.
 candidatos_proprios = pd.read_csv(destino)
 exames_medidos = set(lote.seriesuid)
 reamostras = cfg["avaliacao"]["bootstrap_reamostras"]
@@ -283,9 +273,7 @@ print(f"\n{propria['alcancados']} de {propria['nodulos']} nódulos alcançados n
 print("é teto de sensibilidade da lista, não ponto da curva FROC")
 print(cfg["caminhos"]["cobertura_candidatos_proprios"])
 
-# A troca entre cobertura e quantidade de candidatos. Dentro da nossa lista, cortar as escalas
-# menores do blob_log é o jeito de ter menos pontos sem rodar de novo; ao lado, as duas listas
-# prontas do desafio, medidas sobre os mesmos exames.
+# Cobertura contra quantidade: a nossa lista sem as menores escalas do LoG e as duas listas do desafio.
 linhas = [propria]
 for raio_minimo in sorted(candidatos_proprios.raio.round(3).unique())[1:]:
     filtrada = candidatos_proprios[candidatos_proprios.raio.round(3) >= raio_minimo]

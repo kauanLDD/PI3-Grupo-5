@@ -58,6 +58,7 @@ def main():
     parser.add_argument("--config", type=Path, help="YAML com os caminhos desta máquina; padrão configuracao/config.yaml")
     args = parser.parse_args()
     cfg = config.carregar(args.config)
+    config.fixar_semente(cfg["seed"])
     caminhos = cfg["caminhos"]
     origem = caminhos["random_forest_centro"]
     destino = caminhos["random_forest_centro_teste"]

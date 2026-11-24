@@ -114,11 +114,7 @@ GIRADA = [0, -1, 0, 1, 0, 0, 0, 0, 1]
 
 
 def test_a_direcao_entra_transposta():
-    """As duas matrizes do LUNA16 são simétricas, então nelas D e D transposta dão o mesmo.
-
-    Este teste usa uma matriz que não é simétrica para prender a convenção, senão trocar
-    `matriz.T` por `matriz` passaria despercebido em todo o dataset.
-    """
+    """As duas matrizes do LUNA16 são simétricas, então nelas D e D transposta dão o mesmo."""
     origem, espacamento = [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]
     mundo = [10.0, 0.0, 0.0]
 

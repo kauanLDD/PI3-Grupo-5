@@ -10,11 +10,7 @@ from detection.patches import extrair_patch
 
 
 def recortar(imagem, volume, pontos_xyz, tamanho_xyz):
-    """Um cubo por ponto em mm no mundo, convertido pela origem, espaçamento e direção do exame.
-
-    `imagem` é o SimpleITK.Image de onde `volume` saiu. Mesmo arredondamento do recorte da lista V2
-    (`TransformPhysicalPointToIndex`), para os cubos das duas listas serem comparáveis.
-    """
+    """Um cubo por ponto em mm no mundo, convertido pela origem, espaçamento e direção do exame."""
     recortes = np.empty((len(pontos_xyz), *tuple(tamanho_xyz)[::-1]), dtype=volume.dtype)
     for i, ponto in enumerate(pontos_xyz):
         centro = imagem.TransformPhysicalPointToIndex(tuple(float(v) for v in ponto))

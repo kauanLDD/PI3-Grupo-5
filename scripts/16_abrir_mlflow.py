@@ -11,6 +11,7 @@ from experimentos.rastreamento import uri_local
 
 def main():
     cfg = config.carregar()
+    config.fixar_semente(cfg["seed"])
     subprocess.run([
         sys.executable, "-m", "mlflow", "server",
         "--backend-store-uri", uri_local(cfg),

@@ -1,12 +1,6 @@
-"""FROC calculada pelo grupo em notebooks/curvafroc_pesquisa.ipynb, para comparar com a oficial.
+"""FROC calculada pelo grupo em notebooks/curvafroc_pesquisa.ipynb, com a mesma regra do notebook.
 
-Mesma regra do notebook: cada candidato com escore >= limiar conta como acerto, se o rótulo
-é 1, ou como falso positivo, se é 0. O denominador da sensibilidade é o número de candidatos
-positivos, não o de nódulos anotados. Não há limite de marcas por exame, nem nódulo sem
-candidato, nem marcação excluída. A diferença para o avaliador oficial vem dessas três regras.
-
-O notebook percorre um limiar por vez; aqui as contagens saem de busca binária, com os mesmos
-limiares, na mesma ordem, e o mesmo `argsort` final. O resultado é o mesmo, só mais rápido.
+Conta candidatos, não nódulos, e não usa limite de marcas nem marcações excluídas. Ver docs/17.
 """
 
 import numpy as np

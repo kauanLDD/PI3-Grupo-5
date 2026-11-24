@@ -109,6 +109,7 @@ def desenhar(tabela, destino):
 
 def main():
     cfg = config.carregar()
+    config.fixar_semente(cfg["seed"])
     redes = cfg["sementes_lista_propria"]["redes"]
     if list(redes["antiga"]) != list(redes["uniforme"]):
         raise ValueError("as duas redes precisam das mesmas sementes")

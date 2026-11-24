@@ -28,10 +28,7 @@ def script_29():
 
 
 def melhor_acerto(nodulos, marcas):
-    """Nota do melhor candidato dentro do raio de cada nódulo e a distância dele ao centro, em mm.
-
-    NaN quando nenhum candidato cai dentro do raio.
-    """
+    """Nota do melhor candidato dentro do raio de cada nódulo e a distância dele ao centro, em mm."""
     por_exame = dict(tuple(marcas.groupby("seriesuid")))
     notas, distancias = [], []
     for _, n in nodulos.iterrows():
@@ -132,8 +129,7 @@ def main():
             "intrusos_nas_100": int(topo.intruso.sum()),
             "acertos_nas_100": int((topo.rotulo == det.ACERTO).sum())}
         grupos[f"intrusos_{nome}"] = marcas[marcas.intruso].copy()
-        # Acrescentado depois da primeira execução: um nódulo sozinho gerou 79% dos intrusos da
-        # nossa lista, quase todos fora das 100 marcas que o avaliador guarda.
+        # Intrusos que ficam dentro das 100 marcas que o avaliador guarda.
         grupos[f"intrusos_nas_100_{nome}"] = topo[topo.intruso].copy()
     print(json.dumps(resumo["listas"], indent=2))
 

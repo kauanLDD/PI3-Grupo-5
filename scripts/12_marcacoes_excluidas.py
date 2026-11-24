@@ -1,12 +1,6 @@
-"""Mede o que as marcações excluídas do desafio tiram da contagem de falso positivo (S3-T5).
+"""Rotula cada candidato como acerto, ignorado ou falso positivo pelas marcações excluídas do desafio.
 
-Lê o `annotations_excluded.csv` pela chave `luna16_anotacoes_excluidas` do config e rotula cada
-candidato do `candidates_V2.csv` como acerto, ignorado ou falso positivo, pela regra do avaliador
-oficial (`detection.candidatos.rotular`). Se a lista própria já existir, ela entra também.
-
-O V2 traz a coluna `class`, então o script confere a regra contra o rótulo do próprio desafio:
-candidato de classe 1 que sai como falso positivo ou ignorado indica critério de casamento
-diferente do que o desafio usou para rotular a lista.
+Confere a regra contra a coluna `class` da V2 e, se a lista própria existir, rotula ela também.
 """
 
 import sys

@@ -60,8 +60,7 @@ def main():
     modelo.load_state_dict(pacote["state_dict"])
     modelo.to(device)
 
-    # As notas da V2 no teste saíram da CPU (script 20). Na GPU a nota muda até 1,5e-03 (medido em
-    # 08/11/2026), então o recorte é conferido no mesmo aparelho em que elas foram gravadas.
+    # Confere o recorte na CPU, onde as notas da V2 do teste foram gravadas (decisão 0013).
     conferencia = cnn.CNN3D(parametros["dropout_rate"])
     conferencia.load_state_dict(pacote["state_dict"])
     diferenca = listas.conferir_recorte(conferencia, uids, v2["predicoes"], caminhos["volumes"], parametros, lista,
