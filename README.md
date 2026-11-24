@@ -13,6 +13,22 @@ entregamos os pontos suspeitos. Não classificamos benigno contra maligno.
 
 **Nenhum modelo deste projeto deve ser aplicado a decisão clínica real.**
 
+## Funcionalidades
+
+- Lê os 888 exames do LUNA16 e converte coordenada em milímetro para voxel, com teste.
+- Pré-processa cada exame: janela de HU, voxel de 1 mm, máscara de pulmão e normalização.
+- Gera uma lista própria de candidatos por blob detection 3D (LoG), além da lista V2 do desafio.
+- Dá uma nota a cada candidato com uma rede neural 3D e, para comparação, com um Random Forest.
+- Rebaixa candidatos vizinhos a até 16 mm de um candidato de nota maior.
+- Avalia com o programa oficial do LUNA16: curva FROC, CPM e intervalo de 95% por bootstrap.
+- Registra cada treino no MLflow e declara o pipeline no DVC.
+
+## Tecnologias
+
+Python 3.12, SimpleITK, scikit-image, NumPy, pandas, SciPy, PyTorch, scikit-learn, Matplotlib,
+DVC, MLflow e pytest. As versões exatas estão nos arquivos `requirements-*.lock.txt`. O porquê de
+cada escolha está em [docs/adr/](docs/adr/).
+
 ## Dataset
 
 **LUNA16** (Lung Nodule Analysis 2016), derivado do LIDC-IDRI e já filtrado, com o critério de
@@ -173,7 +189,33 @@ Os registros estão em [primeiro treino do Random Forest](docs/08-primeiro-trein
 [onde a rede erra no teste](docs/15-analise-de-erros-cnn.md), gerado por
 `.venv/bin/python scripts/29_analisar_erros_cnn.py`.
 
-**5. Testes**
+**5. Nossa lista, supressão e segunda rede**
+
+Precisam dos passos 1 a 4. Os comandos com todas as opções estão em
+[a rede na nossa lista](docs/19-rede-na-lista-propria.md) e [a segunda rede](docs/20-rede-centro-16.md).
+
+```bash
+.venv-cnn-gpu/bin/python scripts/18_treinar_cnn.py --variante lr_3e-4 --semente 43 --saida modelos/cnn_lr_3e-4_semente_43
+.venv-cnn-gpu/bin/python scripts/18_treinar_cnn.py --variante lr_3e-4 --semente 44 --saida modelos/cnn_lr_3e-4_semente_44
+.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py
+.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py --modelo modelos/cnn_lr_3e-4_semente_43 \
+    --saida relatorios/experimentos/lista_propria_cnn_semente_43 --completa dados/intermediario/lista_propria_cnn_semente_43
+.venv-cnn-gpu/bin/python scripts/31_avaliar_lista_propria_cnn.py --modelo modelos/cnn_lr_3e-4_semente_44 \
+    --saida relatorios/experimentos/lista_propria_cnn_semente_44 --completa dados/intermediario/lista_propria_cnn_semente_44
+.venv-cnn-gpu/bin/python scripts/32_intrusos_lista_propria.py
+.venv-cnn-gpu/bin/python scripts/34_supressao_lista_propria.py
+.venv-cnn-gpu/bin/python scripts/35_supressao_v2.py
+.venv-cnn-gpu/bin/python scripts/36_supressao_suave.py
+.venv-cnn-gpu/bin/python scripts/18_treinar_cnn.py --variante centro_16 --saida modelos/cnn_centro_16
+.venv-cnn-gpu/bin/python scripts/40_combinar_redes.py
+```
+
+O `34` lê as notas das três sementes da rede escolhida na nossa lista, que as linhas do `31`
+gravam. O `40` lê as notas de validação das sementes e da rede de 16. O
+script `37_teste_supressao.py` refaz o terceiro uso do teste (decisão 0013) e o
+`39_supressao_perdidos_teste.py` lê o resultado dele; os dois só reproduzem um uso já declarado.
+
+**6. Testes**
 
 ```bash
 .venv-cnn-gpu/bin/python -m pytest testes -q
@@ -214,10 +256,28 @@ Adotamos o KDD (Fayyad, Piatetsky-Shapiro e Smyth, 1996), com as cinco etapas de
 pré-processamento, transformação, mineração e interpretação. As decisões que fecham porta
 ficam registradas em `docs/decisoes/`, uma por arquivo, com o número medido ao lado.
 
-## O grupo
+## Equipe e papéis
 
-Kauan Felipe Nascimento da Silva, Náthaly Alessandra Batistella, Arthur Nicolas Oliveira,
-Samuel Gonçalves Malta, Gabriel Schraider da Silveira, Lucas Gabriel Teixeira da Silva.
+O papel de cada um, pelo que está registrado nos commits:
+
+- **Kauan Felipe Nascimento da Silva:** coordenação técnica e integração das entregas na main;
+  leitura e pré-processamento dos exames, divisão por paciente, Random Forest, avaliação na nossa
+  lista, supressão de vizinhos e treino da segunda rede.
+- **Arthur Nicolas Oliveira:** geração de candidatos por LoG e cobertura nos 888 exames,
+  marcações excluídas, comparação com a literatura e conferência de que os dois modelos usam os
+  mesmos candidatos.
+- **Lucas Gabriel Teixeira da Silva:** cópia da base no Drive, recortes 3D, CNN em módulos com
+  MLflow, sementes 43 e 44, Random Forest no teste e rede de 16 voxels.
+- **Náthaly Alessandra Batistella:** conferência do avaliador oficial contra o exemplo do desafio
+  e resumo expandido.
+- **Samuel Gonçalves Malta:** normalização em HU.
+- **Gabriel Schraider da Silveira:** primeira execução da curva FROC.
+
+## Requisitos e decisões
+
+- [Requisitos](docs/requisitos.md): funcionais, não funcionais e de domínio, com prioridade.
+- [ADRs](docs/adr/): as decisões de arquitetura, linguagem, armazenamento e execução.
+- [Decisões do experimento](docs/decisoes/): as escolhas de dado, modelo e uso do teste.
 
 Projeto Integrador de Extensão III, Inteligência Artificial, Biopark, 2026/2.
 
