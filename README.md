@@ -283,6 +283,10 @@ Projeto Integrador de Extensão III, Inteligência Artificial, Biopark, 2026/2.
 
 ## Resultados
 
+O sistema final, a tabela única com todos os resultados do avaliador oficial e o uso do teste estão
+em [sistema final e resultados](docs/21-sistema-final-e-resultados.md), gerada por
+`.venv/bin/python scripts/41_tabela_resultados.py`. A tabela abaixo é a primeira avaliação no teste.
+
 Medidos em 13/10/2026 com o programa oficial do LUNA16, intervalo de 95% por bootstrap de 1.000
 reamostras por exame.
 

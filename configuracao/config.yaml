@@ -101,6 +101,8 @@ caminhos:
   # Média das notas da rede de 32 e da de 16 (T26), só na validação.
   combinacao_redes: "relatorios/experimentos/combinacao_redes"
   combinacao_redes_completa: "dados/intermediario/combinacao_redes"
+  # Tabela única com todos os resultados do avaliador oficial (T31).
+  tabela_resultados: "relatorios/experimentos/tabela_resultados"
 
 selecao:
   # Os dez subsets do desafio, que são as dobras oficiais de validação cruzada.
@@ -504,3 +506,23 @@ combinacao_redes:
     r32_s42_s43: [modelos/cnn_lr_3e-4, modelos/cnn_lr_3e-4_semente_43]
     r32_s42_s44: [modelos/cnn_lr_3e-4, modelos/cnn_lr_3e-4_semente_44]
     r32_s43_s44: [modelos/cnn_lr_3e-4_semente_43, modelos/cnn_lr_3e-4_semente_44]
+
+tabela_resultados:
+  # Uma linha por resultado do avaliador oficial já gravado em disco. O script 41 só lê esses
+  # arquivos; não treina, não pontua e não abre o teste. Arquivo .json é o avaliacao.json do
+  # avaliador; .csv é uma tabela de resumo, filtrada pelas colunas em "filtro".
+  linhas:
+    - {modelo: "CNN lr_3e-4", lista: V2, conjunto: validacao, arquivo: modelos/cnn_lr_3e-4/avaliacao_validacao/avaliacao.json}
+    - {modelo: "CNN lr_3e-4, semente 43", lista: V2, conjunto: validacao, arquivo: modelos/cnn_lr_3e-4_semente_43/avaliacao_validacao/avaliacao.json}
+    - {modelo: "CNN lr_3e-4, semente 44", lista: V2, conjunto: validacao, arquivo: modelos/cnn_lr_3e-4_semente_44/avaliacao_validacao/avaliacao.json}
+    - {modelo: "Random Forest centro", lista: V2, conjunto: validacao, arquivo: modelos/random_forest_centro/avaliacao_validacao/avaliacao.json}
+    - {modelo: "CNN lr_3e-4 + supressão dura 16 mm", lista: V2, conjunto: validacao, arquivo: relatorios/experimentos/supressao_v2/listas.csv, filtro: {semente: 42, lista: v2_suprimida}}
+    - {modelo: "CNN lr_3e-4", lista: nossa (LoG), conjunto: validacao, arquivo: relatorios/experimentos/lista_propria_cnn/sem_supressao/avaliacao.json}
+    - {modelo: "CNN lr_3e-4 + supressão suave 16 mm", lista: nossa (LoG), conjunto: validacao, arquivo: relatorios/experimentos/supressao_suave/validacao.csv, filtro: {semente: 42, variante: linear}}
+    - {modelo: "CNN centro_16", lista: V2, conjunto: validacao, arquivo: modelos/cnn_centro_16/avaliacao_validacao/avaliacao.json}
+    - {modelo: "Média CNN lr_3e-4 e centro_16", lista: V2, conjunto: validacao, arquivo: relatorios/experimentos/combinacao_redes/r32_r16/avaliacao.json}
+    - {modelo: "CNN lr_3e-4", lista: V2, conjunto: teste, arquivo: modelos/cnn_lr_3e-4_teste_final/avaliacao.json}
+    - {modelo: "Random Forest centro", lista: V2, conjunto: teste, arquivo: modelos/random_forest_centro_teste_final/avaliacao.json}
+    - {modelo: "CNN lr_3e-4 + supressão suave 16 mm", lista: V2, conjunto: teste, arquivo: relatorios/experimentos/teste_supressao/listas.csv, filtro: {lista: v2_suave}}
+    - {modelo: "CNN lr_3e-4", lista: nossa (LoG), conjunto: teste, arquivo: relatorios/experimentos/teste_supressao/listas.csv, filtro: {lista: propria}}
+    - {modelo: "CNN lr_3e-4 + supressão suave 16 mm", lista: nossa (LoG), conjunto: teste, arquivo: relatorios/experimentos/teste_supressao/listas.csv, filtro: {lista: propria_suave}}
