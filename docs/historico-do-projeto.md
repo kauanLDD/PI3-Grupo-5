@@ -549,3 +549,11 @@ ponto de diferença. No treino, não: o Random Forest usa os 529.500 candidatos 
 1.098 positivos com 20 negativos por positivo, 23.058. Na divisão, 0 pacientes aparecem em mais de
 um conjunto; o único paciente com duas séries tem as duas no treino. O registro está em
 `docs/22-mesmo-conjunto-dos-dois-modelos.md`.
+
+## Atualização de 27/11/2026: os nódulos que a supressão tirou no teste
+
+Rodamos o script 39 sobre o teste já usado (decisão 0013), sem avaliar de novo
+(`.venv/bin/python scripts/39_supressao_perdidos_teste.py`). Com a supressão suave a 16 mm, 20
+nódulos saem das 100 marcas e 2 entram, saldo de 18. Dos 20, 18 foram rebaixados por uma marca que
+o avaliador conta como falso alarme, 1 por outro nódulo e 1 por um achado excluído. O registro está
+em `docs/19-rede-na-lista-propria.md`, seção 12.1.

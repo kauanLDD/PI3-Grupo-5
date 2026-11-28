@@ -1,0 +1,4 @@
+tipo_vizinho,nodulos,exames,diametro_mediano_mm,distancia_mediana_vizinho_mm
+outro_nodulo,1,1,4.509994543,5.385164807134504
+achado_excluido,1,1,11.47644347,5.385164807134504
+falso_alarme,18,17,7.937385508,8.540794125155099

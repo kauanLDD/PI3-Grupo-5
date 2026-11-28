@@ -1,0 +1,24 @@
+{
+  "conjunto": "teste",
+  "decisao": "0013",
+  "teste_reavaliado": false,
+  "forma": "linear",
+  "raio_mm": 16,
+  "sem_marca_sem_supressao": 10,
+  "sem_marca_com_supressao": 28,
+  "perdidos_so_com_supressao": 20,
+  "perdidos_so_sem_supressao": 2,
+  "exames_refeitos": 19,
+  "supressao_repetida_confere": true,
+  "por_causa": {
+    "outro_nodulo": 1,
+    "achado_excluido": 1,
+    "falso_alarme": 18
+  },
+  "casos_figura": [
+    "1.3.6.1.4.1.14519.5.2.1.6279.6001.302403227435841351528721627052",
+    "1.3.6.1.4.1.14519.5.2.1.6279.6001.143622857676008763729469324839",
+    "1.3.6.1.4.1.14519.5.2.1.6279.6001.149041668385192796520281592139",
+    "1.3.6.1.4.1.14519.5.2.1.6279.6001.257515388956260258681136624817"
+  ]
+}

@@ -597,11 +597,34 @@ linha), `por_causa.csv`, `casos.png` e `resumo.json`.
 
 ### 12.1 Resultado
 
-Ainda não medido. A pasta `dados/intermediario/teste_supressao/` (643 MB) e os volumes
-pré-processados não estavam na máquina em que o script foi escrito; o script foi conferido com
-`testes/test_supressao_perdidos.py`, que compara a supressão repetida com a `suprimir_suave` e roda o
-script de ponta a ponta num exame sintético. Comando para medir:
+Medido em 27/11/2026 com `.venv/bin/python scripts/39_supressao_perdidos_teste.py`, sobre os
+arquivos que o script 37 gravou. A supressão repetida deu as mesmas 100 marcas e notas gravadas nos
+19 exames refeitos, e o script não parou.
 
-```bash
-.venv/bin/python scripts/39_supressao_perdidos_teste.py
-```
+**A conta não deu 18 contra 0, deu 20 contra 2.** Com a supressão, 20 nódulos ficam sem marca que
+tinham marca sem ela; sem a supressão, 2 nódulos ficam sem marca que a supressão recupera. O saldo
+continua 18 (28 contra 10). Os 2 recuperados têm 3,4 e 3,3 mm. Sem a supressão, a 100ª marca desses
+exames tem nota 0,991 e 0,982, e os pontos deles ficam abaixo; com a supressão, as marcas em volta
+de outros pontos perdem nota e abrem vaga. Por isso a suposição do item 1, de que a supressão não
+recupera nenhum nódulo, não vale com o limite de 100 marcas.
+
+**O que rebaixou os 20** (`por_causa.csv`):
+
+| Vizinho que mais rebaixou | Nódulos | Exames | Diâmetro mediano | Distância mediana ao ponto |
+|---|---:|---:|---:|---:|
+| Outro nódulo anotado | 1 | 1 | 4,5 mm | 5,4 mm |
+| Achado excluído | 1 | 1 | 11,5 mm | 5,4 mm |
+| Falso alarme | 18 | 17 | 7,9 mm | 8,5 mm |
+
+Em todos os 20 a nota do ponto do nódulo era alta antes da supressão (0,59 a 1,00, 17 deles acima de
+0,95) e caiu para 0,07 a 0,33, abaixo da 100ª marca do exame. Cada ponto foi rebaixado de 2 a 9
+vezes. O vizinho que mais rebaixou tinha nota de 0,68 a 1,00 e estava a 2,4 a 10,8 mm do ponto.
+
+O vizinho classificado como falso alarme fica perto do nódulo: a distância dele ao centro do nódulo
+vai de 4,1 a 14,7 mm, e em 9 dos 20 casos é menor que o diâmetro do nódulo. Pela regra do avaliador,
+ele fica fora do raio e conta como falso alarme. Pela figura `casos.png`, em dois dos quatro casos a
+marca vermelha cai na borda da própria lesão ou na estrutura ligada a ela, em outra fatia
+(inferência pela imagem, não medida nos 20).
+
+Saídas em `relatorios/experimentos/supressao_perdidos/`. A figura mostra os quatro casos que o
+desenho fixou: o único com vizinho nódulo e os três maiores com vizinho que não é nódulo.
