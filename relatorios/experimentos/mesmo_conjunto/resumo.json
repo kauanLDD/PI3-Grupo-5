@@ -6,5 +6,5 @@
   "mesmos_candidatos_validacao": true,
   "mesmos_candidatos_teste": true,
   "negativos_por_positivo_rede": 20,
-  "treino_rede_dentro_do_random_forest": null
+  "treino_rede_dentro_do_random_forest": true
 }

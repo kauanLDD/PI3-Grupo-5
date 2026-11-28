@@ -310,4 +310,4 @@ A rede escolhida aplicada à nossa própria lista de candidatos, na validação,
 [rede na lista própria](docs/19-rede-na-lista-propria.md).
 A conferência de que a rede e o Random Forest usam os mesmos exames e candidatos, e de que nenhum
 paciente aparece em dois conjuntos, está em
-[mesmo conjunto dos dois modelos](docs/20-mesmo-conjunto-dos-dois-modelos.md).
+[mesmo conjunto dos dois modelos](docs/22-mesmo-conjunto-dos-dois-modelos.md).

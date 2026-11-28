@@ -548,4 +548,4 @@ aos mesmos 75.063 candidatos de 89 exames, e no teste aos mesmos 150.412 de 176 
 ponto de diferença. No treino, não: o Random Forest usa os 529.500 candidatos V2 e a rede os mesmos
 1.098 positivos com 20 negativos por positivo, 23.058. Na divisão, 0 pacientes aparecem em mais de
 um conjunto; o único paciente com duas séries tem as duas no treino. O registro está em
-`docs/20-mesmo-conjunto-dos-dois-modelos.md`.
+`docs/22-mesmo-conjunto-dos-dois-modelos.md`.

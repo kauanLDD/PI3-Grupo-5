@@ -74,6 +74,7 @@ validação os 120 candidatos positivos correspondem a 111 nódulos avaliados; n
 
 | Conjunto | Chave | Só na rede | Só no Random Forest | Nos dois |
 |---|---|---:|---:|---:|
+| Treino | `candidate_id` | 0 | 506.442 | 23.058 |
 | Validação | `candidate_id` | 0 | 0 | 75.063 |
 | Validação | exame e coordenadas | 0 | 0 | 75.063 |
 | Teste | exame e coordenadas | 0 | 0 | 150.412 |
@@ -96,6 +97,13 @@ lista V2 nos mesmos exames, mas não conferimos ponto a ponto: a lista de treino
 (`dados/intermediario/caracteristicas_centro/treino.csv`) fica fora do git. Rodado na máquina que
 tem esse arquivo, o script 38 faz a comparação do treino também e grava o resultado em
 `resumo.json` (`treino_rede_dentro_do_random_forest`); nesta execução o campo ficou `null`.
+
+Em 27/11/2026 rodamos o script 38 na máquina que tem esse arquivo
+(`.venv/bin/python scripts/38_conferir_mesmo_conjunto.py`). Os 23.058 candidatos de treino da rede
+estão todos entre os 529.500 do Random Forest, 506.442 ficam só no Random Forest, e o campo
+`treino_rede_dentro_do_random_forest` saiu `true`. As outras contagens repetiram as de 09/11. Com o
+arquivo presente, a linha de treino do Random Forest passa a vir de
+`caracteristicas_centro/treino.csv` e não do recibo.
 
 ## 6. O que os números mostram e o que não mostram
 

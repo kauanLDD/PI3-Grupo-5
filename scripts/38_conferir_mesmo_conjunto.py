@@ -93,7 +93,8 @@ def main():
     if caracteristicas.exists():
         treino_floresta = pd.read_csv(caracteristicas, usecols=["candidate_id", "seriesuid", "classe_luna16"])
         treino_floresta = treino_floresta.rename(columns={"classe_luna16": "class"})
-        linhas.append(contar(treino_floresta, divisao, "treino", "random_forest", str(caracteristicas)))
+        fonte = str(caracteristicas.relative_to(raiz))
+        linhas.append(contar(treino_floresta, divisao, "treino", "random_forest", fonte))
     else:
         metricas = recibo_floresta["metricas"]
         treino = divisao.loc[divisao.particao.eq("treino")]
