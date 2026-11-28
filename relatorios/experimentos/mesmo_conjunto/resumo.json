@@ -1,0 +1,10 @@
+{
+  "teste_utilizado": false,
+  "divisao": "modelos/cnn_lr_3e-4/divisao.csv",
+  "exames_repetidos_na_divisao": 0,
+  "pacientes_em_mais_de_um_conjunto": [],
+  "mesmos_candidatos_validacao": true,
+  "mesmos_candidatos_teste": true,
+  "negativos_por_positivo_rede": 20,
+  "treino_rede_dentro_do_random_forest": null
+}

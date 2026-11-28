@@ -1,0 +1,4 @@
+conjunto,exames,pacientes,subsets,pacientes_com_mais_de_uma_serie
+treino,623,622,0 1 2 3 4 5 6,LIDC-IDRI-0332
+validacao,89,89,7,
+teste,176,176,8 9,
