@@ -1,0 +1,10 @@
+{
+  "teste_utilizado": false,
+  "exames": 89,
+  "nodulos": 111,
+  "pontos": 1407860,
+  "device": "cuda",
+  "segundos_pontuacao": 84,
+  "conferencia_recorte_16": 2.975158686080448e-08,
+  "cpm_32_reproduzido": 0.7451737454285715
+}

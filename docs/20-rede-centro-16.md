@@ -86,3 +86,46 @@ pares se sobrepõem. Não calculamos o intervalo pareado da diferença entre par
 uma semente só, então não medimos a variação dele entre sementes.
 
 A medida usa a lista V2, não a nossa lista LoG, e o teste não foi usado.
+
+## As duas redes na nossa lista, medido em 28/11/2026
+
+Repetimos a média das duas redes na nossa lista (LoG), com a supressão suave linear a 16 mm do
+sistema final aplicada depois da média. A rede de 16 pontuou a nossa lista na validação; as notas
+da rede de 32 são as que o script 31 gravou. O desenho e a regra de leitura foram escritos no
+`config.yaml` (seção `combinacao_redes_lista_propria`) antes de rodar. O teste não foi usado.
+
+```bash
+.venv-cnn-gpu/bin/python scripts/42_combinar_redes_lista_propria.py
+```
+
+Exames lidos 89, com erro 0, descartados 0; 111 nódulos; 1.407.860 pontos pontuados na GPU em 84 s.
+O recorte de 16 feito na hora, conferido contra as notas da V2 gravadas pela rede de 16 em 3 exames,
+deu diferença máxima de 2,98e-08. A rede de 32 com supressão reproduziu o CPM gravado em
+`relatorios/experimentos/supressao_suave/validacao.csv` (linear, semente 42). Avaliador oficial,
+1.000 reamostras por exame com semente 42.
+
+| Versão, todas com supressão suave a 16 mm | CPM (IC95%) | Sens. a 0,125 FP | Sens. a 1 FP | Sens. a 4 FP |
+|---|---:|---:|---:|---:|
+| Rede de 32 (sistema final) | 0,745 (0,651 a 0,820) | 0,541 | 0,784 | 0,847 |
+| Rede de 16 | 0,764 (0,687 a 0,838) | 0,568 | 0,802 | 0,874 |
+| Média das duas | 0,833 (0,762 a 0,896) | 0,712 | 0,856 | 0,892 |
+
+Diferença pareada de CPM contra a rede de 32: +0,019 (IC95% -0,039 a +0,105) para a rede de 16 e
++0,088 (+0,037 a +0,161) para a média, que ficou acima em 99,9% das reamostras. Pela regra fixada,
+só a média fica registrada como acima da rede de 32.
+
+Falsos positivos entre as 100 marcas de cada exame a até 16 mm do centro de um nódulo (cartão T27):
+
+| Versão | Falsos positivos nas 100 marcas | A até 16 mm de um nódulo | Nódulos com marca nas 100 |
+|---|---:|---:|---:|
+| Rede de 32 | 8.362 | 433 | 97 de 111 |
+| Rede de 16 | 8.354 | 87 | 101 de 111 |
+| Média das duas | 8.314 | 304 | 101 de 111 |
+
+As tabelas estão em `relatorios/experimentos/combinacao_redes_lista_propria/` (`versoes.csv`,
+`diferencas_pareadas.csv`, `vizinhos_de_nodulo.csv`, `resumo.json`, e a avaliação de cada versão
+numa subpasta). As notas de cada ponto ficam fora do git, em
+`dados/intermediario/combinacao_redes_lista_propria/`.
+
+**O que os números não mostram.** É a validação, com uma semente de cada rede e uma execução. A
+média não faz parte do sistema final, que foi ao teste pela decisão 0013, e não foi medida no teste.

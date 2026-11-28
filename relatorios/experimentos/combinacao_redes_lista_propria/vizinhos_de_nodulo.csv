@@ -1,0 +1,4 @@
+versao,marcas,acertos,falsos_positivos,falsos_perto_de_nodulo,nodulos_entre_as_marcas
+rede_32,8900,102,8362,433,97
+rede_16,8900,106,8354,87,101
+media,8900,108,8314,304,101

@@ -101,6 +101,9 @@ caminhos:
   # Média das notas da rede de 32 e da de 16 (T26), só na validação.
   combinacao_redes: "relatorios/experimentos/combinacao_redes"
   combinacao_redes_completa: "dados/intermediario/combinacao_redes"
+  # A mesma média das duas redes na nossa lista, com a supressão suave, só na validação.
+  combinacao_redes_lista_propria: "relatorios/experimentos/combinacao_redes_lista_propria"
+  combinacao_redes_lista_propria_completa: "dados/intermediario/combinacao_redes_lista_propria"
   # Tabela única com todos os resultados do avaliador oficial (T31).
   tabela_resultados: "relatorios/experimentos/tabela_resultados"
   # A rede e o Random Forest usam os mesmos candidatos? Contagens por conjunto e por modelo (T21).
@@ -517,6 +520,21 @@ combinacao_redes:
     r32_s42_s43: [modelos/cnn_lr_3e-4, modelos/cnn_lr_3e-4_semente_43]
     r32_s42_s44: [modelos/cnn_lr_3e-4, modelos/cnn_lr_3e-4_semente_44]
     r32_s43_s44: [modelos/cnn_lr_3e-4_semente_43, modelos/cnn_lr_3e-4_semente_44]
+
+combinacao_redes_lista_propria:
+  # Fixado em 28/11/2026, antes de rodar. A rede de 16 pontua a nossa lista na validação; as notas
+  # da rede de 32 são as que o script 31 já gravou. A média é a simples do T26, calculada antes da
+  # supressão suave linear a 16 mm do sistema final (seção supressao_suave). O teste não entra.
+  rede_32: modelos/cnn_lr_3e-4
+  notas_32: dados/intermediario/lista_propria_cnn/probabilidades.csv
+  rede_16: modelos/cnn_centro_16
+  # A rede de 32 com supressão suave tem de reproduzir o CPM gravado em supressao_suave/validacao.csv
+  # (linear, semente 42), senão as três versões não são comparáveis.
+  cpm_32_gravado: 0.7451737454285715
+  # Leitura fixada antes: o resultado é descritivo e não troca o sistema final, que já foi ao teste.
+  # Só escrevemos que a média fica acima da rede de 32 se o IC95% pareado ficar todo acima de zero.
+  # Para o T27: falso positivo entre as 100 marcas a até esta distância do centro de um nódulo.
+  distancia_vizinho_mm: 16
 
 tabela_resultados:
   # Uma linha por resultado do avaliador oficial já gravado em disco. O script 41 só lê esses
