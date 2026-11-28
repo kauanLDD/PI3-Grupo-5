@@ -557,3 +557,9 @@ Rodamos o script 39 sobre o teste já usado (decisão 0013), sem avaliar de novo
 nódulos saem das 100 marcas e 2 entram, saldo de 18. Dos 20, 18 foram rebaixados por uma marca que
 o avaliador conta como falso alarme, 1 por outro nódulo e 1 por um achado excluído. O registro está
 em `docs/19-rede-na-lista-propria.md`, seção 12.1.
+
+## Atualização de 28/11/2026: a pergunta de pesquisa
+
+A pergunta de pesquisa, que constava acima como não escrita, está em
+[pergunta de pesquisa](23-pergunta-de-pesquisa.md), com a meta e a resposta medida no teste nas
+duas listas.

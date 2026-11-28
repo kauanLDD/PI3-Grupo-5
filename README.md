@@ -255,6 +255,7 @@ início de todo script.
 Adotamos o KDD (Fayyad, Piatetsky-Shapiro e Smyth, 1996), com as cinco etapas de seleção,
 pré-processamento, transformação, mineração e interpretação. As decisões que fecham porta
 ficam registradas em `docs/decisoes/`, uma por arquivo, com o número medido ao lado.
+A pergunta, a meta e a resposta medida estão em [pergunta de pesquisa](docs/23-pergunta-de-pesquisa.md).
 
 ## Equipe e papéis
 
